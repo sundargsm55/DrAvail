@@ -43,6 +43,6 @@ namespace DrAvail.Models
         Tiruvarur,
         Vellore,
         Viluppuram,
-        Virudhunagar,
+        Virudhunagar
     }
 }

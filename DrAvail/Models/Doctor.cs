@@ -8,11 +8,18 @@ namespace DrAvail.Models
 {
     public class Doctor
     {
+
+        public class Avaliablity
+        {
+            public int MyProperty { get; set; }
+        }
+        public Avaliablity common;
+        
         [Required]
         public string Name { get; set; }
 
         [Required]
-        public Speciality Speciality { get; set; }
+        public string Speciality { get; set; }
 
         [Required]
         public string Degree { get; set; }
@@ -21,8 +28,8 @@ namespace DrAvail.Models
         public decimal Experience { get; set; }
 
         public string Summary { get; set; }
-
-        public string Hospital { get; set; }
+        
+        public Hospital Hospital { get; set; }
 
         [Required]
         public string City { get; set; }
@@ -40,10 +47,10 @@ namespace DrAvail.Models
         Allergist,
 
         [Display(Name = "Anesthesiologist", Description = "Specializes in pain prevention during surgery")]
-        anesthesiologist,
+        Anesthesiologist,
 
         [Display(Name = "Cardiologist", Description = "Heart specialist")]
-        cardiologist,
+        Cardiologist,
 
         [Display(Name = "Chiropractor", Description = "Back specialist")]
         Chiropractor,
@@ -102,4 +109,6 @@ namespace DrAvail.Models
         [Display(Name = "General Physician", Description = "Highly trained specialists who provide a range of non-surgical health care to adult patients")]
         GeneralPhysician
     }
+
+    
 }
