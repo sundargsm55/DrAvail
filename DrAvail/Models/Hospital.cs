@@ -8,6 +8,7 @@ namespace DrAvail.Models
 {
     public class Hospital
     {
+        public int ID { get; set; }
         [Required]
         public string Name { get; set; }
         
@@ -23,6 +24,8 @@ namespace DrAvail.Models
         [Required]
         public District District { get; set; }
 
+        public string EmailId { get; set; }
+        public string PhoneNo { get; set; }
     }
 
     public enum HospitalType

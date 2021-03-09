@@ -11,10 +11,19 @@ namespace DrAvail.Models
 
         public class Avaliablity
         {
-            public int MyProperty { get; set; }
+            public string status { get; set; }
+
+            public DateTime StartTime { get; set; }
+            public DateTime EndTime { get; set; }
+            public ContactPreference ContactPreference { get; set; }
+
+            public Hospital Hospital { get; set; }
+
         }
-        public Avaliablity common;
+        public List<Avaliablity> Availablity;
         
+        public int ID { get; set; }
+
         [Required]
         public string Name { get; set; }
 
@@ -28,7 +37,8 @@ namespace DrAvail.Models
         public decimal Experience { get; set; }
 
         public string Summary { get; set; }
-        
+
+        public int HospitalID { get; set; }
         public Hospital Hospital { get; set; }
 
         [Required]
@@ -36,7 +46,13 @@ namespace DrAvail.Models
 
         [Required]
         public District District { get; set; }
+
+        public string EmailId { get; set; }
+        public string PhoneNo { get; set; }
     }
+
+    
+    #region Enums
 
     public enum Speciality
     {
@@ -110,5 +126,12 @@ namespace DrAvail.Models
         GeneralPhysician
     }
 
-    
+    public enum ContactPreference
+    {
+        Always,
+        EmergencyOnly,
+        Never
+    }
+    #endregion
+
 }
