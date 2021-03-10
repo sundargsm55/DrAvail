@@ -14,7 +14,7 @@ namespace DrAvail.Data
         {
         }
 
-        public DbSet<Doctor> Doctors;
-        public DbSet<Hospital> Hospitals;
+        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Hospital> Hospitals { get; set; }
     }
 }

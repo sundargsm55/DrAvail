@@ -11,6 +11,7 @@ namespace DrAvail.Models
 
         public class Avaliablity
         {
+            public int ID { get; set; }
             public string status { get; set; }
 
             public DateTime StartTime { get; set; }
@@ -20,7 +21,10 @@ namespace DrAvail.Models
             public Hospital Hospital { get; set; }
 
         }
-        public List<Avaliablity> Availablity;
+
+        public Avaliablity CommonAvailablity;
+
+        public Avaliablity CurrentAvailablity;
         
         public int ID { get; set; }
 
@@ -39,6 +43,7 @@ namespace DrAvail.Models
         public string Summary { get; set; }
 
         public int HospitalID { get; set; }
+        
         public Hospital Hospital { get; set; }
 
         [Required]
@@ -46,8 +51,11 @@ namespace DrAvail.Models
 
         [Required]
         public District District { get; set; }
-
+        
+        [Required]
         public string EmailId { get; set; }
+        
+        [Required]
         public string PhoneNo { get; set; }
     }
 
