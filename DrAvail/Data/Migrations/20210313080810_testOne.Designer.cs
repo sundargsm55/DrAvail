@@ -4,49 +4,22 @@ using DrAvail.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DrAvail.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210313080810_testOne")]
+    partial class testOne
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("DrAvail.Models.Avaliability", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ContactPreference")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("HospitalID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("HospitalID");
-
-                    b.ToTable("Avaliabilities");
-                });
 
             modelBuilder.Entity("DrAvail.Models.Doctor", b =>
                 {
@@ -55,12 +28,15 @@ namespace DrAvail.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AvaliabilityID")
-                        .HasColumnType("int");
-
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CommonAvailablityID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CurrentAvailablityID")
+                        .HasColumnType("int");
 
                     b.Property<string>("Degree")
                         .IsRequired()
@@ -95,9 +71,6 @@ namespace DrAvail.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("AvaliabilityID")
-                        .IsUnique();
 
                     b.HasIndex("HospitalID");
 
@@ -340,23 +313,8 @@ namespace DrAvail.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("DrAvail.Models.Avaliability", b =>
-                {
-                    b.HasOne("DrAvail.Models.Hospital", "Hospital")
-                        .WithMany()
-                        .HasForeignKey("HospitalID");
-
-                    b.Navigation("Hospital");
-                });
-
             modelBuilder.Entity("DrAvail.Models.Doctor", b =>
                 {
-                    b.HasOne("DrAvail.Models.Avaliability", null)
-                        .WithOne("Doctor")
-                        .HasForeignKey("DrAvail.Models.Doctor", "AvaliabilityID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DrAvail.Models.Hospital", "Hospital")
                         .WithMany("Doctors")
                         .HasForeignKey("HospitalID")
@@ -415,11 +373,6 @@ namespace DrAvail.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("DrAvail.Models.Avaliability", b =>
-                {
-                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("DrAvail.Models.Hospital", b =>

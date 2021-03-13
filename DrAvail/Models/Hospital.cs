@@ -30,6 +30,8 @@ namespace DrAvail.Models
         
         [DataType(DataType.PhoneNumber)]
         public string PhoneNo { get; set; }
+
+        public ICollection<Doctor> Doctors { get; set; }
     }
 
     public enum HospitalType

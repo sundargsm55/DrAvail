@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,23 +10,18 @@ namespace DrAvail.Models
     public class Doctor
     {
 
-        public class Avaliablity
-        {
-            public int ID { get; set; }
-            public string status { get; set; }
+        //[ForeignKey("CommonAvailablity")]
+        public int AvaliabilityID { get; set; }
 
-            public DateTime StartTime { get; set; }
-            public DateTime EndTime { get; set; }
-            public ContactPreference ContactPreference { get; set; }
-
-            public Hospital Hospital { get; set; }
-
-        }
-
-        public Avaliablity CommonAvailablity;
-
-        public Avaliablity CurrentAvailablity;
         
+        public Avaliability CommonAvailability;
+
+        
+        //public int CurrentAvailablityID { get; set; }
+
+        //[ForeignKey("CurrentAvailablityID")]
+        //public Avaliablity CurrentAvailablity;
+
         public int ID { get; set; }
 
         [Required]
@@ -43,7 +39,6 @@ namespace DrAvail.Models
         public string Summary { get; set; }
 
         public int HospitalID { get; set; }
-        
         public Hospital Hospital { get; set; }
 
         [Required]
