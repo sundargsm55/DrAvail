@@ -15,10 +15,10 @@ namespace DrAvail.Models
         public ContactPreference ContactPreference { get; set; }
 
         
-        public virtual Hospital Hospital { get; set; }
+        public  Hospital Hospital { get; set; }
 
 
-        //public virtual Doctor Doctor { get; set; }
+        //public  Doctor Doctor { get; set; }
 
     }
 }

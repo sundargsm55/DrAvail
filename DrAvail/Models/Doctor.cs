@@ -60,18 +60,18 @@ namespace DrAvail.Models
         public string PhoneNumber { get; set; }
 
         public int HospitalID { get; set; }
-        public virtual Hospital Hospital { get; set; }
+        public  Hospital Hospital { get; set; }
 
         [ForeignKey(nameof(CommonAvailability))]
         public int CommonAvaliabilityID { get; set; }
 
-        public virtual Avaliability CommonAvailability { get; set; }
+        public  Avaliability CommonAvailability { get; set; }
 
 
         [ForeignKey(nameof(CurrentAvailability))]
         public int? CurrentAvaliabilityID { get; set; }
 
-        public virtual Avaliability CurrentAvailability { get; set; }
+        public  Avaliability CurrentAvailability { get; set; }
     }
 
     

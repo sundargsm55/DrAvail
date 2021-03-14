@@ -46,6 +46,10 @@ namespace DrAvail.Controllers
         // GET: Hospitals/Create
         public IActionResult Create()
         {
+            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
+                         select new { ID = (int)H, Name = H.ToString() };
+
+            ViewBag.HospitalType = values;
             return View();
         }
 

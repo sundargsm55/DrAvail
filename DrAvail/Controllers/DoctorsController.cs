@@ -22,7 +22,7 @@ namespace DrAvail.Controllers
         // GET: Doctors
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Doctors.Include(d => d.Hospital);
+            var applicationDbContext = _context.Doctors.Include(d => d.CommonAvailability).Include(d => d.CurrentAvailability).Include(d => d.Hospital);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -35,6 +35,8 @@ namespace DrAvail.Controllers
             }
 
             var doctor = await _context.Doctors
+                .Include(d => d.CommonAvailability)
+                .Include(d => d.CurrentAvailability)
                 .Include(d => d.Hospital)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (doctor == null)
@@ -48,6 +50,8 @@ namespace DrAvail.Controllers
         // GET: Doctors/Create
         public IActionResult Create()
         {
+            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID");
+            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID");
             ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Address");
             return View();
         }
@@ -57,7 +61,7 @@ namespace DrAvail.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Speciality,Degree,Experience,Summary,HospitalID,City,District,EmailId,PhoneNo")] Doctor doctor)
+        public async Task<IActionResult> Create([Bind("ID,Name,RegNumber,Speciality,Degree,Age,Gender,Practice,Experience,IsVerified,Summary,City,District,EmailId,PhoneNumber,HospitalID,CommonAvaliabilityID,CurrentAvaliabilityID")] Doctor doctor)
         {
             if (ModelState.IsValid)
             {
@@ -65,6 +69,8 @@ namespace DrAvail.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID", doctor.CommonAvaliabilityID);
+            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
             ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Address", doctor.HospitalID);
             return View(doctor);
         }
@@ -82,6 +88,8 @@ namespace DrAvail.Controllers
             {
                 return NotFound();
             }
+            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID", doctor.CommonAvaliabilityID);
+            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
             ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Address", doctor.HospitalID);
             return View(doctor);
         }
@@ -91,7 +99,7 @@ namespace DrAvail.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Speciality,Degree,Experience,Summary,HospitalID,City,District,EmailId,PhoneNo")] Doctor doctor)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,RegNumber,Speciality,Degree,Age,Gender,Practice,Experience,IsVerified,Summary,City,District,EmailId,PhoneNumber,HospitalID,CommonAvaliabilityID,CurrentAvaliabilityID")] Doctor doctor)
         {
             if (id != doctor.ID)
             {
@@ -118,6 +126,8 @@ namespace DrAvail.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID", doctor.CommonAvaliabilityID);
+            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
             ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Address", doctor.HospitalID);
             return View(doctor);
         }
@@ -131,6 +141,8 @@ namespace DrAvail.Controllers
             }
 
             var doctor = await _context.Doctors
+                .Include(d => d.CommonAvailability)
+                .Include(d => d.CurrentAvailability)
                 .Include(d => d.Hospital)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (doctor == null)

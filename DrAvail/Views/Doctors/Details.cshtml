@@ -17,6 +17,12 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RegNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RegNumber)
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Speciality)
         </dt>
         <dd class = "col-sm-10">
@@ -29,22 +35,40 @@
             @Html.DisplayFor(model => model.Degree)
         </dd>
         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Age)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Age)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Gender)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Practice)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Practice)
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Experience)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Experience)
         </dd>
         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsVerified)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsVerified)
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Summary)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Summary)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Hospital)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Hospital.Address)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.City)
@@ -65,10 +89,28 @@
             @Html.DisplayFor(model => model.EmailId)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNo)
+            @Html.DisplayNameFor(model => model.PhoneNumber)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNo)
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Hospital)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Hospital.Address)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CommonAvailability)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CommonAvailability.ID)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CurrentAvailability)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CurrentAvailability.ID)
         </dd>
     </dl>
 </div>

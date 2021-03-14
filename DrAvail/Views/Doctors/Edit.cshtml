@@ -19,6 +19,11 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="RegNumber" class="control-label"></label>
+                <input asp-for="RegNumber" class="form-control" />
+                <span asp-validation-for="RegNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Speciality" class="control-label"></label>
                 <input asp-for="Speciality" class="form-control" />
                 <span asp-validation-for="Speciality" class="text-danger"></span>
@@ -29,19 +34,34 @@
                 <span asp-validation-for="Degree" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Age" class="control-label"></label>
+                <input asp-for="Age" class="form-control" />
+                <span asp-validation-for="Age" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label"></label>
+                <select asp-for="Gender" class="form-control"></select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Practice" class="control-label"></label>
+                <select asp-for="Practice" class="form-control"></select>
+                <span asp-validation-for="Practice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Experience" class="control-label"></label>
                 <input asp-for="Experience" class="form-control" />
                 <span asp-validation-for="Experience" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsVerified" /> @Html.DisplayNameFor(model => model.IsVerified)
+                </label>
             </div>
             <div class="form-group">
                 <label asp-for="Summary" class="control-label"></label>
                 <input asp-for="Summary" class="form-control" />
                 <span asp-validation-for="Summary" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="HospitalID" class="control-label"></label>
-                <select asp-for="HospitalID" class="form-control" asp-items="ViewBag.HospitalID"></select>
-                <span asp-validation-for="HospitalID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="City" class="control-label"></label>
@@ -59,9 +79,24 @@
                 <span asp-validation-for="EmailId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PhoneNo" class="control-label"></label>
-                <input asp-for="PhoneNo" class="form-control" />
-                <span asp-validation-for="PhoneNo" class="text-danger"></span>
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HospitalID" class="control-label"></label>
+                <select asp-for="HospitalID" class="form-control" asp-items="ViewBag.HospitalID"></select>
+                <span asp-validation-for="HospitalID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CommonAvaliabilityID" class="control-label"></label>
+                <select asp-for="CommonAvaliabilityID" class="form-control" asp-items="ViewBag.CommonAvaliabilityID"></select>
+                <span asp-validation-for="CommonAvaliabilityID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CurrentAvaliabilityID" class="control-label"></label>
+                <select asp-for="CurrentAvaliabilityID" class="form-control" asp-items="ViewBag.CurrentAvaliabilityID"></select>
+                <span asp-validation-for="CurrentAvaliabilityID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
