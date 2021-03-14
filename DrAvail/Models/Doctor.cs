@@ -10,22 +10,16 @@ namespace DrAvail.Models
     public class Doctor
     {
 
-        //[ForeignKey("CommonAvailablity")]
-        public int AvaliabilityID { get; set; }
-
-        
-        public Avaliability CommonAvailability;
-
-        
-        //public int CurrentAvailablityID { get; set; }
-
-        //[ForeignKey("CurrentAvailablityID")]
-        //public Avaliablity CurrentAvailablity;
-
         public int ID { get; set; }
 
         [Required]
+        [MinLength(3), MaxLength(60)]
         public string Name { get; set; }
+
+        //Need to be unique
+        [Required]
+        [MaxLength(20)]
+        public string RegNumber { get; set; }
 
         [Required]
         public string Speciality { get; set; }
@@ -34,13 +28,23 @@ namespace DrAvail.Models
         public string Degree { get; set; }
 
         [Required]
+        public int Age { get; set; }
+
+        [Required]
+        public Gender Gender { get; set; }
+
+        [Required]
+        public Practice Practice { get; set; }
+
+        [Required]
+        [Column(TypeName ="decimal(4,2)")]
         public decimal Experience { get; set; }
 
+        [Required]
+        public bool IsVerified { get; set; }
+
         public string Summary { get; set; }
-
-        public int HospitalID { get; set; }
-        public Hospital Hospital { get; set; }
-
+                
         [Required]
         public string City { get; set; }
 
@@ -48,15 +52,42 @@ namespace DrAvail.Models
         public District District { get; set; }
         
         [Required]
+        [DataType(DataType.EmailAddress)]
         public string EmailId { get; set; }
         
         [Required]
-        public string PhoneNo { get; set; }
+        [DataType(DataType.PhoneNumber)]
+        public string PhoneNumber { get; set; }
+
+        public int HospitalID { get; set; }
+        public virtual Hospital Hospital { get; set; }
+
+        [ForeignKey(nameof(CommonAvailability))]
+        public int CommonAvaliabilityID { get; set; }
+
+        public virtual Avaliability CommonAvailability { get; set; }
+
+
+        [ForeignKey(nameof(CurrentAvailability))]
+        public int? CurrentAvaliabilityID { get; set; }
+
+        public virtual Avaliability CurrentAvailability { get; set; }
     }
 
     
     #region Enums
 
+    public enum Gender
+    {
+        Male = 0,
+        Female
+    }
+
+    public enum Practice
+    {
+        Government =  0,
+        Private
+    }
     public enum Speciality
     {
         [Display(Name = "Siddha", Description = "The Siddha system is based on a combination of ancient medicinal practices and spiritual disciplines as well as alchemy and mysticism")]

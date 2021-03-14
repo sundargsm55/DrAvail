@@ -4,14 +4,16 @@ using DrAvail.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DrAvail.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210313084129_addAvailability7")]
+    partial class addAvailability7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,6 +31,9 @@ namespace DrAvail.Data.Migrations
                     b.Property<int>("ContactPreference")
                         .HasColumnType("int");
 
+                    b.Property<int?>("DoctorID")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
@@ -42,6 +47,8 @@ namespace DrAvail.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("DoctorID");
 
                     b.HasIndex("HospitalID");
 
@@ -62,9 +69,6 @@ namespace DrAvail.Data.Migrations
                     b.Property<int>("CommonAvaliabilityID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CurrentAvaliabilityID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Degree")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -77,7 +81,7 @@ namespace DrAvail.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Experience")
-                        .HasColumnType("decimal(5,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("HospitalID")
                         .HasColumnType("int");
@@ -98,10 +102,6 @@ namespace DrAvail.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("CommonAvaliabilityID");
-
-                    b.HasIndex("CurrentAvaliabilityID");
 
                     b.HasIndex("HospitalID");
 
@@ -346,34 +346,26 @@ namespace DrAvail.Data.Migrations
 
             modelBuilder.Entity("DrAvail.Models.Avaliability", b =>
                 {
+                    b.HasOne("DrAvail.Models.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorID");
+
                     b.HasOne("DrAvail.Models.Hospital", "Hospital")
                         .WithMany()
                         .HasForeignKey("HospitalID");
+
+                    b.Navigation("Doctor");
 
                     b.Navigation("Hospital");
                 });
 
             modelBuilder.Entity("DrAvail.Models.Doctor", b =>
                 {
-                    b.HasOne("DrAvail.Models.Avaliability", "CommonAvailability")
-                        .WithMany()
-                        .HasForeignKey("CommonAvaliabilityID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DrAvail.Models.Avaliability", "CurrentAvailability")
-                        .WithMany()
-                        .HasForeignKey("CurrentAvaliabilityID");
-
                     b.HasOne("DrAvail.Models.Hospital", "Hospital")
                         .WithMany("Doctors")
                         .HasForeignKey("HospitalID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("CommonAvailability");
-
-                    b.Navigation("CurrentAvailability");
 
                     b.Navigation("Hospital");
                 });

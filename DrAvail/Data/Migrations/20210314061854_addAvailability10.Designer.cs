@@ -4,14 +4,16 @@ using DrAvail.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DrAvail.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210314061854_addAvailability10")]
+    partial class addAvailability10
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,9 +64,6 @@ namespace DrAvail.Data.Migrations
                     b.Property<int>("CommonAvaliabilityID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CurrentAvaliabilityID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Degree")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -77,7 +76,7 @@ namespace DrAvail.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Experience")
-                        .HasColumnType("decimal(5,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("HospitalID")
                         .HasColumnType("int");
@@ -99,9 +98,8 @@ namespace DrAvail.Data.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("CommonAvaliabilityID");
-
-                    b.HasIndex("CurrentAvaliabilityID");
+                    b.HasIndex("CommonAvaliabilityID")
+                        .IsUnique();
 
                     b.HasIndex("HospitalID");
 
@@ -356,14 +354,10 @@ namespace DrAvail.Data.Migrations
             modelBuilder.Entity("DrAvail.Models.Doctor", b =>
                 {
                     b.HasOne("DrAvail.Models.Avaliability", "CommonAvailability")
-                        .WithMany()
-                        .HasForeignKey("CommonAvaliabilityID")
+                        .WithOne("Doctor")
+                        .HasForeignKey("DrAvail.Models.Doctor", "CommonAvaliabilityID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("DrAvail.Models.Avaliability", "CurrentAvailability")
-                        .WithMany()
-                        .HasForeignKey("CurrentAvaliabilityID");
 
                     b.HasOne("DrAvail.Models.Hospital", "Hospital")
                         .WithMany("Doctors")
@@ -372,8 +366,6 @@ namespace DrAvail.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("CommonAvailability");
-
-                    b.Navigation("CurrentAvailability");
 
                     b.Navigation("Hospital");
                 });
@@ -427,6 +419,11 @@ namespace DrAvail.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DrAvail.Models.Avaliability", b =>
+                {
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("DrAvail.Models.Hospital", b =>

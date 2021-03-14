@@ -14,9 +14,11 @@ namespace DrAvail.Models
         public DateTime EndTime { get; set; }
         public ContactPreference ContactPreference { get; set; }
 
-        public Hospital Hospital { get; set; }
+        
+        public virtual Hospital Hospital { get; set; }
 
-        public Doctor Doctor { get; set; }
+
+        //public virtual Doctor Doctor { get; set; }
 
     }
 }
