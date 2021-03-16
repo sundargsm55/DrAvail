@@ -10,8 +10,8 @@ namespace DrAvail.Models
     public class DoctorsViewModel
     {
         public Doctor Doctor { get; set; }
-        public Avaliability CommonAvailability { get; set; }
-        public Avaliability CurrentAvailability { get; set; }
+        public Availability CommonAvailability { get; set; }
+        public Availability CurrentAvailability { get; set; }
 
         public Hospital Hospital { get; set; }
 

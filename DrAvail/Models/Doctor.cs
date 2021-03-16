@@ -37,44 +37,48 @@ namespace DrAvail.Models
         public Practice Practice { get; set; }
 
         [Required]
-        [Column(TypeName ="decimal(4,2)")]
+        [Column(TypeName = "decimal(4,2)")]
         public decimal Experience { get; set; }
 
         [Required]
         public bool IsVerified { get; set; }
 
         public string Summary { get; set; }
-                
+
         [Required]
         public string City { get; set; }
 
         [Required]
         public District District { get; set; }
-        
+
+        [Required]
+        [DataType(DataType.PostalCode)]
+        public int Pincode { get; set; }
+
         [Required]
         [DataType(DataType.EmailAddress)]
         public string EmailId { get; set; }
-        
+
         [Required]
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
 
         public int HospitalID { get; set; }
-        public  Hospital Hospital { get; set; }
+        public Hospital Hospital { get; set; }
 
         [ForeignKey(nameof(CommonAvailability))]
         public int CommonAvaliabilityID { get; set; }
 
-        public  Avaliability CommonAvailability { get; set; }
+        public Availability CommonAvailability { get; set; }
 
 
         [ForeignKey(nameof(CurrentAvailability))]
         public int? CurrentAvaliabilityID { get; set; }
 
-        public  Avaliability CurrentAvailability { get; set; }
+        public Availability CurrentAvailability { get; set; }
     }
 
-    
+
     #region Enums
 
     public enum Gender
@@ -85,7 +89,7 @@ namespace DrAvail.Models
 
     public enum Practice
     {
-        Government =  0,
+        Government = 0,
         Private
     }
     public enum Speciality

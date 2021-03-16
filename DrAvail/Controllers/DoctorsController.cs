@@ -55,8 +55,8 @@ namespace DrAvail.Controllers
         public IActionResult Create()
         {
             #region selectList
-            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID");
-            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID");
+            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID");
+            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID");
             ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Name");
 
             var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
@@ -64,11 +64,11 @@ namespace DrAvail.Controllers
             ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
 
             var district = from District d in Enum.GetValues(typeof(District))
-                           select new { ID = (int)d, Name = d.ToString() };                        
+                           select new { ID = (int)d, Name = d.ToString() };
             ViewBag.Districts = new SelectList(district, "ID", "Name");
 
             var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
-                           select new { ID = (int)d, Name = d.ToString() };
+                             select new { ID = (int)d, Name = d.ToString() };
             ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
             #endregion
 
@@ -90,8 +90,8 @@ namespace DrAvail.Controllers
             }
 
             #region selectList
-            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID", doctor.CommonAvaliabilityID);
-            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
+            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CommonAvaliabilityID);
+            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
             ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Address", doctor.HospitalID);
 
             var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
@@ -123,8 +123,8 @@ namespace DrAvail.Controllers
             {
                 return NotFound();
             }
-            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID", doctor.CommonAvaliabilityID);
-            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
+            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CommonAvaliabilityID);
+            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
             ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Address", doctor.HospitalID);
             return View(doctor);
         }
@@ -161,8 +161,8 @@ namespace DrAvail.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID", doctor.CommonAvaliabilityID);
-            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
+            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CommonAvaliabilityID);
+            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
             ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Address", doctor.HospitalID);
             return View(doctor);
         }
