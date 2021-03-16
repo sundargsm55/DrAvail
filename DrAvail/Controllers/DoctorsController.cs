@@ -14,6 +14,9 @@ namespace DrAvail.Controllers
     {
         private readonly ApplicationDbContext _context;
 
+        [BindProperty]
+        public Doctor doctor { get; set; }
+
         public DoctorsController(ApplicationDbContext context)
         {
             _context = context;
@@ -48,11 +51,27 @@ namespace DrAvail.Controllers
         }
 
         // GET: Doctors/Create
+        [HttpGet]
         public IActionResult Create()
         {
+            #region selectList
             ViewData["CommonAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID");
             ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID");
-            ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Address");
+            ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Name");
+
+            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
+                         select new { ID = (int)H, Name = H.ToString() };
+            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
+
+            var district = from District d in Enum.GetValues(typeof(District))
+                           select new { ID = (int)d, Name = d.ToString() };                        
+            ViewBag.Districts = new SelectList(district, "ID", "Name");
+
+            var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
+                           select new { ID = (int)d, Name = d.ToString() };
+            ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
+            #endregion
+
             return View();
         }
 
@@ -61,7 +80,7 @@ namespace DrAvail.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,RegNumber,Speciality,Degree,Age,Gender,Practice,Experience,IsVerified,Summary,City,District,EmailId,PhoneNumber,HospitalID,CommonAvaliabilityID,CurrentAvaliabilityID")] Doctor doctor)
+        public async Task<IActionResult> Create(int? Id)
         {
             if (ModelState.IsValid)
             {
@@ -69,9 +88,25 @@ namespace DrAvail.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            #region selectList
             ViewData["CommonAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID", doctor.CommonAvaliabilityID);
             ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Avaliabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
             ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Address", doctor.HospitalID);
+
+            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
+                         select new { ID = (int)H, Name = H.ToString() };
+            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
+
+            var district = from District d in Enum.GetValues(typeof(District))
+                           select new { ID = (int)d, Name = d.ToString() };
+            ViewBag.Districts = new SelectList(district, "ID", "Name");
+
+            var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
+                             select new { ID = (int)d, Name = d.ToString() };
+            ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
+            #endregion
+
             return View(doctor);
         }
 

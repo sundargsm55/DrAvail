@@ -48,8 +48,12 @@ namespace DrAvail.Controllers
         {
             var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
                          select new { ID = (int)H, Name = H.ToString() };
+            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
 
-            ViewBag.HospitalType = values;
+            var district = from District d in Enum.GetValues(typeof(District))
+                         select new { ID = (int)d, Name = d.ToString() };
+                       
+            ViewBag.Districts = new SelectList(district, "ID", "Name");
             return View();
         }
 
@@ -66,6 +70,15 @@ namespace DrAvail.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
+                         select new { ID = (int)H, Name = H.ToString() };
+            var district = from District d in Enum.GetValues(typeof(District))
+                           select new { ID = (int)d, Name = d.ToString() };
+
+            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
+            ViewBag.Districts = new SelectList(district, "ID", "Name");
+
             return View(hospital);
         }
 

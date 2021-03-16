@@ -24,7 +24,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="Speciality" class="control-label"></label>
-                <input asp-for="Speciality" class="form-control" />
+                <select asp-for="Speciality" class="form-control" asp-items="ViewBag.Speciality">
+                    <option value="">--Select--</option>
+                </select>
                 <span asp-validation-for="Speciality" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -39,12 +41,20 @@
             </div>
             <div class="form-group">
                 <label asp-for="Gender" class="control-label"></label>
-                <select asp-for="Gender" class="form-control"></select>
+                <select asp-for="Gender" class="form-control">
+                    <option value="">--Select--</option>
+                    <option value=0>Male</option>
+                    <option value=1>Female</option>
+                </select>
                 <span asp-validation-for="Gender" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Practice" class="control-label"></label>
-                <select asp-for="Practice" class="form-control"></select>
+                <select asp-for="Practice" class="form-control">
+                    <option value="">--Select--</option>
+                    <option value=0>Governmant</option>
+                    <option value=1>Private</option>
+                </select>
                 <span asp-validation-for="Practice" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -52,14 +62,14 @@
                 <input asp-for="Experience" class="form-control" />
                 <span asp-validation-for="Experience" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
+            <div class="form-group form-check" hidden>
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsVerified" /> @Html.DisplayNameFor(model => model.IsVerified)
                 </label>
             </div>
             <div class="form-group">
                 <label asp-for="Summary" class="control-label"></label>
-                <input asp-for="Summary" class="form-control" />
+                <textarea asp-for="Summary" class="form-control" placeholder="Add a bio"></textarea>
                 <span asp-validation-for="Summary" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -69,30 +79,91 @@
             </div>
             <div class="form-group">
                 <label asp-for="District" class="control-label"></label>
-                <select asp-for="District" class="form-control"></select>
+                <select asp-for="District" class="form-control" asp-items="ViewBag.Districts">
+                    <option value="">--Select--</option>
+                </select>
                 <span asp-validation-for="District" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EmailId" class="control-label"></label>
+                <label asp-for="EmailId" class="control-label">Email Address</label>
                 <input asp-for="EmailId" class="form-control" />
                 <span asp-validation-for="EmailId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
+                <label asp-for="PhoneNumber" class="control-label">Phone Number</label>
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="HospitalID" class="control-label"></label>
-                <select asp-for="HospitalID" class ="form-control" asp-items="ViewBag.HospitalID"></select>
+            <div class="form-group" id="hospitalId">
+                <label asp-for="HospitalID" class="control-label">Hospital Name</label> &nbsp;&nbsp;
+                <a href="#addHospital" onclick="addHospital()">Add Hospital</a>
+                <select asp-for="HospitalID" class="form-control" asp-items="ViewBag.HospitalID">
+                    <option value="">--Select--</option>
+                </select>
             </div>
-            <div class="form-group">
-                <label asp-for="CommonAvaliabilityID" class="control-label"></label>
-                <select asp-for="CommonAvaliabilityID" class ="form-control" asp-items="ViewBag.CommonAvaliabilityID"></select>
+
+            <div id="addHospital" style="display:none">
+                <h5>Hospital</h5>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Hospital.Name" class="control-label"></label>
+                    <input asp-for="Hospital.Name" class="form-control" />
+                    <span asp-validation-for="Hospital.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Hospital.Type" class="control-label"></label>
+                    <select asp-for="Hospital.Type" class="form-control" asp-items="ViewBag.HospitalType">
+                        <option value="">--Select--</option>
+                    </select>
+                    <span asp-validation-for="Hospital.Type" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Hospital.Address" class="control-label"></label>
+                    <input asp-for="Hospital.Address" class="form-control" />
+                    <span asp-validation-for="Hospital.Address" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Hospital.City" class="control-label"></label>
+                    <input asp-for="Hospital.City" class="form-control" />
+                    <span asp-validation-for="Hospital.City" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Hospital.District" class="control-label"></label>
+                    <select asp-for="Hospital.District" class="form-control" asp-items="ViewBag.Districts">
+                        <option value="">--Select--</option>
+                    </select>
+                    <span asp-validation-for="Hospital.District" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Hospital.EmailId" class="control-label">Email Address</label>
+                    <input asp-for="Hospital.EmailId" class="form-control" />
+                    <span asp-validation-for="Hospital.EmailId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Hospital.PhoneNo" class="control-label">Phone Number</label>
+                    <input asp-for="Hospital.PhoneNo" class="form-control" />
+                    <span asp-validation-for="Hospital.PhoneNo" class="text-danger"></span>
+                </div>
+
             </div>
-            <div class="form-group">
-                <label asp-for="CurrentAvaliabilityID" class="control-label"></label>
-                <select asp-for="CurrentAvaliabilityID" class ="form-control" asp-items="ViewBag.CurrentAvaliabilityID"></select>
+            <div class="form-group" hidden>
+                <label asp-for="CommonAvailability.status" class="control-label"></label>
+                <select asp-for="CommonAvailability.status" class="form-control">
+                </select>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="CurrentAvailability.status" class="control-label"></label>
+                <select asp-for="CurrentAvailability.status" class="form-control">
+                    <option value="">--Select</option>
+                    <option value="On Vacation">On Vacation</option>
+                    <option value="Available">Available</option>
+                </select>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="CurrentAvailability.HospitalID" class="control-label">Hospital Name</label>
+                <select asp-for="CurrentAvailability.HospitalID" class="form-control" asp-items="ViewBag.HospitalID">
+                    <option value=HospitalID></option>
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -107,4 +178,14 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        function addHospital() {
+            var x = document.getElementById("addHospital");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
 }

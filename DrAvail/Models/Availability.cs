@@ -12,9 +12,13 @@ namespace DrAvail.Models
 
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public ContactPreference ContactPreference { get; set; }
 
         
+        //public Boolean IsAvailableOnWeekend { get; set; }
+        public ContactPreference ContactPreference { get; set; }
+
+        public int HospitalID { get; set; }
+
         public  Hospital Hospital { get; set; }
 
 

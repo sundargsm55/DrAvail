@@ -9,12 +9,12 @@ namespace DrAvail.Models
 {
     public class DoctorsViewModel
     {
-        public List<Doctor> Doctors { get; set; }
-        public SelectList Speciality { get; set; }
+        public Doctor Doctor { get; set; }
+        public Avaliability CommonAvailability { get; set; }
+        public Avaliability CurrentAvailability { get; set; }
 
-        public SelectList City { get; set; }
+        public Hospital Hospital { get; set; }
 
-        public string SearchString { get; set; }
     }
 
 }
