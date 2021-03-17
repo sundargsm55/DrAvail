@@ -203,5 +203,10 @@ namespace DrAvail.Controllers
         {
             return _context.Doctors.Any(e => e.ID == id);
         }
+
+        public IActionResult AvailabilityCreate()
+        {
+            return View();
+        }
     }
 }
