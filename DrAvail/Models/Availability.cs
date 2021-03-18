@@ -1,28 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DrAvail.Models
 {
-    public class Avaliability
+    public class Availability
     {
+        [Microsoft.EntityFrameworkCore.Owned]
+        public class Timings
+        {
+            [DataType(DataType.Time)]
+            public DateTime MorningStartTime { get; set; }
+
+            [DataType(DataType.Time)]
+            public DateTime MorningEndTime { get; set; }
+
+            [DataType(DataType.Time)]
+            public DateTime EveningStartTime { get; set; }
+
+            [DataType(DataType.Time)]
+            public DateTime EveningEndTime { get; set; }
+        }
+
+
         public int ID { get; set; }
-        public string status { get; set; }
 
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        [MaxLength(15)]
+        public string Status { get; set; }
 
-        
-        //public Boolean IsAvailableOnWeekend { get; set; }
+        public Timings CommonDays { get; set; }
+
+        public bool IsAvailableOnWeekend { get; set; }
+
+        public Timings Weekends { get; set; }
+
+        //for current availability
+
+        public DateTime CurrentStartDateTime { get; set; }
+        public DateTime CurrentEndDateTime { get; set; }
+
         public ContactPreference ContactPreference { get; set; }
 
-        public int HospitalID { get; set; }
+        public int? HospitalID { get; set; }
 
-        public  Hospital Hospital { get; set; }
-
-
-        //public  Doctor Doctor { get; set; }
+        public Hospital Hospital { get; set; }
 
     }
 }

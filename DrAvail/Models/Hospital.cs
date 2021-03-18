@@ -12,22 +12,26 @@ namespace DrAvail.Models
 
         [Required]
         public string Name { get; set; }
-        
+
         [Required]
         public HospitalType Type { get; set; }
-        
+
         [Required]
         public string Address { get; set; }
-        
+
         [Required]
         public string City { get; set; }
-        
+
         [Required]
         public District District { get; set; }
-        
+
+        [Required]
+        [DataType(DataType.PostalCode)]
+        public int Pincode { get; set; }
+
         [DataType(DataType.EmailAddress)]
         public string EmailId { get; set; }
-        
+
         [DataType(DataType.PhoneNumber)]
         public string PhoneNo { get; set; }
 
