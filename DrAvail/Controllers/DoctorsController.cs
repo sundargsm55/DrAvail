@@ -78,21 +78,47 @@ namespace DrAvail.Controllers
         // POST: Doctors/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int? Id)
+        public async Task<IActionResult> CreateOnPost()
         {
-            if (ModelState.IsValid)
+            
+            try
             {
-                _context.Add(doctor);
+                doctor.CommonAvailability.CommonDays.MorningStartTime = new DateTime(year:2021,month:3,day:24,
+                    hour:int.Parse(doctor.CommonAvailability.CommonDays.MorningStartHour),
+                    minute: int.Parse(doctor.CommonAvailability.CommonDays.MorningStartMinute),
+                    second:0);
+                doctor.CommonAvailability.AvailabilityType = doctor.RegNumber + "Common";
+                //Console.WriteLine("----------------------------------------------");
+                //Console.WriteLine("Before INSERT -> Hospital Id: " + doctor.HospitalID);
+                //Console.WriteLine(doctor);
+                //Console.WriteLine("----------------------------------------------");
+
+                if (doctor.HospitalID !=0)
+                {
+                    doctor.Hospital = null;
+                    //_context.Entry(doctor.Hospital).State = EntityState.Unchanged;
+                }
+                _context.Doctors.Add(doctor);
+
                 await _context.SaveChangesAsync();
+                //Console.WriteLine("----------------------------------------------");
+                //Console.WriteLine("After INSERT -> doctor Id: " + doctor.ID);
+                //Console.WriteLine(doctor);
+
                 return RedirectToAction(nameof(Index));
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
 
             #region selectList
-            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CommonAvaliabilityID);
-            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
-            ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Address", doctor.HospitalID);
+            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID");
+            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID");
+            ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Name");
 
             var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
                          select new { ID = (int)H, Name = H.ToString() };
@@ -123,9 +149,17 @@ namespace DrAvail.Controllers
             {
                 return NotFound();
             }
+
             ViewData["CommonAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CommonAvaliabilityID);
             ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
-            ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Address", doctor.HospitalID);
+            ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Name", doctor.HospitalID);
+            var district = from District d in Enum.GetValues(typeof(District))
+                           select new { ID = (int)d, Name = d.ToString() };
+            ViewBag.Districts = new SelectList(district, "ID", "Name");
+
+            var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
+                             select new { ID = (int)d, Name = d.ToString() };
+            ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
             return View(doctor);
         }
 
@@ -163,7 +197,14 @@ namespace DrAvail.Controllers
             }
             ViewData["CommonAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CommonAvaliabilityID);
             ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
-            ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Address", doctor.HospitalID);
+            ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Name", doctor.HospitalID);
+            var district = from District d in Enum.GetValues(typeof(District))
+                           select new { ID = (int)d, Name = d.ToString() };
+            ViewBag.Districts = new SelectList(district, "ID", "Name");
+
+            var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
+                             select new { ID = (int)d, Name = d.ToString() };
+            ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
             return View(doctor);
         }
 
@@ -202,6 +243,11 @@ namespace DrAvail.Controllers
         private bool DoctorExists(int id)
         {
             return _context.Doctors.Any(e => e.ID == id);
+        }
+
+        public IActionResult AvailabilityCreate()
+        {
+            return View();
         }
     }
 }

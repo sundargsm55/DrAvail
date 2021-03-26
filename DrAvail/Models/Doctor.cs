@@ -19,6 +19,7 @@ namespace DrAvail.Models
         //Need to be unique
         [Required]
         [MaxLength(20)]
+        [Display(Name ="Registration Number")]
         public string RegNumber { get; set; }
 
         [Required]
@@ -28,6 +29,7 @@ namespace DrAvail.Models
         public string Degree { get; set; }
 
         [Required]
+        [Range(21,100)]
         public int Age { get; set; }
 
         [Required]
@@ -57,10 +59,12 @@ namespace DrAvail.Models
 
         [Required]
         [DataType(DataType.EmailAddress)]
+        [Display(Name="Email Address")]
         public string EmailId { get; set; }
 
         [Required]
-        [DataType(DataType.PhoneNumber)]
+        [Phone]
+        [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
 
         public int HospitalID { get; set; }
