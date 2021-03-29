@@ -49,8 +49,16 @@ namespace DrAvail
                 o.TokenLifespan = TimeSpan.FromHours(3));
 
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddAuthorization(options => {
+                options.AddPolicy("readonlypolicy",
+                    builder => builder.RequireRole("Admin", "Doctor", "User"));
+                options.AddPolicy("writepolicy",
+                    builder => builder.RequireRole("Admin", "Doctor"));
+            });
             // requires
             // using Microsoft.AspNetCore.Identity.UI.Services;
             services.AddTransient<IEmailSender, EmailSender>();

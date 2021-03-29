@@ -32,7 +32,7 @@ namespace DrAvail.Models
         public int Pincode { get; set; }
 
 
-        [DataType(DataType.EmailAddress)]
+        [EmailAddress]
         [Display(Name = "Email Address")]
         public string EmailId { get; set; }
 

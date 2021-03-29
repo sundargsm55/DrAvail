@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DrAvail.Data;
 using DrAvail.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DrAvail.Controllers
 {
@@ -22,6 +23,7 @@ namespace DrAvail.Controllers
             _context = context;
         }
 
+        
         // GET: Doctors
         public async Task<IActionResult> Index()
         {
