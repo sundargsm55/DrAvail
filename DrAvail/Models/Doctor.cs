@@ -49,6 +49,7 @@ namespace DrAvail.Models
         public string Summary { get; set; }
 
         [Required]
+        [Display(Name ="Locality")]
         public string City { get; set; }
 
         [Required]
@@ -59,7 +60,7 @@ namespace DrAvail.Models
         public int Pincode { get; set; }
 
         [Required]
-        [DataType(DataType.EmailAddress)]
+        [EmailAddress]
         [Display(Name="Email Address")]
         public string EmailId { get; set; }
 
