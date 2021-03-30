@@ -53,7 +53,7 @@ namespace DrAvail.Models
         public string City { get; set; }
 
         [Required]
-        public string District { get; set; }
+        public District District { get; set; }
 
         [Required]
         [DataType(DataType.PostalCode)]

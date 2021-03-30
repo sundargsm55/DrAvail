@@ -1,71 +1,63 @@
 ﻿@model IEnumerable<DrAvail.Models.Hospital>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Hospitals";
 }
 
-<h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.City)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.District)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EmailId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNo)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.District)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EmailId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNo)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
+@if (Model.Any())
+{
+    <h4>Hospital</h4>
+
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+
+    @foreach (var item in Model)
+    {
+        <div class="card w-75 text-dark bg-light mb-3" style="border-radius:20px">
+            <div class="row">
+
+                <div class="col-md-3 p-md-0">
+                    <img class="img-fluid p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px" src="/Images/logo.png" alt="...">
+                </div>
+                <div class="col-md-9">
+                    <div class="card-body">
+                        <div class="col-md-8">
+                            <h5 class="card-title">
+                                <a asp-action="Details" asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.Name)</a>
+                            </h5>
+                            <p class="card-text">@Html.DisplayFor(modelItem => item.Type)</p>
+                            <p class="card-text text-muted">
+                                @Html.DisplayFor(modelItem => item.Address)
+                            </p>
+                            <p class="card-text">
+                                @Html.DisplayFor(modelItem => item.City), @Html.DisplayFor(modelItem => item.District)
+                            </p>
+                            <br />
+                            @if (item.Doctors.Any())
+                            {
+                                <p> Doctors(@item.Doctors.Count)</p>
+                            }
+                        </div>
+                        <div>
+                            <a class="btn btn-danger" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                            <a class="btn btn-info" asp-action="Details" asp-route-id="@item.ID">Details</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
 }
-    </tbody>
-</table>
+else
+{
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h6 class="display-4">No Hospital/Clinic registered.</h6>
+            Want to register your hospital/clinic? Please click
+            <a asp-action="Create">here</a>.
+        </div>
+    </div>
+}

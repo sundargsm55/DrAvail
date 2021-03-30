@@ -22,7 +22,7 @@ namespace DrAvail.Controllers
         // GET: Hospitals
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Hospitals.ToListAsync());
+            return View(await _context.Hospitals.Include(h => h.Doctors).ToListAsync());
         }
 
         // GET: Hospitals/Details/5

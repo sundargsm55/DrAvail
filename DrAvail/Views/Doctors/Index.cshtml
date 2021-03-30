@@ -13,46 +13,46 @@
 
     @foreach (var item in Model)
     {
-        <div class="card text-dark bg-light mr-md-3">
-            <div class="row">
-                @if ("Male".Equals(item.Gender.ToString()))
-                {
-                    <div class="col-md-3 p-0">
-                        <img class="img-fluid"  src="/Images/img_avatar3.png" alt="...">
-                    </div>
-                }
-                else
-                {
-                    <div class="col-md-3 p-0">
-                        <img class="img-fluid" src="/Images/img_avatar5.png" alt="...">
-                    </div>
-                }
-                <div class="col-md-9">
-                    <div class="card-body">
-                        <div class="col-md-8">
-                            <h5 class="card-title">
-                                @Html.DisplayFor(modelItem => item.Name)
-                            </h5>
-                            <p class="card-text">@Html.DisplayFor(modelItem => item.Speciality)</p>
-                            <p class="card-text text-muted">
-                                @Html.DisplayFor(modelItem => item.Experience) years experience overall
-                            </p>
-                            <p class="card-text">
-                                @Html.DisplayFor(modelItem => item.City), @Html.DisplayFor(modelItem => item.District)
-                                &nbsp;&bull;&nbsp;
-                                <a asp-action="Details" asp-controller="Hospitals" asp-route-id="@item.HospitalID">@Html.DisplayFor(modelItem => item.Hospital.Name)</a>
-                            </p>
-                            <br />
-                        </div>
-                        <div>
-                            <a class="btn btn-danger" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-                            <a class="btn btn-info" asp-action="Details" asp-route-id="@item.ID">Details</a>
-                        </div>
-                    </div>
-
+<div class="card w-75 h-50 text-dark bg-light mb-3" style="border-radius:20px">
+    <div class="row">
+        @if ("Male".Equals(item.Gender.ToString()))
+        {
+            <div class="col-md-3 card-img img-fluid">
+                <img class="img-fluid" style="border-bottom-left-radius:20px;border-top-left-radius:20px" src="/Images/img_avatar3.png" alt="...">
+            </div>
+        }
+        else
+        {
+            <div class="col-md-3 card-img w-auto">
+                <img class="img-fluid" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
+            </div>
+        }
+        <div class="col-md-9">
+            <div class="card-body" >
+                <div class="col-md-8">
+                    <h5 class="card-title">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </h5>
+                    <p class="card-text">@Html.DisplayFor(modelItem => item.Speciality)</p>
+                    <p class="card-text text-muted">
+                        @Html.DisplayFor(modelItem => item.Experience) years experience overall
+                    </p>
+                    <p class="card-text">
+                        @Html.DisplayFor(modelItem => item.City), @Html.DisplayFor(modelItem => item.District)
+                        &nbsp;&bull;&nbsp;
+                        <a asp-action="Details" asp-controller="Hospitals" asp-route-id="@item.HospitalID">@Html.DisplayFor(modelItem => item.Hospital.Name)</a>
+                    </p>
+                    <br />
+                </div>
+                <div>
+                    <a class="btn btn-danger" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.ID">Details</a>
                 </div>
             </div>
+
         </div>
+    </div>
+</div>
     }
 }
 else

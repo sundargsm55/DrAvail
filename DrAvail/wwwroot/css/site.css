@@ -75,7 +75,7 @@ body {
 
 @font-face {
     font-family: "Pacifico";
-    src: url(Pacifico.ttf),format('truetype');
+    src: url(Pacifico.ttf) format('truetype');
 }
 
 .span3 {

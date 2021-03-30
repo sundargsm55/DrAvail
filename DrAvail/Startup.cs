@@ -94,7 +94,7 @@ namespace DrAvail
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Doctors}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }
