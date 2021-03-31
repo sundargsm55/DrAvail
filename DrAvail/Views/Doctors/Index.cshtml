@@ -13,29 +13,30 @@
 
     @foreach (var item in Model)
     {
-<div class="card w-75 h-50 text-dark bg-light mb-3" style="border-radius:20px">
+<div class="card text-dark bg-light mb-3" style="border-radius:20px;width:75%">
     <div class="row">
         @if ("Male".Equals(item.Gender.ToString()))
         {
-            <div class="col-md-3 card-img img-fluid">
-                <img class="img-fluid" style="border-bottom-left-radius:20px;border-top-left-radius:20px" src="/Images/img_avatar3.png" alt="...">
-            </div>
+            @*<div class="col-md-3">*@
+                <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px;" src="/Images/img_avatar3.png" alt="...">
+            @*</div>*@
         }
         else
         {
-            <div class="col-md-3 card-img w-auto">
-                <img class="img-fluid" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
-            </div>
+            @*<div class="col-md-3">*@
+                <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
+            @*</div>*@
         }
         <div class="col-md-9">
-            <div class="card-body" >
-                <div class="col-md-8">
+            <div class="card-body">
+                <div class="col-md-6 float-left">
                     <h5 class="card-title">
                         @Html.DisplayFor(modelItem => item.Name)
                     </h5>
                     <p class="card-text">@Html.DisplayFor(modelItem => item.Speciality)</p>
                     <p class="card-text text-muted">
                         @Html.DisplayFor(modelItem => item.Experience) years experience overall
+
                     </p>
                     <p class="card-text">
                         @Html.DisplayFor(modelItem => item.City), @Html.DisplayFor(modelItem => item.District)
@@ -44,12 +45,13 @@
                     </p>
                     <br />
                 </div>
-                <div>
-                    <a class="btn btn-danger" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.ID">Details</a>
+                <div class="col-md-3 float-right">
+                    
+                    <a class="btn btn-danger align-top" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                    
+                    <a class="btn btn-info align-bottom" asp-action="Details" asp-route-id="@item.ID">Details</a>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

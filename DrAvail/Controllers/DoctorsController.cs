@@ -25,6 +25,7 @@ namespace DrAvail.Controllers
 
         
         // GET: Doctors
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Doctors.Include(d => d.CommonAvailability).Include(d => d.CurrentAvailability).Include(d => d.Hospital);
@@ -32,6 +33,7 @@ namespace DrAvail.Controllers
         }
 
         // GET: Doctors/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
