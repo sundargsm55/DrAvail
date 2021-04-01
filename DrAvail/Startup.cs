@@ -16,7 +16,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DrAvail.Services;
-using Microsoft.VisualStudio.Web;
 using Microsoft.AspNetCore.Authorization;
 
 namespace DrAvail
@@ -64,16 +63,15 @@ namespace DrAvail
 
             services.AddControllersWithViews();
 
-            services.AddAuthorization(options =>
-            {
-                options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-            });
-            // requires
+            //services.AddAuthorization(options =>
+            //{
+            //    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+            //        .RequireAuthenticatedUser()
+            //        .Build();
+            //});
+            
             // using Microsoft.AspNetCore.Identity.UI.Services;
             services.AddTransient<IEmailSender, EmailSender>();
-            //services.Configure<AuthMessageSenderOptions>(Configuration);
 
             services.AddSingleton<IConfiguration>(Configuration);
         }

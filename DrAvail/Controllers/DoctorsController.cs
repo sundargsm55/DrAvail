@@ -8,28 +8,56 @@ using Microsoft.EntityFrameworkCore;
 using DrAvail.Data;
 using DrAvail.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 
 namespace DrAvail.Controllers
 {
     public class DoctorsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
 
         [BindProperty]
         public Doctor doctor { get; set; }
 
-        public DoctorsController(ApplicationDbContext context)
+        public DrAvail.Services.PaginatedList<Doctor> Doctors { get; set; }
+
+        public DoctorsController(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         
         // GET: Doctors
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string currentFilter, string searchString, int? pageIndex)
         {
-            var applicationDbContext = _context.Doctors.Include(d => d.CommonAvailability).Include(d => d.CurrentAvailability).Include(d => d.Hospital);
-            return View(await applicationDbContext.ToListAsync());
+            if (searchString != null)
+            {
+                pageIndex = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+            IQueryable<Doctor> doctorsIQ = _context.Doctors
+                .Include(d => d.CommonAvailability)
+                .Include(d => d.CurrentAvailability)
+                .Include(d => d.Hospital);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                doctorsIQ = doctorsIQ.Where(d => d.Name.Contains(searchString));
+            }
+
+            var pageSize = _configuration.GetValue("PageSize", 4); //Sets pageSize to 3 from Configuration, 4 if configuration fails.
+            return View(await DrAvail.Services.PaginatedList<Doctor>.CreateAsync(
+                doctorsIQ.AsNoTracking(), pageIndex ?? 1, pageSize));
+
+            //return View(await doctorsIQ.AsNoTracking().ToListAsync());
         }
 
         // GET: Doctors/Details/5

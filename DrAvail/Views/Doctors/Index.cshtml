@@ -1,61 +1,90 @@
-﻿@model IEnumerable<DrAvail.Models.Doctor>
+﻿@model DrAvail.Services.PaginatedList<DrAvail.Models.Doctor>
 
 @{
     ViewData["Title"] = "Doctors";
 }
 @if (Model.Any())
 {
+    
     <h4>Available Doctors</h4>
 
     <p>
         <a asp-action="Create">Create New</a>
     </p>
 
+    <form asp-action="Index" method="get">
+        <div class="form-actions no-color">
+            <p>
+                Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                <input type="submit" value="Search" class="btn btn-info" /> |
+                <a asp-action="Index">Back to Full List</a>
+            </p>
+        </div>
+    </form>
+
     @foreach (var item in Model)
     {
-<div class="card text-dark bg-light mb-3" style="border-radius:20px;width:75%">
-    <div class="row">
-        @if ("Male".Equals(item.Gender.ToString()))
-        {
-            @*<div class="col-md-3">*@
-                <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px;" src="/Images/img_avatar3.png" alt="...">
-            @*</div>*@
-        }
-        else
-        {
-            @*<div class="col-md-3">*@
-                <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
-            @*</div>*@
-        }
-        <div class="col-md-9">
-            <div class="card-body">
-                <div class="col-md-6 float-left">
-                    <h5 class="card-title">
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </h5>
-                    <p class="card-text">@Html.DisplayFor(modelItem => item.Speciality)</p>
-                    <p class="card-text text-muted">
-                        @Html.DisplayFor(modelItem => item.Experience) years experience overall
+        <div class="card text-dark bg-light mb-3" style="border-radius:20px;width:75%">
+            <div class="row">
+                @if ("Male".Equals(item.Gender.ToString()))
+                {
+                    @*<div class="col-md-3">*@
+                    <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px;" src="/Images/img_avatar3.png" alt="...">
+                    @*</div>*@
+                }
+                else
+                {
+                    @*<div class="col-md-3">*@
+                    <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
+                    @*</div>*@
+                }
+                <div class="col-md-9">
+                    <div class="card-body">
+                        <div class="col-md-6 float-left">
+                            <h5 class="card-title">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </h5>
+                            <p class="card-text">@Html.DisplayFor(modelItem => item.Speciality)</p>
+                            <p class="card-text text-muted">
+                                @Html.DisplayFor(modelItem => item.Experience) years experience overall
 
-                    </p>
-                    <p class="card-text">
-                        @Html.DisplayFor(modelItem => item.City), @Html.DisplayFor(modelItem => item.District)
-                        &nbsp;&bull;&nbsp;
-                        <a asp-action="Details" asp-controller="Hospitals" asp-route-id="@item.HospitalID">@Html.DisplayFor(modelItem => item.Hospital.Name)</a>
-                    </p>
-                    <br />
-                </div>
-                <div class="col-md-3 float-right">
-                    
-                    <a class="btn btn-danger align-top" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-                    
-                    <a class="btn btn-info align-bottom" asp-action="Details" asp-route-id="@item.ID">Details</a>
+                            </p>
+                            <p class="card-text">
+                                @Html.DisplayFor(modelItem => item.City), @Html.DisplayFor(modelItem => item.District)
+                                &nbsp;&bull;&nbsp;
+                                <a asp-action="Details" asp-controller="Hospitals" asp-route-id="@item.HospitalID">@Html.DisplayFor(modelItem => item.Hospital.Name)</a>
+                            </p>
+                            <br />
+                        </div>
+                        <div class="col-md-3 float-right">
+
+                            <a class="btn btn-danger align-top" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+
+                            <a class="btn btn-info align-bottom" asp-action="Details" asp-route-id="@item.ID">Details</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
     }
+
+
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+    <a asp-action="Index"
+       asp-route-pageIndex="@(Model.PageIndex - 1)"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+    <a asp-action="Index"
+       asp-route-pageIndex="@(Model.PageIndex + 1)"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+
 }
 else
 {

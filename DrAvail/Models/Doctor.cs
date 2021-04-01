@@ -12,6 +12,9 @@ namespace DrAvail.Models
 
         public int ID { get; set; }
 
+        // user ID from AspNetUser table.
+        public string OwnerID { get; set; }
+
         [Required]
         [MinLength(3), MaxLength(60)]
         [Display(Name ="Full Name")]

@@ -7,22 +7,50 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DrAvail.Data;
 using DrAvail.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace DrAvail.Controllers
 {
     public class HospitalsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public HospitalsController(ApplicationDbContext context)
+        public HospitalsController(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         // GET: Hospitals
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageIndex)
         {
-            return View(await _context.Hospitals.Include(h => h.Doctors).ToListAsync());
+            if (searchString != null)
+            {
+                pageIndex = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            //IQueryable<Hospital> hospitalsIQ = from h in _context.Hospitals select h;
+
+            IQueryable<Hospital> hospitalsIQ = _context.Hospitals.Include(h => h.Doctors);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                hospitalsIQ = hospitalsIQ.Where(d => d.Name.Contains(searchString));
+            }
+
+            var pageSize = _configuration.GetValue("PageSize", 4); //Sets pageSize to 3 from Configuration, 4 if configuration fails.
+            
+            return View(await DrAvail.Services.PaginatedList<Hospital>.CreateAsync(
+                hospitalsIQ.AsNoTracking(), pageIndex ?? 1, pageSize));
+
+            //return View(await _context.Hospitals.Include(h => h.Doctors).ToListAsync());
         }
 
         // GET: Hospitals/Details/5
