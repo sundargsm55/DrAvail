@@ -159,7 +159,34 @@
         </dd>
     </dl>
 </div>
+
+@if (!Model.IsVerified)
+{
+    @if ((await AuthorizationService.AuthorizeAsync(
+   User, Model, Operations.Approve)).Succeeded)
+    {
+        <form style="display:inline;" method="post">
+            <input type="hidden" name="id" value="@Model.ID" />
+            <input type="hidden" name="status" value="@true" />
+            <button type="submit" class="btn btn-xs btn-success">Approve</button>
+        </form>
+    }
+
+    @*@if ((await AuthorizationService.AuthorizeAsync(
+    User, Model, Operations.Reject)).Succeeded)
+    {
+        <form style="display:inline;" method="post">
+            <input type="hidden" name="id" value="@Model.ID" />
+            <input type="hidden" name="status" value="@false" />
+            <button type="submit" class="btn btn-xs btn-danger">Reject</button>
+        </form>
+    }*@
+}
+
 <div>
-    <a class="btn btn-danger" asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+    @if ((await AuthorizationService.AuthorizeAsync(User, Model, Operations.Update)).Succeeded)
+    {
+        <a class="btn btn-danger" asp-action="Edit" asp-route-id="@Model.ID">Edit</a> <text> | </text>
+    }
     <a asp-action="Index">Back to List</a>
 </div>

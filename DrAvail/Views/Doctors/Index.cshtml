@@ -47,21 +47,31 @@
                             <p class="card-text">@Html.DisplayFor(modelItem => item.Speciality)</p>
                             <p class="card-text text-muted">
                                 @Html.DisplayFor(modelItem => item.Experience) years experience overall
-
                             </p>
                             <p class="card-text">
                                 @Html.DisplayFor(modelItem => item.City), @Html.DisplayFor(modelItem => item.District)
                                 &nbsp;&bull;&nbsp;
                                 <a asp-action="Details" asp-controller="Hospitals" asp-route-id="@item.HospitalID">@Html.DisplayFor(modelItem => item.Hospital.Name)</a>
                             </p>
-                            <br />
+                            @if (item.IsVerified)
+                            {
+                                <p class="card-text text-success">Verified</p>
+
+                            }
+                            else
+                            {
+                                <p class="card-text text-danger">Pending Verification</p>
+
+                            }
+                            
                         </div>
                         <div class="col-md-3 float-right">
-
-                            <a class="btn btn-danger align-top" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-
-                            <a class="btn btn-info align-bottom" asp-action="Details" asp-route-id="@item.ID">Details</a>
-                        </div>
+                            @if ((await AuthorizationService.AuthorizeAsync(User, item,Operations.Update)).Succeeded)
+                            {
+                                <a class="btn btn-danger align-top" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                            }
+                                <a class="btn btn-info align-bottom" asp-action="Details" asp-route-id="@item.ID">Details</a>
+                            </div>
                     </div>
                 </div>
             </div>

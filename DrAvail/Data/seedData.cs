@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 namespace DrAvail.Data
 {
     //for more information, visit https://docs.microsoft.com/en-us/aspnet/core/security/authorization/secure-data?view=aspnetcore-5.0#secure-user-data
-    public static class seedData
+    public static class SeedData
     {
         public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw)
         {

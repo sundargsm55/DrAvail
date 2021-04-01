@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DrAvail.Services;
 using Microsoft.AspNetCore.Authorization;
+using DrAvail.Authorization;
 
 namespace DrAvail
 {
@@ -63,17 +64,20 @@ namespace DrAvail
 
             services.AddControllersWithViews();
 
-            //services.AddAuthorization(options =>
-            //{
-            //    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-            //        .RequireAuthenticatedUser()
-            //        .Build();
-            //});
-            
+            services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+            });
+
             // using Microsoft.AspNetCore.Identity.UI.Services;
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddSingleton<IConfiguration>(Configuration);
+
+            services.AddScoped<IAuthorizationHandler, OwnerAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, AdministratorsAuthorizationHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

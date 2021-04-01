@@ -9,12 +9,14 @@ using DrAvail.Data;
 using DrAvail.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity;
+using DrAvail.Authorization;
 
 namespace DrAvail.Controllers
 {
-    public class DoctorsController : Controller
+    public class DoctorsController : DI_BaseController
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
 
         [BindProperty]
@@ -22,9 +24,13 @@ namespace DrAvail.Controllers
 
         public DrAvail.Services.PaginatedList<Doctor> Doctors { get; set; }
 
-        public DoctorsController(ApplicationDbContext context, IConfiguration configuration)
+        public DoctorsController(
+            ApplicationDbContext context, 
+            IAuthorizationService authorizationService, 
+            UserManager<IdentityUser> userManager, IConfiguration configuration)
+            :base(context, authorizationService,userManager)
         {
-            _context = context;
+            //Context = context;
             _configuration = configuration;
         }
 
@@ -43,7 +49,7 @@ namespace DrAvail.Controllers
             }
 
             ViewData["CurrentFilter"] = searchString;
-            IQueryable<Doctor> doctorsIQ = _context.Doctors
+            IQueryable<Doctor> doctorsIQ = Context.Doctors
                 .Include(d => d.CommonAvailability)
                 .Include(d => d.CurrentAvailability)
                 .Include(d => d.Hospital);
@@ -53,10 +59,21 @@ namespace DrAvail.Controllers
                 doctorsIQ = doctorsIQ.Where(d => d.Name.Contains(searchString));
             }
 
+            var isAuthorized = User.IsInRole(Constants.AdministratorsRole);
+
+            var currentUserId = UserManager.GetUserId(User);
+
+            // Only verified doctors are shown UNLESS you're authorized to see them
+            // or you are the owner.
+            if (!isAuthorized)
+            {
+                doctorsIQ = doctorsIQ.Where(d => d.IsVerified == true || d.OwnerID == currentUserId);
+            }
+
             var pageSize = _configuration.GetValue("PageSize", 4); //Sets pageSize to 3 from Configuration, 4 if configuration fails.
             return View(await DrAvail.Services.PaginatedList<Doctor>.CreateAsync(
                 doctorsIQ.AsNoTracking(), pageIndex ?? 1, pageSize));
-
+            
             //return View(await doctorsIQ.AsNoTracking().ToListAsync());
         }
 
@@ -69,7 +86,7 @@ namespace DrAvail.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctors
+            var doctor = await Context.Doctors
                 .Include(d => d.CommonAvailability)
                 .Include(d => d.CurrentAvailability)
                 .Include(d => d.Hospital)
@@ -79,17 +96,72 @@ namespace DrAvail.Controllers
                 return NotFound();
             }
 
+            var isAuthorized = User.IsInRole(Constants.AdministratorsRole);
+
+            var currentUserId = UserManager.GetUserId(User);
+
+            if (!isAuthorized
+                && currentUserId != doctor.OwnerID
+                && !doctor.IsVerified)
+            {
+                return Forbid();
+            }
+
             return View(doctor);
         }
 
+        [HttpPost, ActionName("Details")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DetailsOnPost(int? id, bool status)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var doctor = await Context.Doctors
+                .Include(d => d.CommonAvailability)
+                .Include(d => d.CurrentAvailability)
+                .Include(d => d.Hospital)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (doctor == null)
+            {
+                return NotFound();
+            }
+
+            var operation = (status == true)? Operations.Approve : Operations.Reject;
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(User, doctor, operation);
+
+            if (!isAuthorized.Succeeded)
+            {
+                return Forbid();
+            }
+            doctor.IsVerified = status;
+            Context.Doctors.Update(doctor);
+            await Context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+
+        }
         // GET: Doctors/Create
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            doctor.OwnerID = UserManager.GetUserId(User);
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                User, doctor,
+                                                Authorization.Operations.Create);
+            if (!isAuthorized.Succeeded)
+            {
+                return Forbid();
+            }
+
             #region selectList
-            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID");
-            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID");
-            ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Name");
+            ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
+            ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
+            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name");
 
             var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
                          select new { ID = (int)H, Name = H.ToString() };
@@ -118,6 +190,15 @@ namespace DrAvail.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateOnPost()
         {
+            doctor.OwnerID = UserManager.GetUserId(User);
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                User, doctor,
+                                                Operations.Create);
+            if (!isAuthorized.Succeeded)
+            {
+                return Forbid();
+            }
 
             try
             {
@@ -136,9 +217,9 @@ namespace DrAvail.Controllers
                     doctor.Hospital = null;
                     //_context.Entry(doctor.Hospital).State = EntityState.Unchanged;
                 }
-                _context.Doctors.Add(doctor);
+                Context.Doctors.Add(doctor);
 
-                await _context.SaveChangesAsync();
+                await Context.SaveChangesAsync();
                 //Console.WriteLine("----------------------------------------------");
                 //Console.WriteLine("After INSERT -> doctor Id: " + doctor.ID);
                 //Console.WriteLine(doctor);
@@ -152,9 +233,9 @@ namespace DrAvail.Controllers
             }
 
             #region selectList
-            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID");
-            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID");
-            ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Name");
+            ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
+            ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
+            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name");
 
             var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
                          select new { ID = (int)H, Name = H.ToString() };
@@ -179,20 +260,29 @@ namespace DrAvail.Controllers
         // GET: Doctors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+                     
             if (id == null)
             {
                 return NotFound();
             }
 
-            var doctor = await _context.Doctors.FindAsync(id);
+            var doctor = await Context.Doctors.FindAsync(id);
             if (doctor == null)
             {
                 return NotFound();
             }
 
-            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CommonAvaliabilityID);
-            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
-            ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Name", doctor.HospitalID);
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                  User, doctor,
+                                                  Operations.Update);
+            if (!isAuthorized.Succeeded)
+            {
+                return Forbid();
+            }
+
+            ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", doctor.CommonAvaliabilityID);
+            ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
+            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name", doctor.HospitalID);
             var district = from District d in Enum.GetValues(typeof(District))
                            select new { ID = (int)d, Name = d.ToString() };
             //ViewBag.Districts = new SelectList(district, "ID", "Name");
@@ -208,7 +298,7 @@ namespace DrAvail.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,RegNumber,Speciality,Degree,Age,Gender,Practice,Experience,IsVerified,Summary,City,District,EmailId,PhoneNumber,HospitalID,CommonAvaliabilityID,CurrentAvaliabilityID")] Doctor doctor)
+        public async Task<IActionResult> Edit(int id)
         {
             if (id != doctor.ID)
             {
@@ -219,8 +309,31 @@ namespace DrAvail.Controllers
             {
                 try
                 {
-                    _context.Update(doctor);
-                    await _context.SaveChangesAsync();
+                    var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                 User, doctor,
+                                                 Operations.Update);
+                    if (!isAuthorized.Succeeded)
+                    {
+                        return Forbid();
+                    }
+
+                    if (doctor.IsVerified)
+                    {
+                        // If the doctor details are updated after verification, 
+                        // and the user cannot approve,
+                        // set the status back to submitted so the update can be
+                        // checked and approved.
+                        var canApprove = await AuthorizationService.AuthorizeAsync(User,
+                                                doctor,
+                                                Operations.Approve);
+
+                        if (!canApprove.Succeeded)
+                        {
+                            doctor.IsVerified = false;
+                        }
+                    }
+                    Context.Update(doctor);
+                    await Context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -235,9 +348,9 @@ namespace DrAvail.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CommonAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CommonAvaliabilityID);
-            ViewData["CurrentAvaliabilityID"] = new SelectList(_context.Availabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
-            ViewData["HospitalID"] = new SelectList(_context.Hospitals, "ID", "Name", doctor.HospitalID);
+            ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", doctor.CommonAvaliabilityID);
+            ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
+            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name", doctor.HospitalID);
             var district = from District d in Enum.GetValues(typeof(District))
                            select new { ID = (int)d, Name = d.ToString() };
             ViewBag.Districts = new SelectList(district, "ID", "Name");
@@ -256,7 +369,7 @@ namespace DrAvail.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctors
+            var doctor = await Context.Doctors
                 .Include(d => d.CommonAvailability)
                 .Include(d => d.CurrentAvailability)
                 .Include(d => d.Hospital)
@@ -264,6 +377,14 @@ namespace DrAvail.Controllers
             if (doctor == null)
             {
                 return NotFound();
+            }
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                 User, doctor,
+                                                 Operations.Delete);
+            if (!isAuthorized.Succeeded)
+            {
+                return Forbid();
             }
 
             return View(doctor);
@@ -274,15 +395,24 @@ namespace DrAvail.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var doctor = await _context.Doctors.FindAsync(id);
-            _context.Doctors.Remove(doctor);
-            await _context.SaveChangesAsync();
+            var doctor = await Context.Doctors.FindAsync(id);
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                 User, doctor,
+                                                 Operations.Delete);
+            if (!isAuthorized.Succeeded)
+            {
+                return Forbid();
+            }
+
+            Context.Doctors.Remove(doctor);
+            await Context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool DoctorExists(int id)
         {
-            return _context.Doctors.Any(e => e.ID == id);
+            return Context.Doctors.Any(e => e.ID == id);
         }
 
         public IActionResult AvailabilityCreate()
@@ -292,10 +422,8 @@ namespace DrAvail.Controllers
 
         public JsonResult GetLocations(int Pincode)
         {
-            var locations = _context.Locations
-                .FromSqlRaw("SELECT * FROM Locations WHERE Pincode ==@Pincode", Pincode);
-            Console.WriteLine("Pincode: " + Pincode);
-            var locations2 = from location in _context.Locations
+            
+            var locations2 = from location in Context.Locations
                              where location.Pincode == Pincode
                              select new { Locality = location.Locality, Dis = location.District };
             
