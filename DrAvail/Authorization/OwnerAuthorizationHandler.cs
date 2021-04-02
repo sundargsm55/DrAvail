@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DrAvail.Authorization
 {
-    public class OwnerAuthorizationHandler: AuthorizationHandler<OperationAuthorizationRequirement, Doctor>
+    public class OwnerAuthorizationHandler: AuthorizationHandler<OperationAuthorizationRequirement, Object>
     {
         private readonly UserManager<IdentityUser> _userManager;
 
@@ -17,7 +17,7 @@ namespace DrAvail.Authorization
         {
             _userManager = userManager;
         }
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, Doctor resource)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, Object resource)
         {
             if (context.User == null || resource == null)
             {
@@ -34,7 +34,8 @@ namespace DrAvail.Authorization
                 return Task.CompletedTask;
             }
 
-            if (resource.OwnerID == _userManager.GetUserId(context.User))
+            Doctor doc = (Doctor)resource;
+            if (doc.OwnerID == _userManager.GetUserId(context.User))
             {
                 context.Succeed(requirement);
             }

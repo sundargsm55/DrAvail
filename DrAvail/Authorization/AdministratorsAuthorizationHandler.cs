@@ -8,9 +8,9 @@ using DrAvail.Models;
 
 namespace DrAvail.Authorization
 {
-    public class AdministratorsAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, Doctor>
+    public class AdministratorsAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, Object>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, Doctor resource)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, Object resource)
         {
             if (context.User == null)
             {

@@ -148,15 +148,22 @@ namespace DrAvail.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            doctor.OwnerID = UserManager.GetUserId(User);
+            //doctor = new Doctor();
+            //doctor.OwnerID = UserManager.GetUserId(User);
 
-            var isAuthorized = await AuthorizationService.AuthorizeAsync(
-                                                User, doctor,
-                                                Authorization.Operations.Create);
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(User, doctor,Operations.Create);
+
             if (!isAuthorized.Succeeded)
             {
                 return Forbid();
             }
+
+
+            //if (!User.IsInRole(Constants.AdministratorsRole))
+            //{
+
+            //    doctor.OwnerID = UserManager.GetUserId(User);
+            //}
 
             #region selectList
             ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
@@ -190,7 +197,6 @@ namespace DrAvail.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateOnPost()
         {
-            doctor.OwnerID = UserManager.GetUserId(User);
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(
                                                 User, doctor,
@@ -200,6 +206,13 @@ namespace DrAvail.Controllers
                 return Forbid();
             }
 
+            doctor.OwnerID = UserManager.GetUserId(User);
+
+            //if (!User.IsInRole(Constants.AdministratorsRole))
+            //{
+
+            //    doctor.OwnerID = UserManager.GetUserId(User);
+            //}
             try
             {
                 doctor.CommonAvailability.CommonDays.MorningStartTime = new DateTime(year: 2021, month: 3, day: 24,
