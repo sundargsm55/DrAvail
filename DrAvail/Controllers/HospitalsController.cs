@@ -8,21 +8,30 @@ using Microsoft.EntityFrameworkCore;
 using DrAvail.Data;
 using DrAvail.Models;
 using Microsoft.Extensions.Configuration;
+using DrAvail.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DrAvail.Controllers
 {
-    public class HospitalsController : Controller
+    public class HospitalsController : DI_BaseController
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
 
-        public HospitalsController(ApplicationDbContext context, IConfiguration configuration)
+        [BindProperty]
+        public Hospital hospital { get; set; }
+
+        public HospitalsController(ApplicationDbContext context,
+            Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService,
+            UserManager<IdentityUser> userManager, IConfiguration configuration)
+            : base(context, authorizationService, userManager)
         {
-            _context = context;
             _configuration = configuration;
         }
 
         // GET: Hospitals
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageIndex)
         {
             if (searchString != null)
@@ -38,11 +47,22 @@ namespace DrAvail.Controllers
 
             //IQueryable<Hospital> hospitalsIQ = from h in _context.Hospitals select h;
 
-            IQueryable<Hospital> hospitalsIQ = _context.Hospitals.Include(h => h.Doctors);
+            IQueryable<Hospital> hospitalsIQ = Context.Hospitals.Include(h => h.Doctors);
 
             if (!string.IsNullOrEmpty(searchString))
             {
                 hospitalsIQ = hospitalsIQ.Where(d => d.Name.Contains(searchString));
+            }
+
+            var isAuthorized = User.IsInRole(Constants.AdministratorsRole);
+
+            var currentUserId = UserManager.GetUserId(User);
+
+            // Only verified doctors are shown UNLESS you're authorized to see them
+            // or you are the owner.
+            if (!isAuthorized)
+            {
+                hospitalsIQ = hospitalsIQ.Where(h => h.IsVerified == true || h.OwnerID == currentUserId);
             }
 
             var pageSize = _configuration.GetValue("PageSize", 4); //Sets pageSize to 3 from Configuration, 4 if configuration fails.
@@ -54,6 +74,7 @@ namespace DrAvail.Controllers
         }
 
         // GET: Hospitals/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -61,7 +82,7 @@ namespace DrAvail.Controllers
                 return NotFound();
             }
 
-            var hospital = await _context.Hospitals
+            var hospital = await Context.Hospitals
                 .Include(h => h.Doctors)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (hospital == null)
@@ -69,12 +90,67 @@ namespace DrAvail.Controllers
                 return NotFound();
             }
 
+            var isAuthorized = User.IsInRole(Constants.AdministratorsRole);
+
+            var currentUserId = UserManager.GetUserId(User);
+
+            if (!isAuthorized
+                && currentUserId != hospital.OwnerID
+                && !hospital.IsVerified)
+            {
+                return Forbid();
+            }
+
             return View(hospital);
         }
 
-        // GET: Hospitals/Create
-        public IActionResult Create()
+        [HttpPost, ActionName("Details")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DetailsOnPost(int? id, bool status)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var hospital = await Context.Hospitals
+                .Include(h => h.Doctors)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (hospital == null)
+            {
+                return NotFound();
+            }
+
+            var operation = (status == true) ? Operations.Approve : Operations.Reject;
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(User, hospital, operation);
+
+            if (!isAuthorized.Succeeded)
+            {
+                return Forbid();
+            }
+            hospital.IsVerified = status;
+            Context.Hospitals.Update(hospital);
+            await Context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Hospitals/Create
+        public async Task<IActionResult> Create()
+        {
+
+            hospital = new Hospital();
+            hospital.OwnerID = UserManager.GetUserId(User);
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(User, hospital, Operations.Create);
+
+            if (!isAuthorized.Succeeded)
+            {
+                return Forbid();
+            }
+
+            #region selectList
             var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
                          select new { ID = (int)H, Name = H.ToString() };
             ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
@@ -83,20 +159,31 @@ namespace DrAvail.Controllers
                          select new { ID = (int)d, Name = d.ToString() };
                        
             ViewBag.Districts = new SelectList(district, "ID", "Name");
+            #endregion
             return View();
         }
 
         // POST: Hospitals/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Type,Address,City,District,EmailId,PhoneNo")] Hospital hospital)
+        public async Task<IActionResult> CreateOnPost()
         {
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                User, hospital,
+                                                Operations.Create);
+            if (!isAuthorized.Succeeded)
+            {
+                return Forbid();
+            }
+
+            hospital.OwnerID = UserManager.GetUserId(User);
+
             if (ModelState.IsValid)
             {
-                _context.Add(hospital);
-                await _context.SaveChangesAsync();
+                Context.Add(hospital);
+                await Context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -119,10 +206,18 @@ namespace DrAvail.Controllers
                 return NotFound();
             }
 
-            var hospital = await _context.Hospitals.FindAsync(id);
+            var hospital = await Context.Hospitals.FindAsync(id);
             if (hospital == null)
             {
                 return NotFound();
+            }
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                  User, hospital,
+                                                  Operations.Update);
+            if (!isAuthorized.Succeeded)
+            {
+                return Forbid();
             }
             return View(hospital);
         }
@@ -132,7 +227,7 @@ namespace DrAvail.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Type,Address,City,District,EmailId,PhoneNo")] Hospital hospital)
+        public async Task<IActionResult> Edit(int id)
         {
             if (id != hospital.ID)
             {
@@ -143,8 +238,31 @@ namespace DrAvail.Controllers
             {
                 try
                 {
-                    _context.Update(hospital);
-                    await _context.SaveChangesAsync();
+                    var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                 User, hospital,
+                                                 Operations.Update);
+                    if (!isAuthorized.Succeeded)
+                    {
+                        return Forbid();
+                    }
+
+                    if (hospital.IsVerified)
+                    {
+                        // If the hospital details are updated after verification, 
+                        // and the user cannot approve,
+                        // set the status back to submitted so the update can be
+                        // checked and approved.
+                        var canApprove = await AuthorizationService.AuthorizeAsync(User,
+                                                hospital,
+                                                Operations.Approve);
+
+                        if (!canApprove.Succeeded)
+                        {
+                            hospital.IsVerified = false;
+                        }
+                    }
+                    Context.Update(hospital);
+                    await Context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -170,11 +288,18 @@ namespace DrAvail.Controllers
                 return NotFound();
             }
 
-            var hospital = await _context.Hospitals
+            var hospital = await Context.Hospitals
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (hospital == null)
             {
                 return NotFound();
+            }
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                 User, hospital,
+                                                 Operations.Delete);
+            if (!isAuthorized.Succeeded)
+            {
+                return Forbid();
             }
 
             return View(hospital);
@@ -185,15 +310,23 @@ namespace DrAvail.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var hospital = await _context.Hospitals.FindAsync(id);
-            _context.Hospitals.Remove(hospital);
-            await _context.SaveChangesAsync();
+            var hospital = await Context.Hospitals.FindAsync(id);
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                 User, hospital,
+                                                 Operations.Delete);
+            if (!isAuthorized.Succeeded)
+            {
+                return Forbid();
+            }
+            Context.Hospitals.Remove(hospital);
+            await Context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool HospitalExists(int id)
         {
-            return _context.Hospitals.Any(e => e.ID == id);
+            return Context.Hospitals.Any(e => e.ID == id);
         }
     }
 }

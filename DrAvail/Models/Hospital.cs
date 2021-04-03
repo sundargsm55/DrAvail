@@ -10,6 +10,9 @@ namespace DrAvail.Models
     {
         public int ID { get; set; }
 
+        // user ID from AspNetUser table.
+        public string OwnerID { get; set; }
+
         [Required]
         [Display(Name ="Hospital Name")]
         public string Name { get; set; }
@@ -39,6 +42,9 @@ namespace DrAvail.Models
         [Phone]
         [Display(Name = "Phone Number")]
         public string PhoneNo { get; set; }
+
+        [Required]
+        public bool IsVerified { get; set; }
 
         public ICollection<Doctor> Doctors { get; set; }
     }

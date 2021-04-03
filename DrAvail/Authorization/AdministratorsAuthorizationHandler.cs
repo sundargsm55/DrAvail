@@ -10,9 +10,16 @@ namespace DrAvail.Authorization
 {
     public class AdministratorsAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, Object>
     {
+        public override async Task HandleAsync(AuthorizationHandlerContext context)
+        {
+            foreach (var req in context.Requirements.OfType<OperationAuthorizationRequirement>())
+            {
+                await HandleRequirementAsync(context, req, (object)context.Resource);
+            }
+        }
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, Object resource)
         {
-            if (context.User == null)
+            if (context.User.Identity.Name == null)
             {
                 return Task.CompletedTask;
             }

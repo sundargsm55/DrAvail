@@ -17,12 +17,26 @@ namespace DrAvail.Authorization
         {
             _userManager = userManager;
         }
+
+        public override async Task HandleAsync(AuthorizationHandlerContext context)
+        {
+                foreach (var req in context.Requirements.OfType<OperationAuthorizationRequirement>())
+                {
+                    await HandleRequirementAsync(context, req, (object)context.Resource);
+                }
+        }
+
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, Object resource)
         {
-            if (context.User == null || resource == null)
+            if (context.User.Identity.Name == null)
             {
                 return Task.CompletedTask;
             }
+
+            if(requirement.Name != Constants.CreateOperationName && resource == null)
+            {
+                return Task.CompletedTask;
+            } 
 
             // If not asking for CRUD permission, return.
 
@@ -34,7 +48,9 @@ namespace DrAvail.Authorization
                 return Task.CompletedTask;
             }
 
-            Doctor doc = (Doctor)resource;
+            Console.WriteLine("Type of Resource: " + resource.GetType().ToString()); 
+            dynamic doc = Convert.ChangeType(resource, resource.GetType());
+            
             if (doc.OwnerID == _userManager.GetUserId(context.User))
             {
                 context.Succeed(requirement);

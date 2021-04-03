@@ -22,7 +22,7 @@ namespace DrAvail.Controllers
         [BindProperty]
         public Doctor doctor { get; set; }
 
-        public DrAvail.Services.PaginatedList<Doctor> Doctors { get; set; }
+        //public DrAvail.Services.PaginatedList<Doctor> Doctors { get; set; }
 
         public DoctorsController(
             ApplicationDbContext context, 
@@ -148,8 +148,8 @@ namespace DrAvail.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            //doctor = new Doctor();
-            //doctor.OwnerID = UserManager.GetUserId(User);
+            doctor = new Doctor();
+            doctor.OwnerID = UserManager.GetUserId(User);
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(User, doctor,Operations.Create);
 

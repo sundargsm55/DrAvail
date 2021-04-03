@@ -55,12 +55,12 @@ namespace DrAvail
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddAuthorization(options => {
-                options.AddPolicy("readonlypolicy",
-                    builder => builder.RequireRole("Admin", "Doctor", "User"));
-                options.AddPolicy("writepolicy",
-                    builder => builder.RequireRole("Admin", "Doctor"));
-            });
+            //services.AddAuthorization(options => {
+            //    options.AddPolicy("readonlypolicy",
+            //        builder => builder.RequireRole("Admin", "Doctor", "User"));
+            //    options.AddPolicy("writepolicy",
+            //        builder => builder.RequireRole("Admin", "Doctor"));
+            //});
 
             services.AddControllersWithViews();
 
