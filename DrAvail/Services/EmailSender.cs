@@ -11,6 +11,10 @@ namespace DrAvail.Services
     {
         private readonly IConfiguration _configuration;
 
+        public EmailSender()
+        {
+
+        }
         public EmailSender(IConfiguration configuration)
         {
             _configuration = configuration; 

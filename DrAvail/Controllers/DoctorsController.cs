@@ -24,10 +24,7 @@ namespace DrAvail.Controllers
 
         //public DrAvail.Services.PaginatedList<Doctor> Doctors { get; set; }
 
-        public DoctorsController(
-            ApplicationDbContext context, 
-            IAuthorizationService authorizationService, 
-            UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public DoctorsController(ApplicationDbContext context, IAuthorizationService authorizationService, UserManager<IdentityUser> userManager, IConfiguration configuration)
             :base(context, authorizationService,userManager)
         {
             //Context = context;
@@ -59,17 +56,24 @@ namespace DrAvail.Controllers
                 doctorsIQ = doctorsIQ.Where(d => d.Name.Contains(searchString));
             }
 
-            var isAuthorized = User.IsInRole(Constants.AdministratorsRole);
-
-            var currentUserId = UserManager.GetUserId(User);
-
-            // Only verified doctors are shown UNLESS you're authorized to see them
-            // or you are the owner.
-            if (!isAuthorized)
+            //checks if a user is logged in
+            if (User.Identity.Name == null)
             {
-                doctorsIQ = doctorsIQ.Where(d => d.IsVerified == true || d.OwnerID == currentUserId);
-            }
+                var isAuthorized = User.IsInRole(Constants.AdministratorsRole);
 
+                var currentUserId = UserManager.GetUserId(User);
+
+                // Only verified doctors are shown UNLESS you're authorized to see them
+                // or you are the owner.
+                if (!isAuthorized)
+                {
+                    doctorsIQ = doctorsIQ.Where(d => d.IsVerified == true || d.OwnerID == currentUserId);
+                }
+            }
+            else
+            {
+                doctorsIQ = doctorsIQ.Where(d => d.IsVerified == true);
+            }
             var pageSize = _configuration.GetValue("PageSize", 4); //Sets pageSize to 3 from Configuration, 4 if configuration fails.
             return View(await DrAvail.Services.PaginatedList<Doctor>.CreateAsync(
                 doctorsIQ.AsNoTracking(), pageIndex ?? 1, pageSize));

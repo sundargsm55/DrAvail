@@ -22,6 +22,9 @@ namespace DrAvail.Data
                 var adminID = await EnsureUser(serviceProvider, testUserPw, "DrAvail@outlook.com");
                 await EnsureRole(serviceProvider, adminID, DrAvail.Authorization.Constants.AdministratorsRole);
 
+                //testUserPw = "admin1@Dr_avail";
+                var testDoctorID = await EnsureUser(serviceProvider, testUserPw, "testdoctor@dravail.com");
+                await EnsureRole(serviceProvider, testDoctorID, DrAvail.Authorization.Constants.DoctorsRole);
                 
                 SeedDB(context, adminID);
             }
