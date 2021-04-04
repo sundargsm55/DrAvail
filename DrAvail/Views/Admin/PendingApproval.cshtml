@@ -5,23 +5,20 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>PendingApproval</h1>
-
-
-
 @if (Model.Any())
 {
+    <h4>Pending Verification</h4>
 
-    
+
     @*<form asp-action="Index" method="get">
-        <div class="form-actions no-color">
-            <p>
-                Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-                <input type="submit" value="Search" class="btn btn-info" /> |
-                <a asp-action="Index">Back to Full List</a>
-            </p>
-        </div>
-    </form>*@
+            <div class="form-actions no-color">
+                <p>
+                    Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                    <input type="submit" value="Search" class="btn btn-info" /> |
+                    <a asp-action="Index">Back to Full List</a>
+                </p>
+            </div>
+        </form>*@
 
     @foreach (var item in Model)
     {
@@ -45,6 +42,17 @@
                             <h5 class="card-title">
                                 @Html.DisplayFor(modelItem => item.Name)
                             </h5>
+                            <hr />
+                            @if (item.IsVerified)
+                            {
+                                <span class="card-text text-success font-weight-bold">Verified</span>
+
+                            }
+                            else
+                            {
+                                <span class="card-text text-danger font-weight-bold">Pending Verification</span>
+
+                            }
                             <p class="card-text">@Html.DisplayFor(modelItem => item.Speciality)</p>
                             <p class="card-text text-muted">
                                 @Html.DisplayFor(modelItem => item.Experience) years experience overall
@@ -54,23 +62,14 @@
                                 &nbsp;&bull;&nbsp;
                                 <a asp-action="Details" asp-controller="Hospitals" asp-route-id="@item.HospitalID">@Html.DisplayFor(modelItem => item.Hospital.Name)</a>
                             </p>
-                            @if (item.IsVerified)
-                            {
-                                <p class="card-text text-success">Verified</p>
 
-                            }
-                            else
-                            {
-                                <p class="card-text text-danger">Pending Verification</p>
-
-                            }
 
                         </div>
                         <div class="col-md-3 float-right">
-                            
+
                             @*<a class="btn btn-danger align-top" asp-action="Edit" asp-route-id="@item.ID">Edit</a>*@
-                            
-                            <a class="btn btn-info align-bottom" asp-controller="Doctors" asp-action="Details" asp-route-id="@item.ID">Approve/Reject</a>
+
+                            <a class="btn btn-outline-danger align-middle" asp-controller="Doctors" asp-action="Details" asp-route-id="@item.ID">Approve/Reject</a>
                         </div>
                     </div>
                 </div>
@@ -80,29 +79,23 @@
 
 
     @*var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 
-    <a asp-action="Index"
-       asp-route-pageIndex="@(Model.PageIndex - 1)"
-       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-       class="btn btn-default @prevDisabled">
-        Previous
-    </a>
-    <a asp-action="Index"
-       asp-route-pageIndex="@(Model.PageIndex + 1)"
-       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-       class="btn btn-default @nextDisabled">
-        Next
-    </a>*@
+        <a asp-action="Index"
+           asp-route-pageIndex="@(Model.PageIndex - 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-default @prevDisabled">
+            Previous
+        </a>
+        <a asp-action="Index"
+           asp-route-pageIndex="@(Model.PageIndex + 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="btn btn-default @nextDisabled">
+            Next
+        </a>*@
 
 }
 else
 {
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <h6 class="display-4">No doctors available.</h6>
-            Are you a doctor? Want to register? Please click
-            <a asp-action="Create">here</a>.
-        </div>
-    </div>
+    <h5>No pending verification</h5>
 }

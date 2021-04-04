@@ -99,6 +99,8 @@ namespace DrAvail.Areas.Identity.Pages.Account
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    _logger.LogInformation("Invalid Login attempt from IP: " + HttpContext.Connection.RemoteIpAddress.ToString() 
+                        + " Supplied Username: " + Input.Email +" Password: " + Input.Password);
                     return Page();
                 }
             }

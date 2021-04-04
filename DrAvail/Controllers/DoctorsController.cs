@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
 using DrAvail.Authorization;
+using DrAvail.Services;
+using Microsoft.Extensions.Logging;
 
 namespace DrAvail.Controllers
 {
@@ -18,17 +20,22 @@ namespace DrAvail.Controllers
     {
         //private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<DoctorsController> _logger;
 
         [BindProperty]
         public Doctor doctor { get; set; }
 
         //public DrAvail.Services.PaginatedList<Doctor> Doctors { get; set; }
 
-        public DoctorsController(ApplicationDbContext context, IAuthorizationService authorizationService, UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public DoctorsController(ApplicationDbContext context, 
+            IAuthorizationService authorizationService, 
+            UserManager<IdentityUser> userManager, 
+            IConfiguration configuration, ILogger<DoctorsController> logger)
             :base(context, authorizationService,userManager)
         {
             //Context = context;
             _configuration = configuration;
+            _logger = logger;
         }
 
         
@@ -57,7 +64,7 @@ namespace DrAvail.Controllers
             }
 
             //checks if a user is logged in
-            if (User.Identity.Name == null)
+            if (User.Identity.Name != null)
             {
                 var isAuthorized = User.IsInRole(Constants.AdministratorsRole);
 
@@ -116,7 +123,7 @@ namespace DrAvail.Controllers
 
         [HttpPost, ActionName("Details")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DetailsOnPost(int? id, bool status)
+        public async Task<IActionResult> DetailsOnPost(int? id, bool status, string rejectReason)
         {
             if (id == null)
             {
@@ -145,6 +152,16 @@ namespace DrAvail.Controllers
             Context.Doctors.Update(doctor);
             await Context.SaveChangesAsync();
 
+            DoctorService doctorService = new DoctorService();
+            if (Operations.Approve.Equals(operation))
+            {
+                doctorService.SendEmail(doctor.EmailId, operation.Name, "<h3>Congratulations!</h3><br> Your account got approved", _configuration);
+            }
+            else
+            {
+                doctorService.SendEmail(doctor.EmailId, operation.Name, "Your account is rejected. Please review and update your profile <br> Reject Reason: <br>" + rejectReason, _configuration);
+
+            }
             return RedirectToAction(nameof(Index));
 
         }

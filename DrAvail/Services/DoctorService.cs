@@ -58,7 +58,7 @@ namespace DrAvail.Services
             
         }
 
-        public bool EmailDoctor(string email, string subject, string message, Microsoft.Extensions.Configuration.IConfiguration configuration)
+        public bool SendEmail(string email, string subject, string message, Microsoft.Extensions.Configuration.IConfiguration configuration)
         {
 
             try

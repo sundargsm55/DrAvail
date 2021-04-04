@@ -44,5 +44,12 @@ namespace DrAvail
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+        //.ConfigureLogging((hostBuilderContext, logging) =>
+        //{
+        //    logging.AddFileLogger(options =>
+        //    {
+        //        hostBuilderContext.Configuration.GetSection("Logging").GetSection("DrAvailFile").GetSection("Options").Bind(options);
+        //    });
+        //});
     }
 }

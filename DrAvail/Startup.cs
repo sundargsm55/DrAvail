@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using DrAvail.Services;
 using Microsoft.AspNetCore.Authorization;
 using DrAvail.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace DrAvail
 {
@@ -54,14 +55,7 @@ namespace DrAvail
             services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            //services.AddAuthorization(options => {
-            //    options.AddPolicy("readonlypolicy",
-            //        builder => builder.RequireRole("Admin", "Doctor", "User"));
-            //    options.AddPolicy("writepolicy",
-            //        builder => builder.RequireRole("Admin", "Doctor"));
-            //});
-
+                        
             services.AddControllersWithViews();
 
             services.AddAuthorization(options =>
@@ -75,7 +69,7 @@ namespace DrAvail
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddSingleton<IConfiguration>(Configuration);
-
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IAuthorizationHandler, OwnerAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, AdministratorsAuthorizationHandler>();
         }

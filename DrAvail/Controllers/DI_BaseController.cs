@@ -15,6 +15,7 @@ namespace DrAvail.Controllers
         protected IAuthorizationService AuthorizationService { get; }
         protected UserManager<IdentityUser> UserManager { get; }
 
+
         public DI_BaseController(ApplicationDbContext context, IAuthorizationService authorizationService, UserManager<IdentityUser> userManager):base()
         {
             Context = context;
