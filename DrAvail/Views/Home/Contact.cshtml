@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Contact Us";
+}
+
+<div class="text-left">
+    <h5>@ViewData["Title"]</h5>
+    You can contact us by sending an email to <a href="mailto:Dravail@outlook.com">DrAvail@outlook.com</a>
+</div>
+<br />
+<hr />
+
+<div class="row">
+    <div class="col-md-6 float-left"></div>
+    <div class="col-md-5 card box-shadow float-right" style="border-radius:20px">
+        <h6 class="text-center">Feedback</h6>
+        <br />
+        <span style="color:red">@ViewData["Errors"]</span>
+        <div class="card-body">
+            <section>
+                <form asp-action="Contact" method="post">
+                    <div class="form-group">
+                        <label name="email" class="control-label">Your Email Address<span style="color:red">*</span></label>
+                        <input name="email" type="email" class="form-control" required value="@User.Identity.Name" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label name="subject" class="control-label">Subject<span style="color:red">*</span></label>
+                        <input name="subject" class="form-control" required placeholder="Short Description" />
+                    </div>
+                    <div class="form-group">
+                        <label name="message" class="control-label">Message<span style="color:red">*</span></label>
+                        <textarea name="message" class="form-control" required placeholder="Type your message here"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Submit" class="btn btn-primary" />
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
