@@ -56,7 +56,8 @@ namespace DrAvail.Controllers
             IQueryable<Doctor> doctorsIQ = Context.Doctors
                 .Include(d => d.CommonAvailability)
                 .Include(d => d.CurrentAvailability)
-                .Include(d => d.Hospital);
+                .Include(d => d.Hospital)
+                .OrderBy(d => d.Name);
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -92,12 +93,27 @@ namespace DrAvail.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
+            Doctor doctor;
             if (id == null)
             {
-                return NotFound();
+                if (User.Identity.Name != null)
+                {
+                    var ownerId = UserManager.GetUserId(User);
+                    doctor = await Context.Doctors
+                                .Include(d => d.CommonAvailability)
+                                .Include(d => d.CurrentAvailability)
+                                .Include(d => d.Hospital)
+                                .FirstOrDefaultAsync(m => m.OwnerID == ownerId);
+                    return View(doctor);
+
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
 
-            var doctor = await Context.Doctors
+            doctor = await Context.Doctors
                 .Include(d => d.CommonAvailability)
                 .Include(d => d.CurrentAvailability)
                 .Include(d => d.Hospital)

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DrAvail.Logging;
 
 
 namespace DrAvail
@@ -43,13 +44,14 @@ namespace DrAvail
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
-        //.ConfigureLogging((hostBuilderContext, logging) =>
-        //{
-        //    logging.AddFileLogger(options =>
-        //    {
-        //        hostBuilderContext.Configuration.GetSection("Logging").GetSection("DrAvailFile").GetSection("Options").Bind(options);
-        //    });
-        //});
+                })
+        .ConfigureLogging((hostBuilderContext, logging) =>
+        {
+            logging.ClearProviders();
+            logging.AddFileLogger(options =>
+            {
+                hostBuilderContext.Configuration.GetSection("Logging").GetSection("DrAvailFile").GetSection("Options").Bind(options);
+            });
+        });
     }
 }

@@ -85,6 +85,7 @@ namespace DrAvail.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    _logger.LogInformation("Redirect to " + returnUrl);
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)

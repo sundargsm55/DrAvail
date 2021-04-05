@@ -3,6 +3,10 @@
     {
         Layout = "_AdminLayout";
     }
+    else if (User.IsInRole(Constants.DoctorsRole))
+    {
+        Layout = "_UserLayout";
+    }
     else
     {
         Layout = "_Layout";

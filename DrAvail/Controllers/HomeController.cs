@@ -23,6 +23,7 @@ namespace DrAvail.Controllers
             return View();
         }
 
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();
