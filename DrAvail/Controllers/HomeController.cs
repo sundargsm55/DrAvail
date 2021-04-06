@@ -1,4 +1,5 @@
-﻿using DrAvail.Models;
+﻿using DrAvail.Data;
+using DrAvail.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,10 +13,12 @@ namespace DrAvail.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -31,8 +34,17 @@ namespace DrAvail.Controllers
 
         //GET
         [Microsoft.AspNetCore.Authorization.AllowAnonymous]
-        public IActionResult Contact()
+        public IActionResult Contact([FromQuery] string subject, [FromQuery] string message)
         {
+            if (!string.IsNullOrWhiteSpace(subject))
+            {
+                ViewBag.subject = subject;
+            }
+            if (!string.IsNullOrWhiteSpace(message))
+            {
+                ViewBag.message = message;
+            }
+
             return View();
         }
 
@@ -41,7 +53,7 @@ namespace DrAvail.Controllers
         [ValidateAntiForgeryToken]
         [Microsoft.AspNetCore.Authorization.AllowAnonymous]
 
-        public IActionResult Contact(string email, string subject, string message)
+        public async Task<IActionResult> Contact(string email, string subject, string message)
         {
             if (string.IsNullOrWhiteSpace(email))
             {
@@ -57,7 +69,16 @@ namespace DrAvail.Controllers
             }
             else
             {
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString() + ":" + HttpContext.Connection.RemotePort.ToString();
+                _logger.LogInformation($"Ip Address: {ip} \nUserName: {email}\nSubject: {subject}\nMessage:{message}");
+                Message messageObj = new Message();
+                messageObj.IP = ip;
+                messageObj.Email = email;
+                messageObj.Subject = subject;
+                messageObj.MessageText = message;
 
+                _context.Messages.Add(messageObj);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Thanks));
             }
                 
@@ -68,8 +89,7 @@ namespace DrAvail.Controllers
         public IActionResult Thanks()
         {
             string referer = Request.Headers["Referer"].ToString();
-            ViewBag.Page = referer;
-            if (!string.IsNullOrEmpty(referer) && referer.Contains("Contact"))
+            if (!string.IsNullOrEmpty(referer) && referer.Contains("/Home/Contact"))
             {
                 return View();
             }

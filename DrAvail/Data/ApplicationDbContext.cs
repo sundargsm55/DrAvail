@@ -32,6 +32,7 @@ namespace DrAvail.Data
 
         public DbSet<Location> Locations { get; set; }
 
+        public DbSet<Message> Messages { get; set; }
 
     }
 }

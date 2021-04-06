@@ -1,0 +1,65 @@
+﻿@model DrAvail.Models.Message
+
+@{
+    ViewData["Title"] = "ReplyMessage";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>ReplyMessage</h1>
+
+<h4>Message</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ReplyMessage">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="form-group">
+                <label asp-for="IP" class="control-label"></label>
+                <input asp-for="IP" class="form-control" />
+                <span asp-validation-for="IP" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Subject" class="control-label"></label>
+                <input asp-for="Subject" class="form-control" />
+                <span asp-validation-for="Subject" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MessageText" class="control-label"></label>
+                <input asp-for="MessageText" class="form-control" />
+                <span asp-validation-for="MessageText" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateReceived" class="control-label"></label>
+                <input asp-for="DateReceived" class="form-control" />
+                <span asp-validation-for="DateReceived" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateResponded" class="control-label"></label>
+                <input asp-for="DateResponded" class="form-control" />
+                <span asp-validation-for="DateResponded" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdminResponse" class="control-label"></label>
+                <input asp-for="AdminResponse" class="form-control" />
+                <span asp-validation-for="AdminResponse" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

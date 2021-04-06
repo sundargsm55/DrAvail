@@ -59,6 +59,12 @@
                             else
                             {
                                 <span class="card-text text-danger">Pending Verification</span>
+                                <br />
+                                <a asp-action="Contact" asp-controller="Home"
+                                   title="Feel like taking long time? You can contact us from here"
+                                   asp-route-subject="Pending Account Verification"
+                                   asp-route-message="My acoount is still penidng verification. I feel like it is taking longer than usual.">Feel like taking long time?</a>
+                            
 
                             }
                             <p class="card-text">@Html.DisplayFor(modelItem => item.Speciality)</p>
