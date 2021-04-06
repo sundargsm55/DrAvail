@@ -13,15 +13,15 @@ namespace DrAvail.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly Microsoft.Extensions.Configuration.IConfiguration _configuration;
         private readonly ApplicationDbContext _context;
-
+        private readonly IDoctorService _doctorService;
         private readonly ILogger _logger;
-        public AdminController(Microsoft.Extensions.Configuration.IConfiguration configuration, 
+
+        public AdminController(IDoctorService doctorService, 
             ILogger<AdminController> logger,
             ApplicationDbContext context)
         {
-            _configuration = configuration;
+            _doctorService = doctorService;
             _logger = logger;
             _context = context;
         }
@@ -31,12 +31,11 @@ namespace DrAvail.Controllers
         }
 
         [Authorize(Roles = "Administrators")]
-        public IActionResult PendingApproval(int? pageIndex)
+        public async Task<IActionResult> PendingApproval(int? pageIndex)
         {
-            DoctorService doctorService = new DoctorService();
-            var Message = $"Administrator visited PendingApproval page at {DateTime.Now.ToString()}";
+            var Message = $"Administrator visited PendingApproval page at {DateTime.Now}";
             _logger.LogInformation(Message);
-            return View(doctorService.GetDocotrsByVerification());
+            return View(await _doctorService.GetDocotrsByVerification());
         }
 
         [Authorize(Roles = "Administrators")]
@@ -47,14 +46,14 @@ namespace DrAvail.Controllers
         }
         
         [Authorize(Roles = "Administrators")]
-        public async Task<IActionResult> ReplyMessage(int? id)
+        public async Task<IActionResult> ReplyMessage(int? ID)
         {
-            if(id == null)
+            if(ID == null)
             {
                 return NotFound();
             }
 
-            var message = await _context.Messages.FirstOrDefaultAsync(M => M.ID == id);
+            var message = await _context.Messages.FirstOrDefaultAsync(M => M.ID == ID);
 
             if(message == null)
             {
@@ -91,6 +90,7 @@ namespace DrAvail.Controllers
 
             _context.Messages.Update(message);
             await _context.SaveChangesAsync();
+            Console.WriteLine("Admin Response: " + message.AdminResponse);
             return RedirectToAction(nameof(ViewMessages));
         }
     }

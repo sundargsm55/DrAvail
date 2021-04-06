@@ -72,6 +72,7 @@ namespace DrAvail
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IAuthorizationHandler, OwnerAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, AdministratorsAuthorizationHandler>();
+            services.AddScoped<IDoctorService, DoctorService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

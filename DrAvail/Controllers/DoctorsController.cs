@@ -19,22 +19,23 @@ namespace DrAvail.Controllers
     public class DoctorsController : DI_BaseController
     {
         //private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _configuration;
         private readonly ILogger<DoctorsController> _logger;
 
+        private readonly IDoctorService DoctorService;
+
         [BindProperty]
-        public Doctor doctor { get; set; }
+        public Doctor Doctor { get; set; }
 
         //public DrAvail.Services.PaginatedList<Doctor> Doctors { get; set; }
 
-        public DoctorsController(ApplicationDbContext context, 
+        public DoctorsController(IDoctorService doctorService, ApplicationDbContext context,
             IAuthorizationService authorizationService, 
-            UserManager<IdentityUser> userManager, 
-            IConfiguration configuration, ILogger<DoctorsController> logger)
+            UserManager<IdentityUser> userManager,
+            ILogger<DoctorsController> logger)
             :base(context, authorizationService,userManager)
         {
+            DoctorService = doctorService;
             //Context = context;
-            _configuration = configuration;
             _logger = logger;
         }
 
@@ -82,7 +83,8 @@ namespace DrAvail.Controllers
             {
                 doctorsIQ = doctorsIQ.Where(d => d.IsVerified == true);
             }
-            var pageSize = _configuration.GetValue("PageSize", 4); //Sets pageSize to 3 from Configuration, 4 if configuration fails.
+            //var pageSize = _configuration.GetValue("PageSize", 4); //Sets pageSize to 3 from Configuration, 4 if configuration fails.
+            var pageSize = 4;
             return View(await DrAvail.Services.PaginatedList<Doctor>.CreateAsync(
                 doctorsIQ.AsNoTracking(), pageIndex ?? 1, pageSize));
             
@@ -168,14 +170,13 @@ namespace DrAvail.Controllers
             Context.Doctors.Update(doctor);
             await Context.SaveChangesAsync();
 
-            DoctorService doctorService = new DoctorService();
             if (Operations.Approve.Equals(operation))
             {
-                doctorService.SendEmail(doctor.EmailId, operation.Name, "<h3>Congratulations!</h3><br> Your account got approved", _configuration);
+                DoctorService.SendEmail(doctor.EmailId, operation.Name, "<h3>Congratulations!</h3><br> Your account got approved");
             }
             else
             {
-                doctorService.SendEmail(doctor.EmailId, operation.Name, "Your account is rejected. Please review and update your profile <br> Reject Reason: <br>" + rejectReason, _configuration);
+                DoctorService.SendEmail(doctor.EmailId, operation.Name, "Your account is rejected. Please review and update your profile <br> Reject Reason: <br>" + rejectReason);
 
             }
             return RedirectToAction(nameof(Index));
@@ -185,10 +186,12 @@ namespace DrAvail.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            doctor = new Doctor();
-            doctor.OwnerID = UserManager.GetUserId(User);
+            Doctor = new Doctor
+            {
+                OwnerID = UserManager.GetUserId(User)
+            };
 
-            var isAuthorized = await AuthorizationService.AuthorizeAsync(User, doctor,Operations.Create);
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(User, Doctor,Operations.Create);
 
             if (!isAuthorized.Succeeded)
             {
@@ -236,14 +239,14 @@ namespace DrAvail.Controllers
         {
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(
-                                                User, doctor,
+                                                User, Doctor,
                                                 Operations.Create);
             if (!isAuthorized.Succeeded)
             {
                 return Forbid();
             }
 
-            doctor.OwnerID = UserManager.GetUserId(User);
+            Doctor.OwnerID = UserManager.GetUserId(User);
 
             //if (!User.IsInRole(Constants.AdministratorsRole))
             //{
@@ -252,22 +255,22 @@ namespace DrAvail.Controllers
             //}
             try
             {
-                doctor.CommonAvailability.CommonDays.MorningStartTime = new DateTime(year: 2021, month: 3, day: 24,
-                    hour: int.Parse(doctor.CommonAvailability.CommonDays.MorningStartHour),
-                    minute: int.Parse(doctor.CommonAvailability.CommonDays.MorningStartMinute),
+                Doctor.CommonAvailability.CommonDays.MorningStartTime = new DateTime(year: 2021, month: 3, day: 24,
+                    hour: int.Parse(Doctor.CommonAvailability.CommonDays.MorningStartHour),
+                    minute: int.Parse(Doctor.CommonAvailability.CommonDays.MorningStartMinute),
                     second: 0);
-                doctor.CommonAvailability.AvailabilityType = doctor.RegNumber + "Common";
+                Doctor.CommonAvailability.AvailabilityType = Doctor.RegNumber + "Common";
                 //Console.WriteLine("----------------------------------------------");
                 //Console.WriteLine("Before INSERT -> Hospital Id: " + doctor.HospitalID);
                 //Console.WriteLine(doctor);
                 //Console.WriteLine("----------------------------------------------");
 
-                if (doctor.HospitalID != 0)
+                if (Doctor.HospitalID != 0)
                 {
-                    doctor.Hospital = null;
+                    Doctor.Hospital = null;
                     //_context.Entry(doctor.Hospital).State = EntityState.Unchanged;
                 }
-                Context.Doctors.Add(doctor);
+                Context.Doctors.Add(Doctor);
 
                 await Context.SaveChangesAsync();
                 //Console.WriteLine("----------------------------------------------");
@@ -304,7 +307,7 @@ namespace DrAvail.Controllers
             ViewBag.Gender = Enum.GetNames(typeof(Gender)).Cast<Gender>().ToList();
             #endregion
 
-            return View(doctor);
+            return View(Doctor);
         }
 
         // GET: Doctors/Edit/5
@@ -350,7 +353,7 @@ namespace DrAvail.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id)
         {
-            if (id != doctor.ID)
+            if (id != Doctor.ID)
             {
                 return NotFound();
             }
@@ -360,34 +363,34 @@ namespace DrAvail.Controllers
                 try
                 {
                     var isAuthorized = await AuthorizationService.AuthorizeAsync(
-                                                 User, doctor,
+                                                 User, Doctor,
                                                  Operations.Update);
                     if (!isAuthorized.Succeeded)
                     {
                         return Forbid();
                     }
 
-                    if (doctor.IsVerified)
+                    if (Doctor.IsVerified)
                     {
                         // If the doctor details are updated after verification, 
                         // and the user cannot approve,
                         // set the status back to submitted so the update can be
                         // checked and approved.
                         var canApprove = await AuthorizationService.AuthorizeAsync(User,
-                                                doctor,
+                                                Doctor,
                                                 Operations.Approve);
 
                         if (!canApprove.Succeeded)
                         {
-                            doctor.IsVerified = false;
+                            Doctor.IsVerified = false;
                         }
                     }
-                    Context.Update(doctor);
+                    Context.Update(Doctor);
                     await Context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DoctorExists(doctor.ID))
+                    if (!DoctorExists(Doctor.ID))
                     {
                         return NotFound();
                     }
@@ -398,9 +401,9 @@ namespace DrAvail.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", doctor.CommonAvaliabilityID);
-            ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
-            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name", doctor.HospitalID);
+            ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", Doctor.CommonAvaliabilityID);
+            ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", Doctor.CurrentAvaliabilityID);
+            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name", Doctor.HospitalID);
             var district = from District d in Enum.GetValues(typeof(District))
                            select new { ID = (int)d, Name = d.ToString() };
             ViewBag.Districts = new SelectList(district, "ID", "Name");
@@ -408,7 +411,7 @@ namespace DrAvail.Controllers
             var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
                              select new { ID = (int)d, Name = d.ToString() };
             ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
-            return View(doctor);
+            return View(Doctor);
         }
 
         // GET: Doctors/Delete/5

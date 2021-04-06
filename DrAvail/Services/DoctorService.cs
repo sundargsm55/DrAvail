@@ -1,6 +1,7 @@
 ﻿using DrAvail.Data;
 using DrAvail.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,14 @@ using System.Threading.Tasks;
 
 namespace DrAvail.Services
 {
-    public class DoctorService
+    public class DoctorService: IDoctorService
     {
         private readonly ApplicationDbContext _context;
-        public DoctorService()
+        private readonly EmailSender _emailSender;
+        public DoctorService(ApplicationDbContext context, IConfiguration configuration)
         {
-            _context = new ApplicationDbContext();
+            _context = context;
+            _emailSender = new EmailSender(configuration);
         }
         public List<Doctor> GetAllDocotrsAsync()
         {
@@ -25,7 +28,7 @@ namespace DrAvail.Services
             return (doctors.AsNoTracking().ToList());
         }
 
-        public List<Doctor> GetDocotrsByVerification(bool isVerified = false)
+        public async Task<List<Doctor>> GetDocotrsByVerification(bool isVerified = false)
         {
             var doctors = _context.Doctors
                 .Where(d => d.IsVerified == isVerified)
@@ -33,7 +36,7 @@ namespace DrAvail.Services
                 .Include(d => d.CurrentAvailability)
                 .Include(d => d.Hospital);
 
-            return (doctors.AsNoTracking().ToList());
+            return (await doctors.AsNoTracking().ToListAsync());
         }
 
         public async Task<bool> UpdateDoctor(Doctor doctor)
@@ -58,13 +61,12 @@ namespace DrAvail.Services
             
         }
 
-        public bool SendEmail(string email, string subject, string message, Microsoft.Extensions.Configuration.IConfiguration configuration)
+        public bool SendEmail(string email, string subject, string message)
         {
 
             try
             {
-                EmailSender emailSender = new EmailSender(configuration);
-                emailSender.SendEmailAsync(email, subject, message);
+                _emailSender.SendEmailAsync(email, subject, message);
                 return true;
             }
             catch (Exception)

@@ -20,7 +20,7 @@ namespace DrAvail.Controllers
         private readonly IConfiguration _configuration;
 
         [BindProperty]
-        public Hospital hospital { get; set; }
+        public Hospital Hospital { get; set; }
 
         public HospitalsController(ApplicationDbContext context,
             Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService,
@@ -140,10 +140,12 @@ namespace DrAvail.Controllers
         public async Task<IActionResult> Create()
         {
 
-            hospital = new Hospital();
-            hospital.OwnerID = UserManager.GetUserId(User);
+            Hospital = new Hospital
+            {
+                OwnerID = UserManager.GetUserId(User)
+            };
 
-            var isAuthorized = await AuthorizationService.AuthorizeAsync(User, hospital, Operations.Create);
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(User, Hospital, Operations.Create);
 
             if (!isAuthorized.Succeeded)
             {
@@ -171,18 +173,18 @@ namespace DrAvail.Controllers
         public async Task<IActionResult> CreateOnPost()
         {
             var isAuthorized = await AuthorizationService.AuthorizeAsync(
-                                                User, hospital,
+                                                User, Hospital,
                                                 Operations.Create);
             if (!isAuthorized.Succeeded)
             {
                 return Forbid();
             }
 
-            hospital.OwnerID = UserManager.GetUserId(User);
+            Hospital.OwnerID = UserManager.GetUserId(User);
 
             if (ModelState.IsValid)
             {
-                Context.Add(hospital);
+                Context.Add(Hospital);
                 await Context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -195,7 +197,7 @@ namespace DrAvail.Controllers
             ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
             ViewBag.Districts = new SelectList(district, "ID", "Name");
 
-            return View(hospital);
+            return View(Hospital);
         }
 
         // GET: Hospitals/Edit/5
@@ -229,7 +231,7 @@ namespace DrAvail.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id)
         {
-            if (id != hospital.ID)
+            if (id != Hospital.ID)
             {
                 return NotFound();
             }
@@ -239,34 +241,34 @@ namespace DrAvail.Controllers
                 try
                 {
                     var isAuthorized = await AuthorizationService.AuthorizeAsync(
-                                                 User, hospital,
+                                                 User, Hospital,
                                                  Operations.Update);
                     if (!isAuthorized.Succeeded)
                     {
                         return Forbid();
                     }
 
-                    if (hospital.IsVerified)
+                    if (Hospital.IsVerified)
                     {
                         // If the hospital details are updated after verification, 
                         // and the user cannot approve,
                         // set the status back to submitted so the update can be
                         // checked and approved.
                         var canApprove = await AuthorizationService.AuthorizeAsync(User,
-                                                hospital,
+                                                Hospital,
                                                 Operations.Approve);
 
                         if (!canApprove.Succeeded)
                         {
-                            hospital.IsVerified = false;
+                            Hospital.IsVerified = false;
                         }
                     }
-                    Context.Update(hospital);
+                    Context.Update(Hospital);
                     await Context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!HospitalExists(hospital.ID))
+                    if (!HospitalExists(Hospital.ID))
                     {
                         return NotFound();
                     }
@@ -277,7 +279,7 @@ namespace DrAvail.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(hospital);
+            return View(Hospital);
         }
 
         // GET: Hospitals/Delete/5
