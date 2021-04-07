@@ -44,14 +44,17 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="PendingApproval">Pending Approval</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ViewMessages">Messages</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ViewMessages">
+                                Messages
+                                <span class="badge badge-danger" id="txtMsgCount" style="display:none"></span>
+                            </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
+                        @*<li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a>
-                        </li>
+                        </li>*@
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -60,8 +63,6 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-            <br />
-            <br />
             <br />
             <br />
             <br />
@@ -77,6 +78,25 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var url = '@Url.Content("~/")' + "Admin/GetMessageCount";
+            $.getJSON(url, {}, function (data) {
+                if (data == 0) {
+                    console.log("No new Messages!!!");
+                    $("#txtMsgCount").removeClass("badge-danger").addClass("badge-light");
+
+                }
+                else {
+                    $("#txtMsgCount").removeClass("badge-light").addClass("badge-danger");
+                }
+                $("#txtMsgCount").text(data);
+                $("#txtMsgCount").show();
+                console.log(data);
+
+                });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -15,6 +15,7 @@ namespace DrAvail.Models
         public string IP { get; set; }
 
         [Required]
+        [Display(Name = "User Email")]
         public string Email { get; set; }
 
         [Required]
@@ -25,10 +26,13 @@ namespace DrAvail.Models
         public string MessageText { get; set; }
 
         [Required]
+        [Display(Name ="Date Received")]
         public DateTime DateReceived { get; set; } = DateTime.Now;
 
+        [Display(Name =" Date Responded")]
         public DateTime? DateResponded { get; set; }
 
+        [Display(Name = "Admin Response")]
         public string AdminResponse { get; set; }
 
     }

@@ -7,9 +7,7 @@
 
 <h1>ViewMessages</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<br />
 <table class="table table-responsive" style="background-color:white">
     <thead>
         <tr>
@@ -28,31 +26,47 @@
             <th>
                 @Html.DisplayNameFor(model => model.DateReceived)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AdminResponse)
+            </th>
             <th> Action(s)</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IP)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Subject)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MessageText)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateReceived)
-            </td>
-            <td>
-                <a asp-action="ReplyMessage" asp-route-id="@item.ID">Reply</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IP)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subject)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MessageText)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateReceived)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AdminResponse)
+                </td>
+                <td>
+                    @{
+                        if (item.AdminResponse == null)
+                        {
+                            <a class="btn btn-danger" asp-action="ReplyMessage" asp-route-id="@item.ID">Reply</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-danger disabled" href="#">Reply</a>
+                        }
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

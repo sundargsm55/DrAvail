@@ -66,32 +66,38 @@ namespace DrAvail.Controllers
         [Authorize(Roles = "Administrators")]
         [HttpPost, ActionName("ReplyMessage")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ReplyMessageOnPost(int? id, string response)
+        public async Task<IActionResult> ReplyMessageOnPost(int? ID, string AdminResponse)
         {
-            if (id == null)
+            if (ID == null)
             {
                 return NotFound();
             }
 
-            var message = await _context.Messages.FirstOrDefaultAsync(M => M.ID == id);
+            var message = await _context.Messages.FirstOrDefaultAsync(M => M.ID == ID);
 
             if (message == null)
             {
                 return NotFound();
             }
 
-            if (string.IsNullOrWhiteSpace(response))
+            if (string.IsNullOrWhiteSpace(AdminResponse))
             {
                 return View(message);
             }
 
             message.DateResponded = DateTime.Now;
-            message.AdminResponse = response;
+            message.AdminResponse = AdminResponse;
 
             _context.Messages.Update(message);
             await _context.SaveChangesAsync();
-            Console.WriteLine("Admin Response: " + message.AdminResponse);
+            _logger.LogInformation($"Admin responded to Message ID: {ID}");
             return RedirectToAction(nameof(ViewMessages));
+        }
+
+        [Authorize(Roles = "Administrators")]
+        public JsonResult GetMessageCount()
+        {
+            return Json(_context.Messages.Where(m => string.IsNullOrWhiteSpace(m.AdminResponse)).Count());
         }
     }
 }
