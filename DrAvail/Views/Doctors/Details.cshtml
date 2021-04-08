@@ -1,169 +1,110 @@
 ﻿@model DrAvail.Models.Doctor
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Name;
 }
 
-<h1>Details</h1>
+<h4>Details</h4>
 
-<div>
-    <h4>Doctor</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RegNumber)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RegNumber)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Speciality)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Speciality)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Degree)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Degree)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Age)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Age)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Gender)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Gender)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Practice)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Practice)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Experience)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Experience)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IsVerified)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IsVerified)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Summary)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Summary)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.City)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.District)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.District)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.EmailId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.EmailId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd class="col-sm-10">
-            <a href="tel:@Model.PhoneNumber">@Html.DisplayFor(model => model.PhoneNumber)</a>
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Hospital)
-        </dt>
-        <dd class="col-sm-10">
-            <a asp-action="Details" asp-controller="Hospitals" asp-route-id="@Model.HospitalID">@Html.DisplayFor(model => model.Hospital.Name)</a>
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CommonAvailability)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CommonAvailability.ID)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CommonAvailability.CommonDays.MorningStartTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CommonAvailability.CommonDays.MorningStartTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CommonAvailability.CommonDays.MorningEndTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CommonAvailability.CommonDays.MorningEndTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CommonAvailability.IsAvailableOnWeekend)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CommonAvailability.IsAvailableOnWeekend)
-        </dd>
-        @if (Model.CommonAvailability.IsAvailableOnWeekend)
-        {
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CommonAvailability.Weekends.MorningStartTime)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.CommonAvailability.Weekends.MorningStartTime)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CommonAvailability.Weekends.MorningEndTime)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.CommonAvailability.Weekends.MorningEndTime)
-            </dd>
-        }
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CurrentAvailability.AvailabilityType)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CurrentAvailability.AvailabilityType)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CurrentAvailability.CurrentStartDateTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CurrentAvailability.CurrentStartDateTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CurrentAvailability.CurrentEndDateTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CurrentAvailability.CurrentEndDateTime)
-        </dd>
-    </dl>
+<div class="row">
+    <div class="col-md-9">
+        <div class="card text-dark bg-light mb-3 float-left w-100">
+            <div class="row">
+                <div class="col float-left">
+                    @if ("Male".Equals(Model.Gender.ToString()))
+                    {
+                        @*<div class="col-md-3">*@
+                        <img class="img-fluid p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px;" src="/Images/img_avatar3.png" alt="...">
+                        @*</div>*@
+                    }
+                    else
+                    {
+                        @*<div class="col-md-3">*@
+                        <img class="img-fluid p-0" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
+                        @*</div>*@
+                    }
+                </div>
+                <div class="col float-right">
+                    <div class="card-body">
+                        @*<div class="col-md-6 float-left">*@
+                        <h5 class="card-title">
+                            @Html.DisplayFor(modelItem => Model.Name)
+                        </h5>
+                        <p class="card-text">@Html.DisplayFor(modelItem => Model.Degree)</p>
+                        <p class="card-text">@Html.DisplayFor(modelItem => Model.Speciality)</p>
+                        <p class="card-text text-muted">
+                            @Html.DisplayFor(modelItem => Model.Experience) years experience overall
+                        </p>
+                        @if (Model.IsVerified)
+                        {
+                            <span class="card-text text-success">Medical Registration Verified</span>
+                        }
+                        else
+                        {
+                            <span class="card-text text-danger">Pending Verification</span>
+                        }
+                        <p class="card-text">@Html.DisplayFor(modelItem => Model.Summary)</p>
+
+                        <p class="card-text">
+                            @Html.DisplayFor(modelItem => Model.City), @Html.DisplayFor(modelItem => Model.District)
+                            &nbsp;&bull;&nbsp;
+                            <a asp-action="Details" asp-controller="Hospitals" asp-route-id="@Model.HospitalID">@Html.DisplayFor(modelItem => Model.Hospital.Name)</a>
+                        </p>
+                        @*</div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card float-right">
+            <h6 class="card-header">Timings</h6>
+            <div class="card-body">
+                <h6>Mon-Fri</h6>
+                <p class="card-text">@Model.CommonAvailability.CommonDays.MorningStartTime - @Model.CommonAvailability.CommonDays.MorningEndTime</p>
+                <p class="card-text">@Model.CommonAvailability.CommonDays.EveningStartTime - @Model.CommonAvailability.CommonDays.EveningEndTime</p>
+                <br />
+                @if (Model.CommonAvailability.IsAvailableOnWeekend)
+                {
+                    <h6>Sat & Sun</h6>
+                    <p class="card-text">@Model.CommonAvailability.Weekends.MorningStartTime - @Model.CommonAvailability.Weekends.MorningEndTime</p>
+                    <p class="card-text">@Model.CommonAvailability.Weekends.EveningStartTime - @Model.CommonAvailability.Weekends.EveningEndTime</p>
+                }
+            </div>
+        </div>
+    </div>
 </div>
+<br />
+<div class="card col-md-5">
+    <div class="card-header-pills">
+        <ul class="nav nav-pills mb-3" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="hospitals-tab" data-toggle="tab" href="#hospital" role="tab" aria-controls="hospitals" aria-selected="true">Hospital(s)</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="hospital" role="tabpanel" aria-labelledby="home-tab">
+            <p class="card-text">@Html.DisplayFor(modelItem => Model.Hospital.City)</p>
+            <a class="text-primary" asp-action="Details" asp-controller="Hospitals" asp-route-id="@Model.HospitalID">@Html.DisplayFor(modelItem => Model.Hospital.Name)</a>
+            <p class="card-text">@Html.DisplayFor(modelItem => Model.Hospital.Address)</p>
+        </div>
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            <p class="card-text">@Html.DisplayFor(modelItem => Model.PhoneNumber)</p>
+            <a href="tel:@Model.PhoneNumber">@Html.DisplayFor(model => model.PhoneNumber)</a>
+            <p class="card-text">@Html.DisplayFor(modelItem => Model.EmailId)</p>
 
+        </div>
+    </div>
+</div>
+<br />
 @if (!Model.IsVerified)
 {
     @if ((await AuthorizationService.AuthorizeAsync(
-   User, Model, Operations.Approve)).Succeeded)
+User, Model, Operations.Approve)).Succeeded)
     {
         <form style="display:inline;" method="post">
             <input type="hidden" name="id" value="@Model.ID" />
@@ -173,7 +114,7 @@
     }
 
     @if ((await AuthorizationService.AuthorizeAsync(
-    User, Model, Operations.Reject)).Succeeded)
+User, Model, Operations.Reject)).Succeeded)
     {
         <form style="display:inline;" method="post">
             <input type="hidden" name="id" value="@Model.ID" />
@@ -190,3 +131,4 @@
     }
     <a asp-action="Index">Back to List</a>
 </div>
+

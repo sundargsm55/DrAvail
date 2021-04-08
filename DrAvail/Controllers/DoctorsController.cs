@@ -42,6 +42,7 @@ namespace DrAvail.Controllers
         
         // GET: Doctors
         [AllowAnonymous]
+        [RequireHttps]
         public async Task<IActionResult> Index(string currentFilter, string searchString, int? pageIndex)
         {
             if (searchString != null)
