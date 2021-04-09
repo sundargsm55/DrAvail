@@ -8,19 +8,19 @@
 
 <div class="row">
     <div class="col-md-9">
-        <div class="card text-dark bg-light mb-3 float-left w-100">
+        <div class="card text-dark bg-light mb-3 float-left w-auto">
             <div class="row">
                 <div class="col float-left">
                     @if ("Male".Equals(Model.Gender.ToString()))
                     {
                         @*<div class="col-md-3">*@
-                        <img class="img-fluid p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px;" src="/Images/img_avatar3.png" alt="...">
+                        <img class="img-fluid" style="border-bottom-left-radius:20px;border-top-left-radius:20px;" src="/Images/img_avatar3.png" alt="...">
                         @*</div>*@
                     }
                     else
                     {
                         @*<div class="col-md-3">*@
-                        <img class="img-fluid p-0" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
+                        <img class="img-fluid" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
                         @*</div>*@
                     }
                 </div>
@@ -37,19 +37,17 @@
                         </p>
                         @if (Model.IsVerified)
                         {
-                            <span class="card-text text-success">Medical Registration Verified</span>
+                            <span class="card-text text-success">
+                                <i class="fa fa-check-circle" style="color:green"></i>
+                                Medical Registration Verified
+                            </span>
                         }
                         else
                         {
                             <span class="card-text text-danger">Pending Verification</span>
                         }
-                        <p class="card-text">@Html.DisplayFor(modelItem => Model.Summary)</p>
-
-                        <p class="card-text">
-                            @Html.DisplayFor(modelItem => Model.City), @Html.DisplayFor(modelItem => Model.District)
-                            &nbsp;&bull;&nbsp;
-                            <a asp-action="Details" asp-controller="Hospitals" asp-route-id="@Model.HospitalID">@Html.DisplayFor(modelItem => Model.Hospital.Name)</a>
-                        </p>
+                        <br />
+                        <p class="card-text">@Html.DisplayFor(modelItem => Model.Summary)</p>                    
                         @*</div>*@
                     </div>
                 </div>
@@ -57,31 +55,71 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card float-right">
+        <div class="card float-right w-75">
             <h6 class="card-header">Timings</h6>
             <div class="card-body">
-                <h6>Mon-Fri</h6>
-                <p class="card-text">@Model.CommonAvailability.CommonDays.MorningStartTime - @Model.CommonAvailability.CommonDays.MorningEndTime</p>
-                <p class="card-text">@Model.CommonAvailability.CommonDays.EveningStartTime - @Model.CommonAvailability.CommonDays.EveningEndTime</p>
-                <br />
-                @if (Model.CommonAvailability.IsAvailableOnWeekend)
+                @if (Model.CurrentAvailability.CurrentStartDateTime == null || Model.CurrentAvailability.CurrentEndDateTime == null)
                 {
-                    <h6>Sat & Sun</h6>
-                    <p class="card-text">@Model.CommonAvailability.Weekends.MorningStartTime - @Model.CommonAvailability.Weekends.MorningEndTime</p>
-                    <p class="card-text">@Model.CommonAvailability.Weekends.EveningStartTime - @Model.CommonAvailability.Weekends.EveningEndTime</p>
+                    <h6>Mon-Fri</h6>
+                    <p class="card-text">@Model.CommonAvailability.CommonDays.MorningStartTime.ToShortTimeString() - @Model.CommonAvailability.CommonDays.MorningEndTime.ToShortTimeString()</p>
+                    <p class="card-text">@Model.CommonAvailability.CommonDays.EveningStartTime.ToShortTimeString() - @Model.CommonAvailability.CommonDays.EveningEndTime.ToShortTimeString()</p>
+                    <br />
+                    @if (Model.CommonAvailability.IsAvailableOnWeekend)
+                    {
+                        <h6>Sat & Sun</h6>
+                        <p class="card-text">@Model.CommonAvailability.Weekends.MorningStartTime.ToShortTimeString() - @Model.CommonAvailability.Weekends.MorningEndTime.ToShortTimeString()</p>
+                        <p class="card-text">@Model.CommonAvailability.Weekends.EveningStartTime.ToShortTimeString() - @Model.CommonAvailability.Weekends.EveningEndTime.ToShortTimeString()</p>
+                    }
                 }
+                else
+                {
+                    @if (DateTime.Compare(Model.CurrentAvailability.CurrentStartDateTime.Value, DateTime.Now) >= 0 && DateTime.Compare(Model.CurrentAvailability.CurrentEndDateTime.Value, DateTime.Now) <= 0)
+                    {
+                        @if (Model.CurrentAvailability.Hospital != null)
+                        {
+                            <p class="card-text">
+                                Available in @Model.CurrentAvailability.Hospital.City, at: @Model.CurrentAvailability.Hospital.Name
+                            </p>
+                        }
+                        <p class="card-text">
+                            <text>Contact Preference: </text> @Model.CurrentAvailability.ContactPreference
+                        </p>
+                        <p class="card-text">
+                            <text>From </text>
+                            @Model.CurrentAvailability.CurrentStartDateTime
+                        </p>
+                        <p class="card-text">
+                            <text>To </text>
+                            @Model.CurrentAvailability.CurrentEndDateTime
+                        </p>
+                    }
+                    else
+                    {
+                        <h6>Mon-Fri</h6>
+                        <p class="card-text">@Model.CommonAvailability.CommonDays.MorningStartTime.ToShortTimeString() - @Model.CommonAvailability.CommonDays.MorningEndTime.ToShortTimeString()</p>
+                        <p class="card-text">@Model.CommonAvailability.CommonDays.EveningStartTime.ToShortTimeString() - @Model.CommonAvailability.CommonDays.EveningEndTime.ToShortTimeString()</p>
+                        <br />
+                        @if (Model.CommonAvailability.IsAvailableOnWeekend)
+                        {
+                            <h6>Sat & Sun</h6>
+                            <p class="card-text">@Model.CommonAvailability.Weekends.MorningStartTime.ToShortTimeString() - @Model.CommonAvailability.Weekends.MorningEndTime.ToShortTimeString()</p>
+                            <p class="card-text">@Model.CommonAvailability.Weekends.EveningStartTime.ToShortTimeString() - @Model.CommonAvailability.Weekends.EveningEndTime.ToShortTimeString()</p>
+                        }
+                    }
+                }
+
             </div>
         </div>
     </div>
 </div>
 <br />
 <div class="card col-md-5">
-    <div class="card-header-pills">
-        <ul class="nav nav-pills mb-3" id="myTab" role="tablist">
+    <div class="card-header-tabs">
+        <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="hospitals-tab" data-toggle="tab" href="#hospital" role="tab" aria-controls="hospitals" aria-selected="true">Hospital(s)</a>
+                <a class="nav-link active" style="border-top-left-radius:20px" id="hospitals-tab" data-toggle="tab" href="#hospital" role="tab" aria-controls="hospitals" aria-selected="true">Hospital(s)</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" style="border-top-left-radius:20px">
                 <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
             </li>
         </ul>

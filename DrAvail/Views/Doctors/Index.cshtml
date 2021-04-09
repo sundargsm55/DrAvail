@@ -11,9 +11,9 @@
 
     if (User.IsInRole(Constants.AdministratorsRole))
     {
-    <p>
-         <a asp-action="Create">Create New</a>
-    </p>
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
     }
     else
     {
@@ -23,7 +23,7 @@
     <form asp-action="Index" method="get">
         <div class="form-actions no-color form-inline">
             <p>
-                Find by name: <input class="form-control" style="width:35%" type="text"  name="SearchString" value="@ViewData["CurrentFilter"]" />
+                Find by name: <input class="form-control" style="width:35%" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
                 <input type="submit" value="Search" class="btn btn-info" /> |
                 <a asp-action="Index">Back to Full List</a>
             </p>
@@ -65,7 +65,7 @@
                                    title="Feel like taking long time? You can contact us from here"
                                    asp-route-subject="Pending Account Verification"
                                    asp-route-message="My acoount is still penidng verification. I feel like it is taking longer than usual.">Feel like taking long time?</a>
-                            
+
 
                             }
                             <p class="card-text">@Html.DisplayFor(modelItem => item.Speciality)</p>
@@ -80,13 +80,17 @@
 
 
                         </div>
-                        <div class="col-md-3 float-right">
-                            @if ((await AuthorizationService.AuthorizeAsync(User, item,Operations.Update)).Succeeded)
+                        <div class="col-md-3 float-right btn-group-sm table-borderless">
+                            @if ((await AuthorizationService.AuthorizeAsync(User, item, Operations.Update)).Succeeded)
                             {
-                                <a class="btn btn-danger align-top" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                                <div class="btn-vertical" style="display:table-row">
+                                    <a class="btn btn-danger" style="vertical-align:middle" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                                </div>
                             }
-                                <a class="btn btn-info align-bottom" asp-action="Details" asp-route-id="@item.ID">Details</a>
+                            <div class="btn-vertical" style="display:table-row">
+                                <a class="btn btn-info" style="vertical-align:bottom" asp-action="Details" asp-route-id="@item.ID">Details</a>
                             </div>
+                        </div>
                     </div>
                 </div>
             </div>
