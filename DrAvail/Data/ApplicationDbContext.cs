@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DrAvail.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
         {

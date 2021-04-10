@@ -19,6 +19,7 @@ using DrAvail.Services;
 using Microsoft.AspNetCore.Authorization;
 using DrAvail.Authorization;
 using Microsoft.AspNetCore.Http;
+using DrAvail.Models;
 
 namespace DrAvail
 {
@@ -52,7 +53,7 @@ namespace DrAvail
                 o.TokenLifespan = TimeSpan.FromHours(3));
 
 
-            services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
                         

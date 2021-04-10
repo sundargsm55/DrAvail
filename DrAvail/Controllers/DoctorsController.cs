@@ -30,7 +30,7 @@ namespace DrAvail.Controllers
 
         public DoctorsController(IDoctorService doctorService, ApplicationDbContext context,
             IAuthorizationService authorizationService, 
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             ILogger<DoctorsController> logger)
             :base(context, authorizationService,userManager)
         {

@@ -24,7 +24,7 @@ namespace DrAvail.Controllers
 
         public HospitalsController(ApplicationDbContext context,
             Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService,
-            UserManager<IdentityUser> userManager, IConfiguration configuration)
+            UserManager<ApplicationUser> userManager, IConfiguration configuration)
             : base(context, authorizationService, userManager)
         {
             _configuration = configuration;

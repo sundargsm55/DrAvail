@@ -11,9 +11,9 @@ namespace DrAvail.Authorization
 {
     public class OwnerAuthorizationHandler: AuthorizationHandler<OperationAuthorizationRequirement, Object>
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public OwnerAuthorizationHandler(UserManager<IdentityUser> userManager)
+        public OwnerAuthorizationHandler(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
