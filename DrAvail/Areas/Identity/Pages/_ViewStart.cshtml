@@ -1,10 +1,10 @@
 ﻿@{
     //Layout = "/Views/Shared/_Layout.cshtml";
-    if (User.IsInRole(Constants.AdministratorsRole))
+    if (User.IsInRole(DrAvail.Authorization.Constants.AdministratorsRole))
     {
         Layout = "/Views/Shared/_AdminLayout.cshtml";
     }
-    else if (User.IsInRole(Constants.DoctorsRole))
+    else if (User.IsInRole(DrAvail.Authorization.Constants.DoctorsRole))
     {
         Layout = "/Views/Shared/_UserLayout.cshtml";
     }
