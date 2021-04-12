@@ -334,16 +334,31 @@ namespace DrAvail.Controllers
                 return Forbid();
             }
 
-            ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", doctor.CommonAvaliabilityID);
-            ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
-            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name", doctor.HospitalID);
-            var district = from District d in Enum.GetValues(typeof(District))
-                           select new { ID = (int)d, Name = d.ToString() };
-            //ViewBag.Districts = new SelectList(district, "ID", "Name");
+            //ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", doctor.CommonAvaliabilityID);
+            //ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
+            //ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name", doctor.HospitalID);
+            //var district = from District d in Enum.GetValues(typeof(District))
+            //               select new { ID = (int)d, Name = d.ToString() };
+            ////ViewBag.Districts = new SelectList(district, "ID", "Name");
 
+            //var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
+            //                 select new { ID = (int)d, Name = d.ToString() };
+            //ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
+
+            #region selectList
+            
+            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name");
+
+            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
+                         select new { ID = (int)H, Name = H.ToString() };
+            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
+
+            
             var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
                              select new { ID = (int)d, Name = d.ToString() };
             ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
+            #endregion
+
             return View(doctor);
         }
 
@@ -402,16 +417,21 @@ namespace DrAvail.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", Doctor.CommonAvaliabilityID);
-            ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", Doctor.CurrentAvaliabilityID);
-            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name", Doctor.HospitalID);
-            var district = from District d in Enum.GetValues(typeof(District))
-                           select new { ID = (int)d, Name = d.ToString() };
-            ViewBag.Districts = new SelectList(district, "ID", "Name");
+
+            #region selectList
+            
+            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name");
+
+            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
+                         select new { ID = (int)H, Name = H.ToString() };
+            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
+
 
             var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
                              select new { ID = (int)d, Name = d.ToString() };
             ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
+            #endregion
+
             return View(Doctor);
         }
 
