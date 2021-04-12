@@ -9,20 +9,29 @@
 <br />
 <style>
     .card {
-        padding:20px;
+        padding: 30px;
         margin-bottom: 10px;
         margin-top: 10px;
+    }
+
+    select {
+        position: absolute;
+        z-index: 0;
+    }
+
+    .selectOpen {
+        z-index: 9;
     }
 </style>
 <div class="row">
     @*<nav class="col-md-3 float-left flex-column "  id="myScrollspy" aria-orientation="vertical">
-        <ul class="nav nav-pills">
-            <li><a class="nav-link active" href="#doctor">Bio</a></li>
-            <li><a class="nav-link" href="#accordionExample">Hospital</a></li>
-            <li><a class="nav-link" href="#addCommonAvailability">Common Availability</a></li>
-            <li><a class="nav-link" href="#addCurrentAvailability">Current Availability</a></li>
-        </ul>
-    </nav>*@
+            <ul class="nav nav-pills">
+                <li><a class="nav-link active" href="#doctor">Bio</a></li>
+                <li><a class="nav-link" href="#accordionExample">Hospital</a></li>
+                <li><a class="nav-link" href="#addCommonAvailability">Common Availability</a></li>
+                <li><a class="nav-link" href="#addCurrentAvailability">Current Availability</a></li>
+            </ul>
+        </nav>*@
 
     @*<div class="card box-shadow col-md-9 float-right" data-spy="scroll" data-target="#v-pills-tab" style="border-radius:20px;background-color:ghostwhite">
         <div class="card-header">
@@ -41,7 +50,7 @@
                             <span class="input-group-text" id="basic-addon1">Full Name</span>
                         </div>
                         <label asp-for="Name" class="control-label" hidden></label>
-                        <input asp-for="Name" class="form-control"/>
+                        <input asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                         <div class="valid-feedback">Name is valid</div>
                         <div class="invalid-feedback">Enter a valid name</div>
@@ -61,7 +70,7 @@
                         <div class="input-group-prepend">
                             <label asp-for="Speciality" class="input-group-text"></label>
                         </div>
-                        <select asp-for="Speciality" class="form-control custom-select" asp-items="ViewBag.Speciality">
+                        <select id="Speciality" asp-for="Speciality" class="form-control custom-select" asp-items="ViewBag.Speciality">
                             <option style="text-align:center" value="">--Select--</option>
                         </select>
                         <span asp-validation-for="Speciality" class="text-danger"></span>
@@ -82,7 +91,7 @@
                     </div>
                     <div class="form-group col-md-3">
                         <label asp-for="Gender" class="control-label"></label>
-                        <select asp-for="Gender" class="form-control custom-select">
+                        <select asp-for="Gender" class="form-control custom-select" size="1">
                             <option value="">--Select--</option>
                             <option value=0>Male</option>
                             <option value=1>Female</option>
@@ -99,7 +108,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-3">
                         <label asp-for="Practice" class="control-label"></label>
-                        <select asp-for="Practice" class="form-control">
+                        <select asp-for="Practice" class="form-control" size="1">
                             <option value="">--Select--</option>
                             <option value=0>Government</option>
                             <option value=1>Private</option>
@@ -167,7 +176,7 @@
                         <div class="form-group col-md-4">
                             <label asp-for="HospitalID" class="control-label">Hospital Name</label> &nbsp;&nbsp;
                             <a href="#addHospital" data-toggle="collapse">Add Hospital</a>
-                            <select asp-for="HospitalID" class="form-control" asp-items="ViewBag.HospitalID">
+                            <select size="1" asp-for="HospitalID" class="form-control" asp-items="ViewBag.HospitalID">
                                 <option value="">--Select--</option>
                             </select>
                         </div>
@@ -201,7 +210,7 @@
                         <div class="form-group col-md-4">
                             <label asp-for="Hospital.City" class="control-label"></label>
                             @*<input asp-for="City" class="form-control" />*@
-                            <select asp-for="Hospital.City" class="form-control" id="HospitalCity">
+                            <select asp-for="Hospital.City" class="form-control" id="HospitalCity" size="1">
                                 <option value="">Please enter Pincode</option>
                             </select>
                             <span asp-validation-for="Hospital.City" class="text-danger"></span>
@@ -232,7 +241,7 @@
                     @* Add hospital section ends here *@
                 </div>
             </div>
-            
+
             <div id="addCommonAvailability" class="card mb-3">
                 <h6 class="card-title text-left">Mon - Fri Timings</h6>
                 <div class="common-availability-common card-body">
@@ -367,7 +376,7 @@
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script type="text/javascript">
+<script type="text/javascript">
         $(document).ready(function () {
             $("#txtPincode").keyup(function () {
                 //debugger;
@@ -420,6 +429,73 @@
                     });
                 }
             });
+
+            //City select list
+            //on mousedown event
+            $("select").mousedown(function (event) {
+                var source = event.currentTarget;
+                
+                if (source.id == "Speciality") return;
+                console.log("Option lenght: " + $(source).find("option").length);
+                if ($(source).attr("size") == '1' && $(source).find("option").length > 5) {
+                    event.preventDefault();
+                }
+            });
+            //on click event
+            $("select").click(function (event) {
+                var source = event.currentTarget;
+                if (source.id == "Speciality") return;
+                console.log($(source).attr("size"));
+                if ($(source).attr("size") == '1')
+                {
+                    if ($(source).find("option").length > 5) {
+                        $(source).addClass("selectOpen");
+                        $(source).attr("size", '5');
+                    }
+
+                }
+                else {
+                    $(source).removeClass("selectOpen");
+                    $(source).attr("size", '1');
+                }
+            });
+
+            //restting when loses focus
+            $("select").focusout(function (event) {
+                var source = event.currentTarget;
+                if (source.id == "Speciality") return;
+
+                $(source).removeClass("selectOpen");
+                $(source).attr("size", '1');
+            });
+
+            //HospitalCity select list
+            //on mousedown event
+            //$("#HospitalCity").mousedown(function (event) {
+            //    if ($("#HospitalCity").attr("size") == '1') {
+            //        event.preventDefault();
+            //    }
+            //});
+            ////on click event
+            //$("#HospitalCity").click(function () {
+            //    console.log($("#HospitalCity").attr("size"));
+            //    if ($("#HospitalCity").attr("size") == '1') {
+            //        $("#HospitalCity").addClass("selectOpen");
+            //        if ($("#HospitalCity option").length > 5) {
+            //            $("#HospitalCity").attr("size", '5');
+            //        }
+            //    }
+            //    else {
+            //        $("#HospitalCity").removeClass("selectOpen");
+            //        $("#HospitalCity").attr("size", '1');
+            //    }
+            //});
+
+            ////restting when loses focus
+            //$("#City").focusout(function () {
+            //    $("#City").removeClass("selectOpen");
+            //    $("#City").attr("size", '1');
+            //});
         });
-    </script>
+</script>
 }
