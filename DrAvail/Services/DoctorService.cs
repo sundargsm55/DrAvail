@@ -21,6 +21,7 @@ namespace DrAvail.Services
         public List<Doctor> GetAllDocotrsAsync()
         {
             var doctors = _context.Doctors
+                .OrderBy(d => d.Name)
                 .Include(d => d.CommonAvailability)
                 .Include(d => d.CurrentAvailability)
                 .Include(d => d.Hospital);
@@ -32,6 +33,7 @@ namespace DrAvail.Services
         {
             var doctors = _context.Doctors
                 .Where(d => d.IsVerified == isVerified)
+                .OrderBy( d => d.Name)
                 .Include(d => d.CommonAvailability)
                 .Include(d => d.CurrentAvailability)
                 .Include(d => d.Hospital);

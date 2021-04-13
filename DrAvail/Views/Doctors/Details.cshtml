@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = Model.Name;
+
 }
 
 <h4>Details</h4>
@@ -11,19 +12,29 @@
         <div class="card text-dark bg-light mb-3 float-left w-auto">
             <div class="row">
                 <div class="col float-left">
-                    @if ("Male".Equals(Model.Gender.ToString()))
-                    {
-                        @*<div class="col-md-3">*@
-                        <img class="img-fluid" style="border-bottom-left-radius:20px;border-top-left-radius:20px;" src="/Images/img_avatar3.png" alt="...">
-                        @*</div>*@
+                    @{ 
+                        var user = UserManager.FindByIdAsync(Model.OwnerID).Result;
+                        if (user != null && user.ProfilePicture != null)
+                        {
+                        <img style="width:40px;height:40px; object-fit:cover; border-radius:30px" src="data:image/*;base64,@(Convert.ToBase64String(user.ProfilePicture))">
                     }
                     else
                     {
-                        @*<div class="col-md-3">*@
-                        <img class="img-fluid" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
-                        @*</div>*@
+                        if ("Male".Equals(Model.Gender.ToString()))
+                        {
+                            @*<div class="col-md-3">*@
+                            <img class="img-fluid" style="border-bottom-left-radius:20px;border-top-left-radius:20px;" src="/Images/img_avatar3.png" alt="...">
+                            @*</div>*@
+                        }
+                        else
+                        {
+                            @*<div class="col-md-3">*@
+                            <img class="img-fluid" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
+                            @*</div>*@
+                        }
                     }
-                </div>
+                        }
+                    </div>
                 <div class="col float-right">
                     <div class="card-body">
                         @*<div class="col-md-6 float-left">*@

@@ -34,17 +34,23 @@
     {
         <div class="card text-dark bg-light mb-3" style="border-radius:20px;width:75%">
             <div class="row">
-                @if ("Male".Equals(item.Gender.ToString()))
-                {
-                    @*<div class="col-md-3">*@
-                    <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px;" src="/Images/img_avatar3.png" alt="...">
-                    @*</div>*@
-                }
-                else
-                {
-                    @*<div class="col-md-3">*@
-                    <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
-                    @*</div>*@
+                @{
+                    var user = UserManager.FindByIdAsync(item.OwnerID).Result;
+                    if (user !=null && user.ProfilePicture != null)
+                    {
+                        <img class="img-fluid col-sm-3 p-0" style="object-fit:cover;border-bottom-left-radius:20px;border-top-left-radius:20px" src="data:image/*;base64,@Convert.ToBase64String(user.ProfilePicture))">
+                    }
+                    else
+                    {
+                        if ("Male".Equals(item.Gender.ToString()))
+                        {
+                            <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px;object-fit:cover" src="/Images/img_avatar3.png" alt="...">
+                        }
+                        else
+                        {
+                            <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
+                        }
+                    }
                 }
                 <div class="col-md-9">
                     <div class="card-body">
@@ -80,16 +86,16 @@
 
 
                         </div>
-                        <div class="col-md-3 float-right btn-group-sm table-borderless">
+                        <div class="col-md-3 d-flex flex-column btn-group-sm">
                             @if ((await AuthorizationService.AuthorizeAsync(User, item, Operations.Update)).Succeeded)
                             {
-                                <div class="btn-vertical" style="display:table-row">
-                                    <a class="btn btn-danger" style="vertical-align:middle" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-                                </div>
+                                @*<div class="p-2 text-center">*@
+                                    <a class="btn btn-danger text-sm-center m-2" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                                @*</div>*@
                             }
-                            <div class="btn-vertical" style="display:table-row">
-                                <a class="btn btn-info" style="vertical-align:bottom" asp-action="Details" asp-route-id="@item.ID">Details</a>
-                            </div>
+                            @*<div class="p-2 text-center">*@
+                                <a class="btn btn-info text-sm-center m-2" asp-action="Details" asp-route-id="@item.ID">Details</a>
+                            @*</div>*@
                         </div>
                     </div>
                 </div>

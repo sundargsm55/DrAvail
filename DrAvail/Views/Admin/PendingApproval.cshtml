@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "PendingApproval";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 @if (Model.Any())
@@ -24,17 +23,23 @@
     {
         <div class="card text-dark bg-light mb-3" style="border-radius:20px;width:75%">
             <div class="row">
-                @if ("Male".Equals(item.Gender.ToString()))
-                {
-                    @*<div class="col-md-3">*@
-                    <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px;" src="/Images/img_avatar3.png" alt="...">
-                    @*</div>*@
-                }
-                else
-                {
-                    @*<div class="col-md-3">*@
-                    <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
-                    @*</div>*@
+                @{
+                    var user = UserManager.FindByIdAsync(item.OwnerID).Result;
+                    if (user != null && user.ProfilePicture != null)
+                    {
+                        <img class="img-fluid col-sm-3 p-0" style="object-fit:cover;border-bottom-left-radius:20px;border-top-left-radius:20px" src="data:image/*;base64,@Convert.ToBase64String(user.ProfilePicture))">
+                    }
+                    else
+                    {
+                        if ("Male".Equals(item.Gender.ToString()))
+                        {
+                            <img class="img-fluid col-sm-3 p-0" style="object-fit:cover; border-bottom-left-radius:20px;border-top-left-radius:20px;" src="/Images/img_avatar3.png" alt="...">
+                        }
+                        else
+                        {
+                            <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
+                        }
+                    }
                 }
                 <div class="col-md-9">
                     <div class="card-body">
