@@ -85,6 +85,10 @@ namespace DrAvail.Models
         public int? CurrentAvaliabilityID { get; set; }
 
         public Availability CurrentAvailability { get; set; }
+
+        public DateTime DateCreated { get; set; } = DateTime.Now;
+
+        public DateTime? LastModified { get; set; }
     }
 
 

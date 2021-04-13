@@ -187,6 +187,21 @@ namespace DrAvail.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
+            //if user is not logged in
+            if(User.Identity.Name == null)
+            {
+                return Forbid();
+            }
+
+            string ownerID = UserManager.GetUserId(User);
+            //redirect to edit page if user already added details first time
+            int doctorId = DoctorService.GetDoctorIDByOwnerID(ownerID);
+            if (doctorId!=0)
+            {
+                return RedirectToAction(nameof(Edit), new { id = doctorId});
+            }
+
+            //adding details for first time
             Doctor = new Doctor
             {
                 OwnerID = UserManager.GetUserId(User)
@@ -406,7 +421,7 @@ namespace DrAvail.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DoctorExists(Doctor.ID))
+                    if (!DoctorService.DoctorExists(Doctor.ID))
                     {
                         return NotFound();
                     }
@@ -484,10 +499,8 @@ namespace DrAvail.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DoctorExists(int id)
-        {
-            return Context.Doctors.Any(e => e.ID == id);
-        }
+        
+
 
         public IActionResult AvailabilityCreate()
         {

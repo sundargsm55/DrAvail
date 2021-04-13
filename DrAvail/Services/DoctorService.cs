@@ -78,10 +78,24 @@ namespace DrAvail.Services
             }
         }
 
-        private bool DoctorExists(int id)
+        public bool DoctorExists(int id)
         {
             return _context.Doctors.Any(e => e.ID == id);
         }
 
+       
+        public bool DoctorExistsByOwnerID(string ownerId)
+        {
+            return _context.Doctors.Any(e => e.OwnerID == ownerId);
+        }
+
+        public int GetDoctorIDByOwnerID(string ownerId)
+        {
+            if (DoctorExistsByOwnerID(ownerId))
+            {
+                return _context.Doctors.FirstOrDefault(d => d.OwnerID == ownerId).ID;
+            }
+            return 0;
+        }
     }
 }

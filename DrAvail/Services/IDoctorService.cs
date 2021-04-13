@@ -16,6 +16,10 @@ namespace DrAvail.Services
 
         bool SendEmail(string email, string subject, string message);
 
+        bool DoctorExists(int id);
 
+        bool DoctorExistsByOwnerID(string id);
+
+        int GetDoctorIDByOwnerID(string ownerId);
     }
 }

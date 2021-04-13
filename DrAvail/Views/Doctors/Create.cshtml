@@ -24,22 +24,8 @@
     }
 </style>
 <div class="row">
-    @*<nav class="col-md-3 float-left flex-column "  id="myScrollspy" aria-orientation="vertical">
-            <ul class="nav nav-pills">
-                <li><a class="nav-link active" href="#doctor">Bio</a></li>
-                <li><a class="nav-link" href="#accordionExample">Hospital</a></li>
-                <li><a class="nav-link" href="#addCommonAvailability">Common Availability</a></li>
-                <li><a class="nav-link" href="#addCurrentAvailability">Current Availability</a></li>
-            </ul>
-        </nav>*@
-
-    @*<div class="card box-shadow col-md-9 float-right" data-spy="scroll" data-target="#v-pills-tab" style="border-radius:20px;background-color:ghostwhite">
-        <div class="card-header">
-            <h4 class="card-title text-center">Fill in your details</h4>
-        </div>
-        <div class="card-body">*@
-    @*<form asp-action="Create" method="post" style="margin-left:1.25rem;margin-right:1.25rem;">*@
-    <div class="col-md-9">
+   
+    <div class="col-md-12">
         <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="doctor card mb-3" id="doctor">

@@ -9,17 +9,17 @@
     <link rel="icon" type="image/ico" href="/Images/logo.ico" />
     <style>
         body {
-            background-image: url(/Images/medical-doctor-science-background.jpg);
+            /*background-image: url(/Images/medical-doctor-science-background.jpg);*/
             /*background-image: url(/Images/pngtree-2-5d-see-a-doctor-medical-hospital-image_18143.jpg);*/
-            background-repeat: no-repeat;
+            /*background-repeat: no-repeat;
             background-attachment: fixed;
-            background-size: cover;
+            background-size: cover;*/
         }
     </style>
 </head>
-<body>
+<body class="bg-light">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" style="background-image:url(/Images/medical-doctor-science-background.jpg)">
             <div class="container">
                 <a class="navbar-brand span3" asp-area="" asp-controller="Home" asp-action="Index">DrAvail</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -32,10 +32,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Doctors" asp-action="Index">Doctors</a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Doctors" asp-action="Create">Create</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Doctors" asp-action="Create">Edit your details</a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Doctors" asp-action="Details">Your details</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Doctors" asp-action="Details">Your Profile</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
