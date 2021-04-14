@@ -52,9 +52,9 @@
                         }
                     }
                 }
-                <div class="col-md-9">
+                @*<div class="sample">*@
                     <div class="card-body">
-                        <div class="col-md-6 float-left">
+                        <div class="col-md-7 float-left">
                             <h5 class="card-title">
                                 @Html.DisplayFor(modelItem => item.Name)
                             </h5>
@@ -86,21 +86,21 @@
 
 
                         </div>
-                        <div class="col-md-3 d-flex flex-column btn-group-sm">
+                        <div class="col-md-2 d-flex flex-column btn-group-md justify-content-center h-auto">
                             @if ((await AuthorizationService.AuthorizeAsync(User, item, Operations.Update)).Succeeded)
                             {
                                 @*<div class="p-2 text-center">*@
-                                    <a class="btn btn-danger text-sm-center m-2" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                                    <a class="btn btn-danger text-center" style="align-self:flex-start" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
                                 @*</div>*@
                             }
                             @*<div class="p-2 text-center">*@
-                                <a class="btn btn-info text-sm-center m-2" asp-action="Details" asp-route-id="@item.ID">Details</a>
+                                <a class="btn btn-info text-center" style="align-self:flex-end" asp-action="Details" asp-route-id="@item.ID">Details</a>
                             @*</div>*@
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @*</div>*@
     }
 
 
