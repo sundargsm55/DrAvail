@@ -31,8 +31,20 @@ namespace DrAvail.Models
             //    }
             // }
 
+            [NotMapped]
+            public string MorningEndHour { get; set; }
+
+            [NotMapped]
+            public string MorningEndMinute { get; set; }
+
             [DataType(DataType.Time)]
             public DateTime MorningEndTime { get; set; }
+
+            [NotMapped]
+            public string EveningStartHour { get; set; }
+
+            [NotMapped]
+            public string EveningStartMinute { get; set; }
 
             [DataType(DataType.Time)]
             public DateTime EveningStartTime { get; set; }

@@ -69,8 +69,8 @@
                         <label asp-for="Age" class="control-label"></label>
                         <input asp-for="Age" class="form-control" />
                         <span asp-validation-for="Age" class="text-danger"></span>
-                    </div>               
-                    <div class="form-group col-md-5">
+                    </div>
+                    <div class="form-group col-md-4">
                         <label asp-for="Gender" class="control-label"></label>
                         <select asp-for="Gender" class="form-control custom-select" size="1">
                             <option value="">--Select--</option>
@@ -454,18 +454,17 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script type="text/javascript">
-    $(document).ready(function () {
+        $(document).ready(function () {
             $("#txtPincode").keyup(function () {
                 //debugger;
                 //var source = "#txtPincode";
                 //console.log("Pincode: " + $("#txtPincode").val());
-                if ($("#txtPincode").val().length == 6)
-                {
+                if ($("#txtPincode").val().length == 6) {
                     var url = '@Url.Content("~/")' + "Doctors/GetLocations";
                     //console.log("Url: " + url);
                     $.getJSON(url, { Pincode: $("#txtPincode").val() }, function (data) {
                         var items = "";
-                        if (data.length==0) {
+                        if (data.length == 0) {
                             console.log("No location found!!!");
                             return false;
                         }
@@ -485,13 +484,12 @@
                 //debugger;
                 //var source = "#txtPincode";
                 //console.log("Pincode: " + $("#txtPincode").val());
-                if ($("#txtHospitalPincode").val().length == 6)
-                {
+                if ($("#txtHospitalPincode").val().length == 6) {
                     var url = '@Url.Content("~/")' + "Doctors/GetLocations";
                     //console.log("Url: " + url);
                     $.getJSON(url, { Pincode: $("#txtHospitalPincode").val() }, function (data) {
                         var items = "";
-                        if (data.length==0) {
+                        if (data.length == 0) {
                             console.log("No location found!!!");
                             return false;
                         }
@@ -523,8 +521,7 @@
                 var source = event.currentTarget;
                 if (source.id == "Speciality") return;
                 console.log($(source).attr("size"));
-                if ($(source).attr("size") == '1')
-                {
+                if ($(source).attr("size") == '1') {
                     if ($(source).find("option").length > 5) {
                         $(source).addClass("selectOpen");
                         $(source).attr("size", '5');
@@ -545,13 +542,15 @@
                 $(source).removeClass("selectOpen");
                 $(source).attr("size", '1');
             });
-        $("#status").change(function () {
-            if ($("#status").find(":selected").val() == "Available") {
-                $("#currentHospital").show();
-            }
-            else {
-                $("#currentHospital").hide();
-            }
+            $("#status").change(function () {
+                console.log($("#status").find(":selected").val());
+                if ($("#status").find(":selected").val() == "Available") {
+                    $("#currentHospital").show();
+                }
+                else {
+                    $("#currentHospital").hide();
+                }
+            });
         });
     </script>
 }
