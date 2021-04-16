@@ -18,6 +18,7 @@ namespace DrAvail.Models
         [Required]
         [MinLength(3), MaxLength(60)]
         [Display(Name ="Full Name")]
+        [RegularExpression("^[a-zA-Z]+(\\s[a-zA-Z]+)?$", ErrorMessage = "Only Alphabets, space allowed.")]
         public string Name { get; set; }
 
         //Need to be unique
@@ -33,8 +34,13 @@ namespace DrAvail.Models
         public string Degree { get; set; }
 
         [Required]
-        [Range(21,100)]
+        [Range(25,100)]
         public int Age { get; set; }
+
+        [NotMapped]
+        [DataType(DataType.Date)]
+        [Display(Name="Date of Birth")]
+        public DateTime DateOfBirth { get; set; }
 
         [Required]
         public Gender Gender { get; set; }

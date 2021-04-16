@@ -71,10 +71,15 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-3" hidden>
                         <label asp-for="Age" class="control-label"></label>
                         <input asp-for="Age" class="form-control" />
                         <span asp-validation-for="Age" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="DateOfBirth" class="control-label"></label>
+                        <input asp-for="DateOfBirth" class="form-control" id="dob" />
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-4">
                         <label asp-for="Gender" class="control-label"></label>
@@ -104,7 +109,7 @@
                     </div>
                     <div class="form-group col-md-3">
                         <label asp-for="Experience" class="control-label"></label>
-                        <input asp-for="Experience" class="form-control" />
+                        <input asp-for="Experience" class="form-control" id="txtExperience" />
                         <span asp-validation-for="Experience" class="text-danger"></span>
                     </div>
                 </div>
@@ -243,7 +248,7 @@
                         </div>
                         <div class="form-group col-md-3">
                             <label asp-for="CommonAvailability.CommonDays.MorningStartHour" class="control-label">Morning Start Hour</label>
-                            <select asp-for="CommonAvailability.CommonDays.MorningStartHour" class="form-control" size="1">
+                            <select asp-for="CommonAvailability.CommonDays.MorningStartHour" class="form-control" size="1" id="commonMorningStarHour">
                                 <option value="00">12(AM)</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -418,21 +423,55 @@
 
             //commonMorningStarHour
             $("#commonMorningStarHour").change(function (event) {
-                debugger;
-                var startHour = event.currentTarget.find(":selected").val();
+                //debugger;
+                var startHour = $("#commonMorningStarHour").find(":selected").val();
                 var startminute = $("#CommonMorningStartMinute").find(":selected").val();
-                if (startHour in timing) {
+                if (jQuery.inArray(startHour, timing)!=-1) {
                     var index = timing.indexOf(startHour);
                     console.log("Index: " + index);
                     var items = "";
-                    for (var i = index; index < timing.length; i++) {
-                        items += "<option value='" + timing[i] + "'>" + timing[i] + "</option>";
-                    }
-                    $("#commonMorningEndHour").html(items);
+                    console.log("Timing array length: " + timing.length);
+                    $.each(timing, function (i, value) {
+                        console.log("i: " + i)
+                        if (i >= index) {
+                            items += "<option value='" + value + "'>" + value + "</option>";
+                        }
+                    });
+                    $("#CommonMorningEndHour").html(items);
                 }
 
             });
 
+            $("#txtExperience").change(function () {
+                //debugger;
+                var exp = $("#txtExperience").val();
+                console.log("\nexp: " + exp);
+
+                var dob = $("#dob").val();
+                console.log("\ndob: " + dob);
+                if (dob != "") {
+                    var age = new Date().getFullYear() - new Date(dob).getFullYear();
+                    console.log("Today date: " + new Date().toString());
+                    console.log("\nDOB: " + new Date(dob).toString());
+                    console.log("\nAge: " + age);
+                    if (age > 24) {
+                        var diff = age - 25;
+                        console.log("\ndiff: " + diff);
+                        if (exp >= 0 && exp <= diff) {
+                            alert('ok');
+                        }
+                        else {
+                            alert("You can't have " + exp + " of experience when you are " + age + " year old");
+                        }
+                    }
+                    else {
+                        alert("Age should be at 25");
+                    }
+                }
+                else {
+                    alert("Enter Date of Birth");
+                }
+            });
         //for doctor
         $("#txtPincode").keyup(function () {
                 //debugger;
