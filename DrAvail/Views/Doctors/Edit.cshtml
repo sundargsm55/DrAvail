@@ -325,14 +325,14 @@
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label asp-for="CurrentAvailability.Status" class="control-label"></label>
-                            <select asp-for="CurrentAvailability.Status" class="form-control" id="status">
+                            <select asp-for="CurrentAvailability.Status" class="form-control" id="status" size="1">
                                 <option value="">--Select</option>
                                 <option value="On Vacation">On Vacation</option>
                                 <option value="Available">Available</option>
                             </select>
                         </div>
 
-                        <div class="form-group col-md-4" id="currentHospital" hidden>
+                        <div class="form-group col-md-4" id="currentHospital" style="display:none">
                             <label asp-for="CurrentAvailability.HospitalID" class="control-label">Available at</label>
                             <select asp-for="CurrentAvailability.HospitalID" class="form-control" asp-items="ViewBag.HospitalID">
                             </select>
@@ -511,7 +511,7 @@
                 var source = event.currentTarget;
 
                 if (source.id == "Speciality") return;
-                console.log("Option lenght: " + $(source).find("option").length);
+                //console.log("Option lenght: " + $(source).find("option").length);
                 if ($(source).attr("size") == '1' && $(source).find("option").length > 5) {
                     event.preventDefault();
                 }
@@ -520,7 +520,7 @@
             $("select").click(function (event) {
                 var source = event.currentTarget;
                 if (source.id == "Speciality") return;
-                console.log($(source).attr("size"));
+                //console.log($(source).attr("size"));
                 if ($(source).attr("size") == '1') {
                     if ($(source).find("option").length > 5) {
                         $(source).addClass("selectOpen");
@@ -542,13 +542,18 @@
                 $(source).removeClass("selectOpen");
                 $(source).attr("size", '1');
             });
-            $("#status").change(function () {
+
+            //to show/select Hospital
+            $("#status").click(function () {
                 console.log($("#status").find(":selected").val());
                 if ($("#status").find(":selected").val() == "Available") {
                     $("#currentHospital").show();
+                    console.log("Show : " + $("#status").find(":selected").val());
+
                 }
                 else {
                     $("#currentHospital").hide();
+                    console.log("Hide : " + $("#status").find(":selected").val());
                 }
             });
         });

@@ -12,29 +12,29 @@
         <div class="card text-dark bg-light mb-3 float-left w-auto">
             <div class="row">
                 <div class="col float-left">
-                    @{ 
+                    @{
                         var user = UserManager.FindByIdAsync(Model.OwnerID).Result;
                         if (user != null && user.ProfilePicture != null)
                         {
-                        <img style="width:40px;height:40px; object-fit:cover; border-radius:30px" src="data:image/*;base64,@(Convert.ToBase64String(user.ProfilePicture))">
-                    }
-                    else
-                    {
-                        if ("Male".Equals(Model.Gender.ToString()))
-                        {
-                            @*<div class="col-md-3">*@
-                            <img class="img-fluid" style="border-bottom-left-radius:20px;border-top-left-radius:20px;" src="/Images/img_avatar3.png" alt="...">
-                            @*</div>*@
+                            <img style="border-bottom-left-radius: 20px; border-top-left-radius: 20px;object-fit:cover;" src="data:image/*;base64,@(Convert.ToBase64String(user.ProfilePicture))">
                         }
                         else
                         {
-                            @*<div class="col-md-3">*@
-                            <img class="img-fluid" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
-                            @*</div>*@
+                            if ("Male".Equals(Model.Gender.ToString()))
+                            {
+                                @*<div class="col-md-3">*@
+                                <img class="img-fluid" style="border-bottom-left-radius:20px;border-top-left-radius:20px;object-fit:cover" src="/Images/img_avatar3.png" alt="...">
+                                @*</div>*@
+                            }
+                            else
+                            {
+                                @*<div class="col-md-3">*@
+                                <img class="img-fluid" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
+                                @*</div>*@
+                            }
                         }
                     }
-                        }
-                    </div>
+                </div>
                 <div class="col float-right">
                     <div class="card-body">
                         @*<div class="col-md-6 float-left">*@
@@ -46,19 +46,20 @@
                         <p class="card-text text-muted">
                             @Html.DisplayFor(modelItem => Model.Experience) years experience overall
                         </p>
+                        <text>Verification Status: </text>
                         @if (Model.IsVerified)
                         {
                             <span class="card-text text-success">
-                                <i class="fa fa-check-circle" style="color:green"></i>
-                                Medical Registration Verified
+                                @*<i class="fa fa-check-circle" style="color:green"></i>*@
+                                Verified
                             </span>
                         }
                         else
                         {
-                            <span class="card-text text-danger">Pending Verification</span>
+                            <span class="card-text text-danger">Pending</span>
                         }
                         <br />
-                        <p class="card-text">@Html.DisplayFor(modelItem => Model.Summary)</p>                    
+                        <p class="card-text">@Html.DisplayFor(modelItem => Model.Summary)</p>
                         @*</div>*@
                     </div>
                 </div>
@@ -142,8 +143,9 @@
             <p class="card-text">@Html.DisplayFor(modelItem => Model.Hospital.Address)</p>
         </div>
         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-            <p class="card-text">@Html.DisplayFor(modelItem => Model.PhoneNumber)</p>
-            <a href="tel:@Model.PhoneNumber">@Html.DisplayFor(model => model.PhoneNumber)</a>
+            <p>
+                <a href="tel:@Model.PhoneNumber">@Html.DisplayFor(model => model.PhoneNumber)</a>
+            </p>
             <p class="card-text">@Html.DisplayFor(modelItem => Model.EmailId)</p>
 
         </div>
@@ -165,13 +167,44 @@ User, Model, Operations.Approve)).Succeeded)
     @if ((await AuthorizationService.AuthorizeAsync(
 User, Model, Operations.Reject)).Succeeded)
     {
-        <form style="display:inline;" method="post">
+        <button class="btn btn-danger" data-toggle="modal" data-target="#RejectModal">Reject</button>
+
+        @*<form style="display:inline;" method="post">
             <input type="hidden" name="id" value="@Model.ID" />
             <input type="hidden" name="status" value=false />
             <button type="submit" class="btn btn-xs btn-danger">Reject</button>
-        </form>
+        </form>*@
+        <!-- Modal -->
+        <div class="modal fade" id="RejectModal" tabindex="-1" role="dialog" aria-labelledby="RejectModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Reject Reason</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form style="display:inline;" method="post">
+                            <input type="hidden" name="id" value="@Model.ID" />
+                            <input type="hidden" name="status" value=false />
+                            <div class="form-group">
+                                <label class="col-form-label">Reason:</label>
+                                <textarea class="form-control" name="rejectReason" required></textarea>
+                            </div>
+                            @*<button type="submit" class="btn btn-xs btn-danger">Reject</button>*@
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-xs btn-danger">Reject</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 }
+<br />
 <hr />
 <div>
     @if ((await AuthorizationService.AuthorizeAsync(User, Model, Operations.Update)).Succeeded)

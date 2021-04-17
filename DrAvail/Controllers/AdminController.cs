@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DrAvail.Controllers
 {
+    [Authorize(Roles = "Administrators")]
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -31,7 +32,7 @@ namespace DrAvail.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Administrators")]
+        //[Authorize(Roles = "Administrators")]
         public async Task<IActionResult> PendingApproval(int? pageIndex)
         {
             var Message = $"Administrator visited PendingApproval page at {DateTime.Now}";
@@ -39,14 +40,14 @@ namespace DrAvail.Controllers
             return View(await _doctorService.GetDocotrsByVerification());
         }
 
-        [Authorize(Roles = "Administrators")]
+        //[Authorize(Roles = "Administrators")]
         public async Task<IActionResult> ViewMessages()
         {
             var messages = from m in _context.Messages select m;
             return View(await messages.ToListAsync());
         }
         
-        [Authorize(Roles = "Administrators")]
+        //[Authorize(Roles = "Administrators")]
         public async Task<IActionResult> ReplyMessage(int? ID)
         {
             if(ID == null)
@@ -64,7 +65,7 @@ namespace DrAvail.Controllers
             return View(message);
         }
 
-        [Authorize(Roles = "Administrators")]
+        //[Authorize(Roles = "Administrators")]
         [HttpPost, ActionName("ReplyMessage")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ReplyMessageOnPost(int? ID, string AdminResponse)
@@ -95,10 +96,15 @@ namespace DrAvail.Controllers
             return RedirectToAction(nameof(ViewMessages));
         }
 
-        [Authorize(Roles = "Administrators")]
+        //[Authorize(Roles = "Administrators")]
         public JsonResult GetMessageCount()
         {
             return Json(_context.Messages.Where(m => string.IsNullOrWhiteSpace(m.AdminResponse)).Count());
+        }
+
+        public JsonResult GetPendingApprovalCount()
+        {
+            return Json(_doctorService.GetPendingVerificationCount());
         }
     }
 }

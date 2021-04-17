@@ -177,6 +177,7 @@ namespace DrAvail.Controllers
             }
             else
             {
+                
                 DoctorService.SendEmail(doctor.EmailId, operation.Name, "Your account is rejected. Please review and update your profile <br> Reject Reason: <br>" + rejectReason);
 
             }
@@ -193,13 +194,13 @@ namespace DrAvail.Controllers
                 return Forbid();
             }
 
-            string ownerID = UserManager.GetUserId(User);
+            /*string ownerID = UserManager.GetUserId(User);
             //redirect to edit page if user already added details first time
             int doctorId = DoctorService.GetDoctorIDByOwnerID(ownerID);
             if (doctorId!=0)
             {
                 return RedirectToAction(nameof(Edit), new { id = doctorId});
-            }
+            }*/
 
             //adding details for first time
             Doctor = new Doctor

@@ -97,5 +97,10 @@ namespace DrAvail.Services
             }
             return 0;
         }
+
+        public int GetPendingVerificationCount()
+        {
+            return _context.Doctors.Where(d => d.IsVerified == false).Count();
+        }
     }
 }

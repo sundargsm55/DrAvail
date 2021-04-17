@@ -21,5 +21,7 @@ namespace DrAvail.Services
         bool DoctorExistsByOwnerID(string id);
 
         int GetDoctorIDByOwnerID(string ownerId);
+
+        int GetPendingVerificationCount();
     }
 }

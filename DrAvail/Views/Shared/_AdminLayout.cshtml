@@ -15,7 +15,6 @@
             /*background-repeat: no-repeat;
             background-attachment: fixed;
             background-size: cover;*/
-            
         }
     </style>
 </head>
@@ -43,20 +42,23 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Hospitals" asp-action="Index">Hospitals</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="PendingApproval">Pending Approval</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="PendingApproval">
+                                Pending Approval
+                                <span class="badge badge-danger" id="bdgPendingCount" style="display:none"></span>
+                            </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ViewMessages">
                                 Messages
-                                <span class="badge badge-danger" id="txtMsgCount" style="display:none"></span>
+                                <span class="badge badge-danger" id="bdgMsgCount" style="display:none"></span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         @*<li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a>
-                        </li>*@
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a>
+                            </li>*@
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -86,16 +88,30 @@
             $.getJSON(url, {}, function (data) {
                 if (data == 0) {
                     console.log("No new Messages!!!");
-                    $("#txtMsgCount").removeClass("badge-danger").addClass("badge-light");
+                    $("#bdgMsgCount").removeClass("badge-danger").addClass("badge-light");
 
                 }
                 else {
-                    $("#txtMsgCount").removeClass("badge-light").addClass("badge-danger");
+                    $("#bdgMsgCount").removeClass("badge-light").addClass("badge-danger");
                 }
-                $("#txtMsgCount").text(data);
-                $("#txtMsgCount").show();
-                console.log(data);
+                $("#bdgMsgCount").text(data);
+                $("#bdgMsgCount").show();
+                console.log("New Messages: " + data);
+            });
 
+            var pendingcountURL = '@Url.Content("~/")' + "Admin/GetPendingApprovalCount";
+            $.getJSON(pendingcountURL, {}, function (data) {
+                if (data == 0) {
+                    console.log("No pending verification!!!");
+                    $("#bdgPendingCount").removeClass("badge-danger").addClass("badge-light");
+
+                }
+                else {
+                    $("#bdgPendingCount").removeClass("badge-light").addClass("badge-danger");
+                }
+                $("#bdgPendingCount").text(data);
+                $("#bdgPendingCount").show();
+                console.log("Pending Verification: " + data);
                 });
         });
     </script>

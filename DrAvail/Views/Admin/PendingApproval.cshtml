@@ -27,7 +27,7 @@
                     var user = UserManager.FindByIdAsync(item.OwnerID).Result;
                     if (user != null && user.ProfilePicture != null)
                     {
-                        <img class="img-fluid col-sm-3 p-0" style="object-fit:cover;border-bottom-left-radius:20px;border-top-left-radius:20px" src="data:image/*;base64,@Convert.ToBase64String(user.ProfilePicture))">
+                        <img class="img-fluid col-sm-3 p-0" style="object-fit:cover;border-bottom-left-radius:20px;border-top-left-radius:20px" src="data:image/*;base64,@(Convert.ToBase64String(user.ProfilePicture))">
                     }
                     else
                     {
@@ -47,7 +47,7 @@
                             <h5 class="card-title">
                                 @Html.DisplayFor(modelItem => item.Name)
                             </h5>
-                            <hr />
+                            @*<hr />
                             @if (item.IsVerified)
                             {
                                 <span class="card-text text-success font-weight-bold">Verified</span>
@@ -55,9 +55,9 @@
                             }
                             else
                             {
-                                <span class="card-text text-danger font-weight-bold">Pending Verification</span>
+                                <span class="card-text text-danger font-weight-bold">Pending</span>
 
-                            }
+                            }*@
                             <p class="card-text">@Html.DisplayFor(modelItem => item.Speciality)</p>
                             <p class="card-text text-muted">
                                 @Html.DisplayFor(modelItem => item.Experience) years experience overall
