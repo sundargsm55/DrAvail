@@ -38,10 +38,8 @@
                         </div>
                         <label asp-for="Name" class="control-label" hidden></label>
                         <input asp-for="Name" class="form-control" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                        <div class="valid-feedback">Name is valid</div>
-                        <div class="invalid-feedback">Enter a valid name</div>
                     </div>
+                    <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6 input-group">
@@ -49,8 +47,8 @@
                             <span asp-for="RegNumber" class="input-group-text">Registration Number</span>
                         </div>
                         <input asp-for="RegNumber" class="form-control" />
-                        <span asp-validation-for="RegNumber" class="text-danger"></span>
                     </div>
+                    <span asp-validation-for="RegNumber" class="text-danger"></span>
                 </div>
                 <div class="form-row">
                     <div class="form-group input-group col-md-4">
@@ -60,8 +58,8 @@
                         <select id="Speciality" asp-for="Speciality" class="form-control custom-select" asp-items="ViewBag.Speciality">
                             <option style="text-align:center" value="">--Select--</option>
                         </select>
-                        <span asp-validation-for="Speciality" class="text-danger"></span>
                     </div>
+                    <span asp-validation-for="Speciality" class="text-danger"></span>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
@@ -77,8 +75,9 @@
                         <span asp-validation-for="Age" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-3">
-                        <label asp-for="DateOfBirth" class="control-label">Date of Birth
-                        <i class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" title="Date of Birth is only for calculating your Age and won't be visible to public or other users."></i>
+                        <label asp-for="DateOfBirth" class="control-label">
+                            Date of Birth
+                            <i class="fa fa-info-circle" style="color:skyblue;" aria-hidden="true" data-toggle="tooltip" title="Date of Birth is only for calculating your Age and won't be visible to public or other users."></i>
                         </label>
                         <input asp-for="DateOfBirth" class="form-control" id="dob" />
                         <span asp-validation-for="DateOfBirth" class="text-danger"></span>
@@ -120,12 +119,14 @@
                         <input class="form-check-input" asp-for="IsVerified" /> @Html.DisplayNameFor(model => model.IsVerified)
                     </label>
                 </div>
-                <div class="form-group input-group">
-                    @*<label asp-for="Summary" class="control-label"></label>*@
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Add a bio</span>
+                <div class="form-row">
+                    <div class="form-group input-group">
+                        @*<label asp-for="Summary" class="control-label"></label>*@
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Add a bio</span>
+                        </div>
+                        <textarea asp-for="Summary" class="form-control"></textarea>
                     </div>
-                    <textarea asp-for="Summary" class="form-control"></textarea>
                     <span asp-validation-for="Summary" class="text-danger"></span>
                 </div>
                 <div class="form-row">
@@ -243,7 +244,7 @@
                             <input asp-for="CommonAvailability.CommonDays.MorningStartTime" class="form-control" />
                             <span asp-validation-for="CommonAvailability.CommonDays.MorningStartTime" class="text-danger"></span>
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-3" hidden>
                             <label asp-for="CommonAvailability.AvailabilityType" class="control-label">Availability Type</label>
                             <input asp-for="CommonAvailability.AvailabilityType" id="availabilityType" class="form-control" disabled />
                             <span asp-validation-for="CommonAvailability.AvailabilityType" class="text-danger"></span>
@@ -251,7 +252,7 @@
                         <div class="form-group col-md-3">
                             <label asp-for="CommonAvailability.CommonDays.MorningStartHour" class="control-label">Morning Start Hour</label>
                             <select asp-for="CommonAvailability.CommonDays.MorningStartHour" class="form-control" size="1" id="commonMorningStarHour">
-                                <option value="00">12(AM)</option>
+                                <option value="00">00</option>
                                 <option>1</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -264,8 +265,8 @@
                                 <option>10</option>
                                 <option>11</option>
                                 <option>12</option>
-                                <option value="13">13(1PM)</option>
-                                <option value="14">14(2PM)</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
                             </select>
                             <span asp-validation-for="CommonAvailability.CommonDays.MorningStartHour" class="text-danger"></span>
                         </div>
@@ -287,12 +288,30 @@
                         <div class="form-group col-md-3">
                             <label asp-for="CommonAvailability.CommonDays.MorningEndHour" class="control-label">Morning End Hour</label>
                             <select asp-for="CommonAvailability.CommonDays.MorningEndHour" class="form-control" size="1" id="CommonMorningEndHour">
+                                <option value="00">00</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                                <option>8</option>
+                                <option>9</option>
+                                <option>10</option>
+                                <option>11</option>
+                                <option>12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
                             </select>
                             <span asp-validation-for="CommonAvailability.CommonDays.MorningEndHour" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-3">
                             <label asp-for="CommonAvailability.CommonDays.MorningEndMinute" class="control-label">Morning End Minute</label>
                             <select asp-for="CommonAvailability.CommonDays.MorningEndMinute" class="form-control" size="1" id="CommonMorningEndMinute">
+                                <option>15</option>
+                                <option>30</option>
+                                <option>45</option>
                             </select>
                             <span asp-validation-for="CommonAvailability.CommonDays.MorningEndMinute" class="text-danger"></span>
                         </div>
@@ -306,23 +325,58 @@
                         <div class="form-group col-md-3">
                             <label asp-for="CommonAvailability.CommonDays.EveningStartHour" class="control-label">Evening Start Hour</label>
                             <select asp-for="CommonAvailability.CommonDays.EveningStartHour" class="form-control" id="commonEveningStarHour" size="1">
+                                <option>14</option>
+                                <option>15</option>
+                                <option>16</option>
+                                <option>17</option>
+                                <option>18</option>
+                                <option>19</option>
+                                <option>20</option>
+                                <option>21</option>
+                                <option>22</option>
+                                <option>23</option>
                             </select>
                             <span asp-validation-for="CommonAvailability.CommonDays.EveningStartHour" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.CommonDays.EveningStartTime" class="control-label">Evening Start Minute</label>
-                            <select asp-for="CommonAvailability.CommonDays.EveningStartTime" class="form-control" size="1" id="CommonEveningEndMinute">
+                            <label asp-for="CommonAvailability.CommonDays.EveningStartMinute" class="control-label">Evening Start Minute</label>
+                            <select asp-for="CommonAvailability.CommonDays.EveningStartMinute" class="form-control" size="1" id="CommonEveningStartMinute">
                                 <option>00</option>
                                 <option>15</option>
                                 <option>30</option>
                                 <option>45</option>
                             </select>
-                            <span asp-validation-for="CommonAvailability.CommonDays.EveningStartTime" class="text-danger"></span>
+                            <span asp-validation-for="CommonAvailability.CommonDays.EveningStartMinute" class="text-danger"></span>
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-3" hidden>
                             <label asp-for="CommonAvailability.CommonDays.EveningEndTime" class="control-label">Evening End Time</label>
                             <input asp-for="CommonAvailability.CommonDays.EveningEndTime" class="form-control" />
                             <span asp-validation-for="CommonAvailability.CommonDays.EveningEndTime" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="CommonAvailability.CommonDays.EveningEndHour" class="control-label">Evening End Hour</label>
+                            <select asp-for="CommonAvailability.CommonDays.EveningEndHour" class="form-control" size="1" id="CommonEveningEndHour">
+                                <option>14</option>
+                                <option>15</option>
+                                <option>16</option>
+                                <option>17</option>
+                                <option>18</option>
+                                <option>19</option>
+                                <option>20</option>
+                                <option>21</option>
+                                <option>22</option>
+                                <option>23</option>
+                            </select>
+                            <span asp-validation-for="CommonAvailability.CommonDays.EveningEndHour" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="CommonAvailability.CommonDays.EveningEndMinute" class="control-label">Evening End Minute</label>
+                            <select asp-for="CommonAvailability.CommonDays.EveningEndMinute" class="form-control" size="1" id="CommonEveningEndMinute">
+                                <option>15</option>
+                                <option>30</option>
+                                <option>45</option>
+                            </select>
+                            <span asp-validation-for="CommonAvailability.CommonDays.EveningEndMinute" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -408,7 +462,6 @@
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
-
     </div>
 
     @*</div>*@
@@ -417,31 +470,117 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script type="text/javascript">
-
         $(document).ready(function () {
-            var timing = ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"];
+            var MHours = ["00", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"];
+            var Times = ["00", "15", "30", "45"];
+            var EHours = ["14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
+
             //setting value to availabilityType
             $("#availabilityType").val("Common");
 
+            //Need to check and impletement chages when start mnutes changes
             //commonMorningStarHour
             $("#commonMorningStarHour").change(function (event) {
                 //debugger;
                 var startHour = $("#commonMorningStarHour").find(":selected").val();
                 var startminute = $("#CommonMorningStartMinute").find(":selected").val();
-                if (jQuery.inArray(startHour, timing)!=-1) {
-                    var index = timing.indexOf(startHour);
-                    console.log("Index: " + index);
+                if (jQuery.inArray(startHour, MHours) != -1) {
+                    var Hindex = MHours.indexOf(startHour);
+                    //console.log("Index: " + index);
                     var items = "";
-                    console.log("Timing array length: " + timing.length);
-                    $.each(timing, function (i, value) {
-                        console.log("i: " + i)
-                        if (i >= index) {
+                    //console.log("Timing array length: " + MHours.length);
+                    $.each(MHours, function (i, value) {
+                        //console.log("i: " + i)
+                        if (i >= Hindex) {
                             items += "<option value='" + value + "'>" + value + "</option>";
                         }
                     });
+                    var Tindex = Times.indexOf(startminute);
+                    var timings = "";
+                    $.each(Times, function (i, value) {
+                        if (i > Tindex) {
+                            timings += "<option value='" + value + "'>" + value + "</option>";
+                        }
+                    })
                     $("#CommonMorningEndHour").html(items);
+                    $("#CommonMorningEndMinute").html(timings);
                 }
+            });
 
+            //MorningEndHour
+            $("#CommonMorningEndHour").change(function () {
+                var startHour = $("#commonMorningStarHour").find(":selected").val();
+                var endHour = $("#CommonMorningEndHour").find(":selected").val();
+                if (endHour > startHour) {
+                    var timings = "";
+                    $.each(Times, function (i, value) {
+                        timings += "<option value='" + value + "'>" + value + "</option>";
+                    });
+                    $("#CommonMorningEndMinute").html(timings);
+                }
+                else {
+                    var startminute = $("#CommonMorningStartMinute").find(":selected").val();
+                    var Tindex = Times.indexOf(startminute);
+                    var timings = "";
+                    $.each(Times, function (i, value) {
+                        if (i > Tindex) {
+                            timings += "<option value='" + value + "'>" + value + "</option>";
+                        }
+                    });
+                    $("#CommonMorningEndMinute").html(timings);
+                }
+            });
+
+            //commonEveningStarHour
+            $("#commonEveningStarHour").change(function () {
+                //debugger;
+                var startHour = $("#commonEveningStarHour").find(":selected").val();
+                var startminute = $("#CommonEveningStartMinute").find(":selected").val();
+                if (jQuery.inArray(startHour, EHours) != -1) {
+                    var Hindex = EHours.indexOf(startHour);
+                    //console.log("Index: " + index);
+                    var items = "";
+                    //console.log("Timing array length: " + Hours.length);
+                    $.each(EHours, function (i, value) {
+                        //console.log("i: " + i)
+                        if (i >= Hindex) {
+                            items += "<option value='" + value + "'>" + value + "</option>";
+                        }
+                    });
+                    var Tindex = Times.indexOf(startminute);
+                    var timings = "";
+                    $.each(Times, function (i, value) {
+                        if (i > Tindex) {
+                            timings += "<option value='" + value + "'>" + value + "</option>";
+                        }
+                    })
+                    $("#CommonEveningEndHour").html(items);
+                    $("#CommonEveningEndMinute").html(timings);
+                }
+            });
+
+            //commonEveningEndHour
+            $("#CommonEveningEndHour").change(function () {
+                var startHour = $("#commonEveningStarHour").find(":selected").val();
+                var endHour = $("#CommonEveningEndHour").find(":selected").val();
+                if (endHour > startHour) {
+                    var timings = "";
+                    $.each(Times, function (i, value) {
+                        timings += "<option value='" + value + "'>" + value + "</option>";
+                    });
+                    $("#CommonEveningEndMinute").html(timings);
+                }
+                else {
+                    var startminute = $("#CommonEveningStartMinute").find(":selected").val();
+                    var Tindex = Times.indexOf(startminute);
+                    var timings = "";
+                    $.each(Times, function (i, value) {
+                        if (i > Tindex) {
+                            timings += "<option value='" + value + "'>" + value + "</option>";
+                        }
+                    });
+                    $("#CommonEveningEndMinute").html(timings);
+                }
             });
 
             $("#txtExperience").change(function () {
@@ -474,8 +613,8 @@
                     alert("Enter Date of Birth");
                 }
             });
-        //for doctor
-        $("#txtPincode").keyup(function () {
+            //for doctor
+            $("#txtPincode").keyup(function () {
                 //debugger;
                 //var source = "#txtPincode";
                 //console.log("Pincode: " + $("#txtPincode").val());
@@ -501,7 +640,7 @@
                 }
             });
             //for hostpital
-        $("#txtHospitalPincode").keyup(function () {
+            $("#txtHospitalPincode").keyup(function () {
                 //debugger;
                 //var source = "#txtPincode";
                 //console.log("Pincode: " + $("#txtPincode").val());
@@ -529,7 +668,7 @@
 
             //City select list
             //on mousedown event
-        $("select").mousedown(function (event) {
+            $("select").mousedown(function (event) {
                 var source = event.currentTarget;
                 if (source.id == "Speciality") return;
                 //console.log("Option lenght: " + $(source).find("option").length);
@@ -538,7 +677,7 @@
                 }
             });
             //on click event
-        $("select").click(function (event) {
+            $("select").click(function (event) {
                 var source = event.currentTarget;
                 if (source.id == "Speciality") return;
                 //console.log($(source).attr("size"));
@@ -548,7 +687,6 @@
                         $(source).addClass("selectOpen");
                         $(source).attr("size", '5');
                     }
-
                 }
                 else {
                     $(source).removeClass("selectOpen");
@@ -557,7 +695,15 @@
             });
 
             //restting when loses focus
-        $("select").focusout(function (event) {
+            $("select").focusout(function (event) {
+                var source = event.currentTarget;
+                if (source.id == "Speciality") return;
+
+                $(source).removeClass("selectOpen");
+                $(source).attr("size", '1');
+            });
+
+            $("select").mouseleave(function (event) {
                 var source = event.currentTarget;
                 if (source.id == "Speciality") return;
 

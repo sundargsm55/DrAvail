@@ -10,6 +10,7 @@ namespace DrAvail.Models
         [Microsoft.EntityFrameworkCore.Owned]
         public class Timings
         {
+            //Morning start
             [NotMapped]
             public string MorningStartHour { get; set; }
 
@@ -31,6 +32,7 @@ namespace DrAvail.Models
             //    }
             // }
 
+            //Morning End
             [NotMapped]
             public string MorningEndHour { get; set; }
 
@@ -40,6 +42,7 @@ namespace DrAvail.Models
             [DataType(DataType.Time)]
             public DateTime MorningEndTime { get; set; }
 
+            //Evening start
             [NotMapped]
             public string EveningStartHour { get; set; }
 
@@ -48,6 +51,13 @@ namespace DrAvail.Models
 
             [DataType(DataType.Time)]
             public DateTime EveningStartTime { get; set; }
+
+            //Evening End
+            [NotMapped]
+            public string EveningEndHour { get; set; }
+
+            [NotMapped]
+            public string EveningEndMinute { get; set; }
 
             [DataType(DataType.Time)]
             public DateTime EveningEndTime { get; set; }

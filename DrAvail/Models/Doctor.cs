@@ -23,7 +23,7 @@ namespace DrAvail.Models
 
         //Need to be unique
         [Required]
-        [MaxLength(20)]
+        [MinLength(6),MaxLength(20)]
         [Display(Name ="Registration Number")]
         public string RegNumber { get; set; }
 
