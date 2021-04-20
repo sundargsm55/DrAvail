@@ -266,7 +266,6 @@
                                 <option>11</option>
                                 <option>12</option>
                                 <option value="13">13</option>
-                                <option value="14">14</option>
                             </select>
                             <span asp-validation-for="CommonAvailability.CommonDays.MorningStartHour" class="text-danger"></span>
                         </div>
@@ -411,7 +410,6 @@
                             <option>11</option>
                             <option>12</option>
                             <option value="13">13</option>
-                            <option value="14">14</option>
                         </select>
                         <span asp-validation-for="CommonAvailability.Weekends.MorningStartHour" class="text-danger"></span>
                     </div>
@@ -586,7 +584,7 @@
         $(document).ready(function () {
             var MHours = ["00", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"];
             var Times = ["00", "15", "30", "45"];
-            var EHours = ["14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
+            var EHours = ["14", "15", "16", "17", "18", "19", "20", "21", "22", "23","00"];
 
             //setting value to availabilityType
             $("#availabilityType").val("Common");
@@ -624,6 +622,7 @@
                 var startMinute = $("#commonMorningStartMinute").find(":selected").val();
                 var startHour = $("#commonMorningStartHour").find(":selected").val();
                 var endHour = $("#commonMorningEndHour").find(":selected").val();
+                var Hindex = MHours.indexOf(startHour);
                 var Tindex = Times.indexOf(startMinute);
                 if (Tindex != Times.length - 1) {
                     var timings = "";
@@ -635,7 +634,7 @@
                     //if user previously selected 45, it should have incremented the endhour so if user changes minute back
                     //end hour should match with starthour
                     if (endHour > startHour) {
-                        var Hindex = MHours.indexOf(startHour);
+                        //var Hindex = MHours.indexOf(startHour);
                         var items = "";
                         $.each(MHours, function (i, value) {
                             if (i >= Hindex) {
@@ -648,11 +647,17 @@
                 }
                 else {
                     var timings = "";
-                    $.each(Times, function (i, value) {
+                    if (Hindex == MHours.length - 2) {
+                        timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
+                        console.log("timing::  " + timings);
+                    }
+                    else{
+                        $.each(Times, function (i, value) {
                             timings += "<option value='" + value + "'>" + value + "</option>";
-                    });
+                        });
+                    }
+                    
                     if (jQuery.inArray(startHour, MHours) != -1) {
-                        var Hindex = MHours.indexOf(startHour);
                         var items = "";
                         $.each(MHours, function (i, value) {
                             if (i > Hindex) {
@@ -669,8 +674,16 @@
             $("#commonMorningEndHour").change(function () {
                 var startHour = $("#commonMorningStartHour").find(":selected").val();
                 var endHour = $("#commonMorningEndHour").find(":selected").val();
-                if (endHour > startHour) {
-                    var timings = "";
+                var endHourIndex = MHours.indexOf(endHour);
+                var timings = "";
+
+                if (endHourIndex == MHours.length - 1) {
+                    timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
+                    //console.log("timings::: " + timings);
+                    $("#commonMorningEndMinute").html(timings);
+                }
+                else if (endHour > startHour) {
+                    //var timings = "";
                     $.each(Times, function (i, value) {
                         timings += "<option value='" + value + "'>" + value + "</option>";
                     });
@@ -679,7 +692,6 @@
                 else {
                     var startminute = $("#commonMorningStartMinute").find(":selected").val();
                     var Tindex = Times.indexOf(startminute);
-                    var timings = "";
                     $.each(Times, function (i, value) {
                         if (i > Tindex) {
                             timings += "<option value='" + value + "'>" + value + "</option>";
@@ -723,16 +735,25 @@
                 var startHour = $("#commonEveningStartHour").find(":selected").val();
                 var endHour = $("#commonEveningEndHour").find(":selected").val();
                 var Tindex = Times.indexOf(startminute);
-                if (Tindex != Times.length - 1) {
-                    var timings = "";
+                var Hindex = EHours.indexOf(startHour);
+                var endHourIndex = EHours.indexOf(endHour);
+                var timings = "";
+                var items = "";
+
+                if (Hindex == EHours.length - 2 && Tindex == Times.length - 1) {
+                    timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
+                    items += "<option value='" + EHours[EHours.length - 1] + "'>" + EHours[EHours.length - 1] + "</option>";
+                    $("#commonEveningEndHour").html(items);
+                    $("#commonEveningEndMinute").html(timings);
+                }
+                else if (Tindex != Times.length - 1) {
                     $.each(Times, function (i, value) {
                         if (i > Tindex) {
                             timings += "<option value='" + value + "'>" + value + "</option>";
                         }
                     });
-                    if (endHour > startHour) {
-                        var Hindex = EHours.indexOf(startHour);
-                        var items = "";
+                    if (endHourIndex > Hindex) {
+                        //var Hindex = EHours.indexOf(startHour);
                         $.each(EHours, function (i, value) {
                             if (i >= Hindex) {
                                 items += "<option value='" + value + "'>" + value + "</option>";
@@ -743,13 +764,12 @@
                     $("#commonEveningEndMinute").html(timings);
                 }
                 else {
-                    var timings = "";
+                    //var timings = "";
                     $.each(Times, function (i, value) {
                         timings += "<option value='" + value + "'>" + value + "</option>";
                     });
                     if (jQuery.inArray(startHour, MHours) != -1) {
-                        var Hindex = EHours.indexOf(startHour);
-                        var items = "";
+                        //var items = "";
                         $.each(EHours, function (i, value) {
                             if (i > Hindex) {
                                 items += "<option value='" + value + "'>" + value + "</option>";
@@ -765,8 +785,17 @@
             $("#commonEveningEndHour").change(function () {
                 var startHour = $("#commonEveningStartHour").find(":selected").val();
                 var endHour = $("#commonEveningEndHour").find(":selected").val();
-                if (endHour > startHour) {
-                    var timings = "";
+                var Hindex = EHours.indexOf(endHour);
+                var timings = "";
+                var items = "";
+
+                if (Hindex == EHours.length - 1) {
+                    timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
+                    //items += "<option value='" + EHours[EHours.length - 1] + "'>" + EHours[EHours.length - 1] + "</option>";
+                    //$("#commonEveningEndHour").html(items);
+                    $("#commonEveningEndMinute").html(timings);
+                }
+                else if (endHour > startHour) {
                     $.each(Times, function (i, value) {
                         timings += "<option value='" + value + "'>" + value + "</option>";
                     });
@@ -819,6 +848,7 @@
                 var startMinute = $("#weekendMorningStartMinute").find(":selected").val();
                 var startHour = $("#weekendMorningStartHour").find(":selected").val();
                 var endHour = $("#weekendMorningEndHour").find(":selected").val();
+                var Hindex = MHours.indexOf(startHour);
                 var Tindex = Times.indexOf(startMinute);
                 if (Tindex != Times.length - 1) {
                     var timings = "";
@@ -830,7 +860,6 @@
                     //if user previously selected 45, it should have incremented the endhour so if user changes minute back
                     //end hour should match with starthour
                     if (endHour > startHour) {
-                        var Hindex = MHours.indexOf(startHour);
                         var items = "";
                         $.each(MHours, function (i, value) {
                             if (i >= Hindex) {
@@ -843,9 +872,15 @@
                 }
                 else {
                     var timings = "";
-                    $.each(Times, function (i, value) {
-                        timings += "<option value='" + value + "'>" + value + "</option>";
-                    });
+                    if (Hindex == MHours.length - 2) {
+                        timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
+                        console.log("timing::  " + timings);
+                    }
+                    else {
+                        $.each(Times, function (i, value) {
+                            timings += "<option value='" + value + "'>" + value + "</option>";
+                        });
+                    }
                     if (jQuery.inArray(startHour, MHours) != -1) {
                         var Hindex = MHours.indexOf(startHour);
                         var items = "";
@@ -864,8 +899,15 @@
             $("#weekendMorningEndHour").change(function () {
                 var startHour = $("#weekendMorningStartHour").find(":selected").val();
                 var endHour = $("#weekendMorningEndHour").find(":selected").val();
-                if (endHour > startHour) {
-                    var timings = "";
+                var endHourIndex = MHours.indexOf(endHour);
+                var timings = "";
+
+                if (endHourIndex == MHours.length - 1) {
+                    timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
+                    //console.log("timings::: " + timings);
+                    $("#commonMorningEndMinute").html(timings);
+                }
+                else if (endHour > startHour) {
                     $.each(Times, function (i, value) {
                         timings += "<option value='" + value + "'>" + value + "</option>";
                     });
@@ -874,7 +916,6 @@
                 else {
                     var startminute = $("#weekendMorningStartMinute").find(":selected").val();
                     var Tindex = Times.indexOf(startminute);
-                    var timings = "";
                     $.each(Times, function (i, value) {
                         if (i > Tindex) {
                             timings += "<option value='" + value + "'>" + value + "</option>";
@@ -918,16 +959,25 @@
                 var startHour = $("#weekendEveningStartHour").find(":selected").val();
                 var endHour = $("#weekendEveningEndHour").find(":selected").val();
                 var Tindex = Times.indexOf(startminute);
-                if (Tindex != Times.length - 1) {
-                    var timings = "";
+                var Hindex = EHours.indexOf(startHour);
+                var endHourIndex = EHours.indexOf(endHour);
+                var timings = "";
+                var items = "";
+
+                if (Hindex == EHours.length - 2 && Tindex == Times.length - 1) {
+                    timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
+                    items += "<option value='" + EHours[EHours.length - 1] + "'>" + EHours[EHours.length - 1] + "</option>";
+                    $("#commonEveningEndHour").html(items);
+                    $("#commonEveningEndMinute").html(timings);
+                }
+                else if (Tindex != Times.length - 1) {
                     $.each(Times, function (i, value) {
                         if (i > Tindex) {
                             timings += "<option value='" + value + "'>" + value + "</option>";
                         }
                     });
-                    if (endHour > startHour) {
-                        var Hindex = EHours.indexOf(startHour);
-                        var items = "";
+                    if (endHourIndex > Hindex) {
+                        //var Hindex = EHours.indexOf(startHour);
                         $.each(EHours, function (i, value) {
                             if (i >= Hindex) {
                                 items += "<option value='" + value + "'>" + value + "</option>";
@@ -938,13 +988,12 @@
                     $("#weekendEveningEndMinute").html(timings);
                 }
                 else {
-                    var timings = "";
+                    //var timings = "";
                     $.each(Times, function (i, value) {
                         timings += "<option value='" + value + "'>" + value + "</option>";
                     });
                     if (jQuery.inArray(startHour, MHours) != -1) {
-                        var Hindex = EHours.indexOf(startHour);
-                        var items = "";
+                        //var items = "";
                         $.each(EHours, function (i, value) {
                             if (i > Hindex) {
                                 items += "<option value='" + value + "'>" + value + "</option>";
@@ -960,8 +1009,18 @@
             $("#weekendEveningEndHour").change(function () {
                 var startHour = $("#weekendEveningStartHour").find(":selected").val();
                 var endHour = $("#weekendEveningEndHour").find(":selected").val();
-                if (endHour > startHour) {
-                    var timings = "";
+                var Hindex = EHours.indexOf(endHour);
+                var timings = "";
+                var items = "";
+
+                if (Hindex == EHours.length - 1) {
+                    timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
+                    //items += "<option value='" + EHours[EHours.length - 1] + "'>" + EHours[EHours.length - 1] + "</option>";
+                    //$("#commonEveningEndHour").html(items);
+                    $("#commonEveningEndMinute").html(timings);
+                }
+                else if (endHour > startHour) {
+                    //var timings = "";
                     $.each(Times, function (i, value) {
                         timings += "<option value='" + value + "'>" + value + "</option>";
                     });
@@ -970,7 +1029,7 @@
                 else {
                     var startminute = $("#weekendEveningStartMinute").find(":selected").val();
                     var Tindex = Times.indexOf(startminute);
-                    var timings = "";
+                    //var timings = "";
                     $.each(Times, function (i, value) {
                         if (i > Tindex) {
                             timings += "<option value='" + value + "'>" + value + "</option>";
