@@ -387,79 +387,85 @@
                 </div>
                 <div class="collapse" id="commonWeekendInput">
                     <h6>Weekend Timings</h6>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" id="sameAsCommonDays" />
+                            same As CommonDays
+                        </label>
+                    </div>
                     <div class="form-row">
                         <div class="form-group col-md-3" hidden>
                             <label asp-for="CommonAvailability.Weekends.MorningStartTime" class="control-label">Morning Start Time</label>
                             <input asp-for="CommonAvailability.Weekends.MorningStartTime" class="form-control" />
                             <span asp-validation-for="CommonAvailability.Weekends.MorningStartTime" class="text-danger"></span>
                         </div>
-                       <div class="form-group col-md-3">
-                        <label asp-for="CommonAvailability.Weekends.MorningStartHour" class="control-label">Morning Start Hour</label>
-                        <select asp-for="CommonAvailability.Weekends.MorningStartHour" class="form-control" size="1" id="weekendMorningStartHour">
-                            <option value="00">00</option>
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                            <option>6</option>
-                            <option>7</option>
-                            <option>8</option>
-                            <option>9</option>
-                            <option>10</option>
-                            <option>11</option>
-                            <option>12</option>
-                            <option value="13">13</option>
-                        </select>
-                        <span asp-validation-for="CommonAvailability.Weekends.MorningStartHour" class="text-danger"></span>
+                        <div class="form-group col-md-3">
+                            <label asp-for="CommonAvailability.Weekends.MorningStartHour" class="control-label">Morning Start Hour</label>
+                            <select asp-for="CommonAvailability.Weekends.MorningStartHour" class="form-control" size="1" id="weekendMorningStartHour">
+                                <option value="00">00</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                                <option>8</option>
+                                <option>9</option>
+                                <option>10</option>
+                                <option>11</option>
+                                <option>12</option>
+                                <option value="13">13</option>
+                            </select>
+                            <span asp-validation-for="CommonAvailability.Weekends.MorningStartHour" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="CommonAvailability.Weekends.MorningStartMinute" class="control-label">Morning Start Minute</label>
+                            <select asp-for="CommonAvailability.Weekends.MorningStartMinute" class="form-control" size="1" id="weekendMorningStartMinute">
+                                <option>00</option>
+                                <option>15</option>
+                                <option>30</option>
+                                <option>45</option>
+                            </select>
+                            <span asp-validation-for="CommonAvailability.Weekends.MorningStartMinute" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label asp-for="CommonAvailability.Weekends.MorningEndHour" class="control-label">Morning End Hour</label>
+                            <select asp-for="CommonAvailability.Weekends.MorningEndHour" class="form-control" size="1" id="weekendMorningEndHour">
+                                <option value="00">00</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                                <option>8</option>
+                                <option>9</option>
+                                <option>10</option>
+                                <option>11</option>
+                                <option>12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                            </select>
+                            <span asp-validation-for="CommonAvailability.Weekends.MorningEndHour" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="CommonAvailability.Weekends.MorningEndMinute" class="control-label">Morning End Minute</label>
+                            <select asp-for="CommonAvailability.Weekends.MorningEndMinute" class="form-control" size="1" id="weekendMorningEndMinute">
+                                <option>15</option>
+                                <option>30</option>
+                                <option>45</option>
+                            </select>
+                            <span asp-validation-for="CommonAvailability.Weekends.MorningEndMinute" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3" hidden>
+                            <label asp-for="CommonAvailability.Weekends.MorningEndTime" class="control-label">Morning End Time</label>
+                            <input asp-for="CommonAvailability.Weekends.MorningEndTime" class="form-control" />
+                            <span asp-validation-for="CommonAvailability.Weekends.MorningEndTime" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="form-group col-md-3">
-                        <label asp-for="CommonAvailability.Weekends.MorningStartMinute" class="control-label">Morning Start Minute</label>
-                        <select asp-for="CommonAvailability.Weekends.MorningStartMinute" class="form-control" size="1" id="weekendMorningStartMinute">
-                            <option>00</option>
-                            <option>15</option>
-                            <option>30</option>
-                            <option>45</option>
-                        </select>
-                        <span asp-validation-for="CommonAvailability.Weekends.MorningStartMinute" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="form-group col-md-3">
-                        <label asp-for="CommonAvailability.Weekends.MorningEndHour" class="control-label">Morning End Hour</label>
-                        <select asp-for="CommonAvailability.Weekends.MorningEndHour" class="form-control" size="1" id="weekendMorningEndHour">
-                            <option value="00">00</option>
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                            <option>6</option>
-                            <option>7</option>
-                            <option>8</option>
-                            <option>9</option>
-                            <option>10</option>
-                            <option>11</option>
-                            <option>12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                        </select>
-                        <span asp-validation-for="CommonAvailability.Weekends.MorningEndHour" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label asp-for="CommonAvailability.Weekends.MorningEndMinute" class="control-label">Morning End Minute</label>
-                        <select asp-for="CommonAvailability.Weekends.MorningEndMinute" class="form-control" size="1" id="weekendMorningEndMinute">
-                            <option>15</option>
-                            <option>30</option>
-                            <option>45</option>
-                        </select>
-                        <span asp-validation-for="CommonAvailability.Weekends.MorningEndMinute" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-3" hidden>
-                        <label asp-for="CommonAvailability.Weekends.MorningEndTime" class="control-label">Morning End Time</label>
-                        <input asp-for="CommonAvailability.Weekends.MorningEndTime" class="form-control" />
-                        <span asp-validation-for="CommonAvailability.Weekends.MorningEndTime" class="text-danger"></span>
-                    </div>
-                </div>
                     <div class="form-row">
                         <div class="form-group col-md-3" hidden>
                             <label asp-for="CommonAvailability.Weekends.EveningStartTime" class="control-label"> Evening Start Time</label>
@@ -470,7 +476,7 @@
                             <label asp-for="CommonAvailability.Weekends.EveningStartHour" class="control-label">Evening Start Hour</label>
                             <select asp-for="CommonAvailability.Weekends.EveningStartHour" class="form-control" id="weekendEveningStartHour" size="1">
                                 <option>14</option>
-                                <option>15</option>
+                                <option value="15">15</option>
                                 <option>16</option>
                                 <option>17</option>
                                 <option>18</option>
@@ -492,7 +498,7 @@
                             </select>
                             <span asp-validation-for="CommonAvailability.Weekends.EveningStartMinute" class="text-danger"></span>
                         </div>
-                        
+
                         <div class="form-group col-md-3">
                             <label asp-for="CommonAvailability.Weekends.EveningEndHour" class="control-label">Evening End Hour</label>
                             <select asp-for="CommonAvailability.Weekends.EveningEndHour" class="form-control" size="1" id="weekendEveningEndHour">
@@ -589,6 +595,7 @@
             //setting value to availabilityType
             $("#availabilityType").val("Common");
 
+
             //commonMorningStartHour
             $("#commonMorningStartHour").change(function () {
                 //debugger;
@@ -656,7 +663,7 @@
                             timings += "<option value='" + value + "'>" + value + "</option>";
                         });
                     }
-                    
+
                     if (jQuery.inArray(startHour, MHours) != -1) {
                         var items = "";
                         $.each(MHours, function (i, value) {
@@ -1038,6 +1045,55 @@
                     $("#weekendEveningEndMinute").html(timings);
                 }
             });
+
+            $("#sameAsCommonDays").click(function () {
+                var n = $("#sameAsCommonDays:checked").length;
+                //console.log("n::: " + n);
+                if (n != 0) {
+                    var timings = "";
+                    $.each(Times, function (i, value) {
+                        timings += "<option value='" + value + "'>" + value + "</option>";
+                    });
+
+                    var morningStartHour = $("#commonMorningStartHour").find(":selected").val();
+                    var morningEndHour = $("#commonMorningEndHour").find(":selected").val();
+                    var morningStartMinute = $("#commonMorningStartMinute").find(":selected").val();
+                    var morningEndMinute = $("#commonMorningEndMinute").find(":selected").val();
+
+                    var eveningStartHour = $("#commonEveningStartHour").find(":selected").val();
+                    var eveningEndHour = $("#commonEveningEndHour").find(":selected").val();
+                    var eveningStartMinute = $("#commonEveningStartMinute").find(":selected").val();
+                    var eveningEndMinute = $("#commonEveningEndMinute").find(":selected").val();
+
+                    $("#weekendMorningStartHour").find("option:contains(" + morningStartHour + ")").attr("selected", true).trigger('change');
+                    $("#weekendMorningStartMinute").find("option:contains(" + morningStartMinute + ")").attr("selected", true).trigger('change');
+                    $("#weekendMorningEndHour").find("option:contains(" + morningEndHour + ")").attr("selected", true).trigger('change');
+                    $("#weekendMorningEndMinute").find("option:contains(" + morningEndMinute + ")").attr("selected", true);
+
+                    $("#weekendEveningStartHour").find("option:contains(" + eveningStartHour + ")").attr("selected", true).trigger('change');
+                    $("#weekendEveningStartMinute").find("option:contains(" + eveningStartMinute + ")").attr("selected", true).trigger('change');
+                    $("#weekendEveningEndHour").find("option:contains(" + eveningEndHour + ")").attr("selected", true).trigger('change');
+                    $("#weekendEveningEndMinute").find("option:contains(" + eveningEndMinute + ")").attr("selected", true);
+                    toggleWeekendTiming(true);
+                }
+                else {
+                    toggleWeekendTiming(false);
+                }
+
+            });
+
+            function toggleWeekendTiming(status) {
+
+                $("#weekendMorningStartHour").attr("disabled", status);
+                $("#weekendMorningEndHour").attr("disabled", status);
+                $("#weekendMorningStartMinute").attr("disabled", status);
+                $("#weekendMorningEndMinute").attr("disabled", status);
+
+                $("#weekendEveningStartHour").attr("disabled", status);
+                $("#weekendEveningEndHour").attr("disabled", status);
+                $("#weekendEveningStartMinute").attr("disabled", status);
+                $("#weekendEveningEndMinute").attr("disabled", status);
+            }
 
             $("#txtExperience").change(function () {
                 //debugger;
