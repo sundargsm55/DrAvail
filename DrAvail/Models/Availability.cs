@@ -76,6 +76,9 @@ namespace DrAvail.Models
 
         public bool IsAvailableOnWeekend { get; set; } = false;
 
+        [NotMapped]
+        public bool WeekendSameAsCommon { get; set; } = false;
+
         [RequireWhenAvailableOnWeekend]
         public Timings Weekends { get; set; }
 

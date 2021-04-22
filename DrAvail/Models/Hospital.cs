@@ -15,6 +15,7 @@ namespace DrAvail.Models
 
         [Required]
         [Display(Name ="Hospital Name")]
+        [RegularExpression("^[a-zA-Z]+(\\s[a-zA-Z]+)?$", ErrorMessage = "Only Alphabets, space allowed.")]
         public string Name { get; set; }
 
         [Required]

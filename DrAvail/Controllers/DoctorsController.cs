@@ -273,6 +273,7 @@ namespace DrAvail.Controllers
             try
             {
                 #region Initialize
+
                 int Year = DateTime.Now.Year;
                 int Month = DateTime.Now.Month;
                 int Day = DateTime.Now.Day;
@@ -302,26 +303,38 @@ namespace DrAvail.Controllers
                 //if available on weekends
                 if (Doctor.CommonAvailability.IsAvailableOnWeekend)
                 {
-                    Doctor.CommonAvailability.Weekends.MorningStartTime = new DateTime(year: Year, month: Month, day: Day,
-                    hour: int.Parse(Doctor.CommonAvailability.Weekends.MorningStartHour),
-                    minute: int.Parse(Doctor.CommonAvailability.Weekends.MorningStartMinute),
-                    second: 0);
-
-                    Doctor.CommonAvailability.Weekends.MorningEndTime = new DateTime(year: Year, month: Month, day: Day,
-                        hour: int.Parse(Doctor.CommonAvailability.Weekends.MorningEndHour),
-                        minute: int.Parse(Doctor.CommonAvailability.Weekends.MorningEndMinute),
+                    //if user selects weekend timings should be same as common days
+                    if (Doctor.CommonAvailability.WeekendSameAsCommon)
+                    {
+                        Doctor.CommonAvailability.Weekends.MorningStartTime = Doctor.CommonAvailability.CommonDays.MorningStartTime;
+                        Doctor.CommonAvailability.Weekends.MorningEndTime = Doctor.CommonAvailability.CommonDays.MorningEndTime;
+                        Doctor.CommonAvailability.Weekends.EveningStartTime = Doctor.CommonAvailability.CommonDays.EveningStartTime;
+                        Doctor.CommonAvailability.Weekends.EveningEndTime = Doctor.CommonAvailability.CommonDays.EveningEndTime;
+                    }
+                    else
+                    {
+                        //Weekend Morning
+                        Doctor.CommonAvailability.Weekends.MorningStartTime = new DateTime(year: Year, month: Month, day: Day,
+                        hour: int.Parse(Doctor.CommonAvailability.Weekends.MorningStartHour),
+                        minute: int.Parse(Doctor.CommonAvailability.Weekends.MorningStartMinute),
                         second: 0);
 
-                    //Common Days Evening
-                    Doctor.CommonAvailability.Weekends.EveningStartTime = new DateTime(year: Year, month: Month, day: Day,
-                        hour: int.Parse(Doctor.CommonAvailability.Weekends.EveningStartHour),
-                        minute: int.Parse(Doctor.CommonAvailability.Weekends.EveningStartMinute),
-                        second: 0);
+                        Doctor.CommonAvailability.Weekends.MorningEndTime = new DateTime(year: Year, month: Month, day: Day,
+                            hour: int.Parse(Doctor.CommonAvailability.Weekends.MorningEndHour),
+                            minute: int.Parse(Doctor.CommonAvailability.Weekends.MorningEndMinute),
+                            second: 0);
 
-                    Doctor.CommonAvailability.Weekends.EveningEndTime = new DateTime(year: Year, month: Month, day: Day,
-                        hour: int.Parse(Doctor.CommonAvailability.Weekends.EveningEndHour),
-                        minute: int.Parse(Doctor.CommonAvailability.Weekends.EveningEndMinute),
-                        second: 0);
+                        //Weekend Evening
+                        Doctor.CommonAvailability.Weekends.EveningStartTime = new DateTime(year: Year, month: Month, day: Day,
+                            hour: int.Parse(Doctor.CommonAvailability.Weekends.EveningStartHour),
+                            minute: int.Parse(Doctor.CommonAvailability.Weekends.EveningStartMinute),
+                            second: 0);
+
+                        Doctor.CommonAvailability.Weekends.EveningEndTime = new DateTime(year: Year, month: Month, day: Day,
+                            hour: int.Parse(Doctor.CommonAvailability.Weekends.EveningEndHour),
+                            minute: int.Parse(Doctor.CommonAvailability.Weekends.EveningEndMinute),
+                            second: 0);
+                    }
                 }
 
                 Doctor.CommonAvailability.AvailabilityType = Doctor.RegNumber + "Common";

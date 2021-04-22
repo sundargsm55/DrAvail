@@ -239,6 +239,9 @@
                 <h6 class="card-title text-left">Mon - Fri Timings</h6>
                 <div class="common-availability-common card-body">
                     <div class="form-row">
+                        <div id="datepicker"></div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group col-md-3" hidden>
                             <label asp-for="CommonAvailability.CommonDays.MorningStartTime" class="control-label">Morning Start Time</label>
                             <input asp-for="CommonAvailability.CommonDays.MorningStartTime" class="form-control" />
@@ -389,8 +392,8 @@
                     <h6>Weekend Timings</h6>
                     <div class="form-group form-check">
                         <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" id="sameAsCommonDays" />
-                            same As CommonDays
+                            <input asp-for="CommonAvailability.WeekendSameAsCommon" class="form-check-input" id="sameAsCommonDays" />
+                            same As Common Days
                         </label>
                     </div>
                     <div class="form-row">
@@ -595,6 +598,11 @@
             //setting value to availabilityType
             $("#availabilityType").val("Common");
 
+            $('#datepicker').datepicker({
+                minDate: new Date(2014, 10, 30),
+                maxDate: new Date(2015, 2, 5),
+                setDate: new Date(2014, 10, 30)
+            });
 
             //commonMorningStartHour
             $("#commonMorningStartHour").change(function () {
@@ -1050,10 +1058,10 @@
                 var n = $("#sameAsCommonDays:checked").length;
                 //console.log("n::: " + n);
                 if (n != 0) {
-                    var timings = "";
-                    $.each(Times, function (i, value) {
-                        timings += "<option value='" + value + "'>" + value + "</option>";
-                    });
+                    //var timings = "";
+                    //$.each(Times, function (i, value) {
+                    //    timings += "<option value='" + value + "'>" + value + "</option>";
+                    //});
 
                     var morningStartHour = $("#commonMorningStartHour").find(":selected").val();
                     var morningEndHour = $("#commonMorningEndHour").find(":selected").val();
@@ -1065,9 +1073,18 @@
                     var eveningStartMinute = $("#commonEveningStartMinute").find(":selected").val();
                     var eveningEndMinute = $("#commonEveningEndMinute").find(":selected").val();
 
-                    $("#weekendMorningStartHour").find("option:contains(" + morningStartHour + ")").attr("selected", true).trigger('change');
+                    //$("#weekendMorningStartHour").find("option:contains(" + morningStartHour + ")").attr("selected", true).trigger('change');
+                    $("#weekendMorningStartHour").find("option").filter(function () {
+                        return morningStartHour === $(this).text();
+                    }).attr("selected", true).trigger('change');
+
                     $("#weekendMorningStartMinute").find("option:contains(" + morningStartMinute + ")").attr("selected", true).trigger('change');
-                    $("#weekendMorningEndHour").find("option:contains(" + morningEndHour + ")").attr("selected", true).trigger('change');
+
+                    //$("#weekendMorningEndHour").find("option:contains(" + morningEndHour + ")").attr("selected", true).trigger('change');
+                    $("#weekendMorningEndHour").find("option").filter(function () {
+                        return morningEndHour === $(this).text();
+                    }).attr("selected", true).trigger('change');
+
                     $("#weekendMorningEndMinute").find("option:contains(" + morningEndMinute + ")").attr("selected", true);
 
                     $("#weekendEveningStartHour").find("option:contains(" + eveningStartHour + ")").attr("selected", true).trigger('change');
