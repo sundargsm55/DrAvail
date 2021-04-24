@@ -185,7 +185,7 @@ User, Model, Operations.Reject)).Succeeded)
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form style="display:inline;" method="post">
+                        <form style="display:inline;" method="post" id="rejectForm">
                             <input type="hidden" name="id" value="@Model.ID" />
                             <input type="hidden" name="status" value=false />
                             <div class="form-group">
@@ -197,7 +197,7 @@ User, Model, Operations.Reject)).Succeeded)
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-xs btn-danger">Reject</button>
+                        <button type="submit" class="btn btn-xs btn-danger" form="rejectForm">Reject</button>
                     </div>
                 </div>
             </div>

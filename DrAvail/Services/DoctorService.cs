@@ -63,12 +63,25 @@ namespace DrAvail.Services
             
         }
 
-        public bool SendEmail(string email, string subject, string message)
+        public async Task<bool> SendEmail(string ip, string email, string subject, string message, string adminEmail, MessageType messageType = MessageType.UserToAdmin)
         {
 
             try
             {
-                _emailSender.SendEmailAsync(email, subject, message);
+
+                await _emailSender.SendEmailAsync(email, subject, message);
+                Message messageObj = new Message
+                {
+                    IP = ip,
+                    Email = email,
+                    Subject = subject,
+                    MessageText = message,
+                    AdminEmail = adminEmail,
+                    MessageType = messageType,
+                    DateSent = DateTime.Now
+                };
+                _context.Messages.Add(messageObj);
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception)

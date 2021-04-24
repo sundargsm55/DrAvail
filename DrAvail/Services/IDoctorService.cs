@@ -14,7 +14,7 @@ namespace DrAvail.Services
 
         Task<bool> UpdateDoctor(Doctor doctor);
 
-        bool SendEmail(string email, string subject, string message);
+        Task<bool> SendEmail(string ip, string email, string subject, string message, string adminEmail, MessageType messageType);
 
         bool DoctorExists(int id);
 

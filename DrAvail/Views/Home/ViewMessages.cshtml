@@ -2,13 +2,12 @@
 
 @{
     ViewData["Title"] = "Messages";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    //Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
 <h5>View Messages</h5>
 
-<br />
-<table class="table table-responsive-sm" style="background-color:white">
+<table class="table table-striped table-responsive bg-light">
     <thead>
         <tr>
             <th>
@@ -21,23 +20,31 @@
                 @Html.DisplayNameFor(model => model.Subject)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.MessageType)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.MessageText)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.DateSent)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MessageType)
+                @Html.DisplayNameFor(model => model.DateResponded)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.AdminResponse)
             </th>
-            <th> Action(s)</th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserResponse)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AdminEmail)
+            </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
-        {
+@foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.IP)
@@ -49,30 +56,31 @@
                 @Html.DisplayFor(modelItem => item.Subject)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.MessageType)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.MessageText)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateSent)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MessageType)
+                @Html.DisplayFor(modelItem => item.DateResponded)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.AdminResponse)
             </td>
             <td>
-                @{
-                    if (item.AdminResponse == null)
-                    {
-                        <a class="btn btn-danger" asp-action="ReplyMessage" asp-route-id="@item.ID">Reply</a>
-                    }
-                    else
-                    {
-                        <a class="btn btn-danger disabled" href="#">Reply</a>
-                    }
-                }
+                @Html.DisplayFor(modelItem => item.UserResponse)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdminEmail)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Reply</a> |
+                
             </td>
         </tr>
-        }
+}
     </tbody>
 </table>

@@ -1,6 +1,7 @@
 ﻿using DrAvail.Data;
 using DrAvail.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -83,6 +84,12 @@ namespace DrAvail.Controllers
             }
                 
             return View();
+        }
+
+        public async Task<IActionResult> ViewMessages()
+        {
+            var messages = _context.Messages.Where(m => m.Email.Equals(User.Identity.Name));
+            return View(await messages.ToListAsync());
         }
 
         [Microsoft.AspNetCore.Authorization.AllowAnonymous]

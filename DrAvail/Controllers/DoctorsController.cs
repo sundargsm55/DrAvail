@@ -170,17 +170,22 @@ namespace DrAvail.Controllers
             doctor.IsVerified = status;
             Context.Doctors.Update(doctor);
             await Context.SaveChangesAsync();
-
+            bool emailSentStatus;
+            string message;
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString() + ":" + HttpContext.Connection.RemotePort.ToString();
             if (Operations.Approve.Equals(operation))
             {
-                DoctorService.SendEmail(doctor.EmailId, operation.Name, "<h3>Congratulations!</h3><br> Your account got approved");
+                message = "<h3>Congratulations!</h3><br> Your account got approved";
+               emailSentStatus = await DoctorService.SendEmail(ip,doctor.EmailId, operation.Name, message,User.Identity.Name,MessageType.AdminToUser);
             }
             else
             {
-                
-                DoctorService.SendEmail(doctor.EmailId, operation.Name, "Your account is rejected. Please review and update your profile <br> Reject Reason: <br>" + rejectReason);
+                message = "Your account is rejected. Please review and update your profile <br> Reject Reason: <br>" + rejectReason;
+               emailSentStatus = await DoctorService.SendEmail(ip,doctor.EmailId, operation.Name,message, User.Identity.Name, MessageType.AdminToUser);
 
             }
+            _logger.LogInformation($"Ip Address: {ip} \nUserName: {doctor.EmailId}\nSubject: {operation.Name}\nMessage:{message}");
+
             return RedirectToAction(nameof(Index));
 
         }

@@ -20,18 +20,7 @@ namespace DrAvail.Models
 
             [DataType(DataType.Time)]
             public DateTime MorningStartTime { get; set; }
-            //public string MorningStartTime 
-            //{ 
-            //    get 
-            //    {
-            //        return MorningStartTime;
-            //    }
-            //    set
-            //    {
-            //        MorningStartTime = MorningStartHour + ":" + MorningStartMinute + " AM";
-            //    }
-            // }
-
+            
             //Morning End
             [NotMapped]
             public string MorningEndHour { get; set; }

@@ -26,7 +26,23 @@ namespace DrAvail.Data
                 //testUserPw = "admin1@Dr_avail";
                 var testDoctorID = await EnsureUser(serviceProvider, testUserPw, "testdoctor@dravail.com");
                 await EnsureRole(serviceProvider, testDoctorID, DrAvail.Authorization.Constants.DoctorsRole);
-                
+
+                /*var testUserPw1 = "user1@Dr_avail";
+
+                var testDoctorID1 = await EnsureUser(serviceProvider, testUserPw1, "DrZ@Dravail.com");
+                await EnsureRole(serviceProvider, testDoctorID, DrAvail.Authorization.Constants.DoctorsRole);
+
+                var doctor = await context.Doctors.FirstOrDefaultAsync(d => d.EmailId.Equals("DrZ@Dravail.com"));
+                doctor.OwnerID = testDoctorID1;
+                try
+                {
+                    context.Update(doctor);
+                    await context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }*/
                 SeedDB(context, adminID);
             }
         }
