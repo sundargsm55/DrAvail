@@ -7,11 +7,18 @@
 
 @if (Model.Any())
 {
-    <h4>Hospital</h4>
+    <h4>Hospitals</h4>
 
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
+    if (User.IsInRole(Constants.AdministratorsRole))
+    {
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+    }
+    else
+    {
+        <p> </p>
+    }
 
     <form asp-action="Index" method="get">
         <div class="form-actions no-color form-inline">
@@ -27,10 +34,9 @@
     {
         <div class="card text-dark bg-light mb-3" style="border-radius:20px;width:75%">
             <div class="row">
-                <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px" src="/Images/logo.png" alt="...">
-                <div class="col-md-9">
+                <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px;object-fit:cover" src="/Images/logo.png" alt="...">
                     <div class="card-body">
-                        <div class="col-md-6 float-left">
+                        <div class="col-md-7 float-left">
                             <h5 class="card-title">
                                 <a asp-action="Details" asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.Name)</a>
                             </h5>
@@ -47,13 +53,17 @@
                                 <p> Doctors(@item.Doctors.Count)</p>
                             }
                         </div>
-                        <div class="col-md-3 float-right">
-                            <a class="btn btn-danger" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-                            <a class="btn btn-info" asp-action="Details" asp-route-id="@item.ID">Details</a>
+                        <div class="col-md-2 d-flex flex-column btn-toolbar align-items-center">
+                            <div class="btn-group-vertical" role="group" aria-label="action button group">
+                                @if ((await AuthorizationService.AuthorizeAsync(User, item, Operations.Update)).Succeeded)
+                                {
+                                    <a class="btn btn-outline-danger m-1 rounded" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                                }
+                                <a class="btn btn-outline-info m-1 box-shadow" asp-action="Details" asp-route-id="@item.ID">Details</a>
+                            </div>
                         </div>
                     </div>
 
-                </div>
             </div>
         </div>
     }

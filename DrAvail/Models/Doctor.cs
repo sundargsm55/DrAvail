@@ -75,6 +75,7 @@ namespace DrAvail.Models
 
         [Required]
         [Phone]
+        [RegularExpression("^[9][0-9]{9}$", ErrorMessage = "Enter a valid Phone number")]
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
 

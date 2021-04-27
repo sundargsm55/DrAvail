@@ -66,7 +66,7 @@ namespace DrAvail.Controllers
             }
 
             var pageSize = _configuration.GetValue("PageSize", 4); //Sets pageSize to 3 from Configuration, 4 if configuration fails.
-            
+
             return View(await DrAvail.Services.PaginatedList<Hospital>.CreateAsync(
                 hospitalsIQ.AsNoTracking(), pageIndex ?? 1, pageSize));
 
@@ -158,8 +158,8 @@ namespace DrAvail.Controllers
             ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
 
             var district = from District d in Enum.GetValues(typeof(District))
-                         select new { ID = (int)d, Name = d.ToString() };
-                       
+                           select new { ID = (int)d, Name = d.ToString() };
+
             ViewBag.Districts = new SelectList(district, "ID", "Name");
             #endregion
             return View();
@@ -329,6 +329,44 @@ namespace DrAvail.Controllers
         private bool HospitalExists(int id)
         {
             return Context.Hospitals.Any(e => e.ID == id);
+        }
+
+        [AllowAnonymous]
+        public async Task<JsonResult> FetchHospitalDetails(int? id)
+        {
+            if (id == null)
+            {
+                return Json(false);
+            }
+
+            var hospital = await Context.Hospitals.FirstOrDefaultAsync(m => m.ID == id);
+            if (hospital == null)
+            {
+                return Json(false);
+            }
+
+            /*var isAuthorized = User.IsInRole(Constants.AdministratorsRole);
+
+            var currentUserId = UserManager.GetUserId(User);
+
+            if (!isAuthorized
+                && currentUserId != hospital.OwnerID
+                && !hospital.IsVerified)
+            {
+                return Forbid();
+            }*/
+
+            return Json(new
+            {
+                name = hospital.Name,
+                type = hospital.Type,
+                address = hospital.Address,
+                city = hospital.City,
+                district = hospital.District,
+                pincode = hospital.Pincode,
+                email = hospital.EmailId,
+                phone = hospital.PhoneNo
+            });
         }
     }
 }

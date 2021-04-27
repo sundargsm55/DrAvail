@@ -72,7 +72,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-3" hidden>
                         <label asp-for="Age" class="control-label"></label>
-                        <input asp-for="Age" class="form-control" />
+                        <input asp-for="Age" class="form-control" id="age" />
                         <span asp-validation-for="Age" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-3">
@@ -80,7 +80,7 @@
                             Date of Birth
                             <i class="fa fa-info-circle" style="color:skyblue;" aria-hidden="true" data-toggle="tooltip" title="Date of Birth is only for calculating your Age and won't be visible to public or other users."></i>
                         </label>
-                        <input type="text" asp-for="DateOfBirth" class="form-control" id="dob" placeholder="MM/DD/YYYY"/>
+                        <input type="text" asp-for="DateOfBirth" class="form-control" id="dob" placeholder="MM/DD/YYYY" />
                         <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-4">
@@ -239,9 +239,6 @@
             <div id="addCommonAvailability" class="card mb-3">
                 <h6 class="card-title text-left">Mon - Fri Timings</h6>
                 <div class="common-availability-common card-body">
-                    <div class="form-row">
-                        <input type="text" id="datepicker" />
-                    </div>
                     <div class="form-row">
                         <div class="form-group col-md-3" hidden>
                             <label asp-for="CommonAvailability.CommonDays.MorningStartTime" class="control-label">Morning Start Time</label>
@@ -592,7 +589,7 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    
+
     <script type="text/javascript">
         $(document).ready(function () {
             var MHours = ["00", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"];
@@ -612,6 +609,10 @@
                 setDate: new Date(year-25, month, day)
             });
 
+            $("#dob").change(function (event) {
+                var dob = event.currentTarget.value.split("/")[2];
+                $("#age").val(year - parseInt(dob));
+            });
             //commonMorningStartHour
             $("#commonMorningStartHour").change(function () {
                 //debugger;
@@ -646,9 +647,12 @@
                 var startHour = $("#commonMorningStartHour").find(":selected").val();
                 var endHour = $("#commonMorningEndHour").find(":selected").val();
                 var Hindex = MHours.indexOf(startHour);
+                var endHourIndex = MHours.indexOf(endHour);
                 var Tindex = Times.indexOf(startMinute);
+                var timings = "";
+                var items = "";
+
                 if (Tindex != Times.length - 1) {
-                    var timings = "";
                     $.each(Times, function (i, value) {
                         if (i > Tindex) {
                             timings += "<option value='" + value + "'>" + value + "</option>";
@@ -656,9 +660,9 @@
                     });
                     //if user previously selected 45, it should have incremented the endhour so if user changes minute back
                     //end hour should match with starthour
-                    if (endHour > startHour) {
+                    if (endHourIndex > Hindex) {
                         //var Hindex = MHours.indexOf(startHour);
-                        var items = "";
+                        //var items = "";
                         $.each(MHours, function (i, value) {
                             if (i >= Hindex) {
                                 items += "<option value='" + value + "'>" + value + "</option>";
@@ -669,7 +673,7 @@
                     $("#commonMorningEndMinute").html(timings);
                 }
                 else {
-                    var timings = "";
+                    //var timings = "";
                     if (Hindex == MHours.length - 2) {
                         timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
                         console.log("timing::  " + timings);
@@ -681,7 +685,6 @@
                     }
 
                     if (jQuery.inArray(startHour, MHours) != -1) {
-                        var items = "";
                         $.each(MHours, function (i, value) {
                             if (i > Hindex) {
                                 items += "<option value='" + value + "'>" + value + "</option>";
@@ -697,6 +700,7 @@
             $("#commonMorningEndHour").change(function () {
                 var startHour = $("#commonMorningStartHour").find(":selected").val();
                 var endHour = $("#commonMorningEndHour").find(":selected").val();
+                var startHourIndex = MHours.indexOf(startHour);
                 var endHourIndex = MHours.indexOf(endHour);
                 var timings = "";
 
@@ -705,7 +709,7 @@
                     //console.log("timings::: " + timings);
                     $("#commonMorningEndMinute").html(timings);
                 }
-                else if (endHour > startHour) {
+                else if (endHourIndex > startHourIndex) {
                     //var timings = "";
                     $.each(Times, function (i, value) {
                         timings += "<option value='" + value + "'>" + value + "</option>";
@@ -922,6 +926,7 @@
             $("#weekendMorningEndHour").change(function () {
                 var startHour = $("#weekendMorningStartHour").find(":selected").val();
                 var endHour = $("#weekendMorningEndHour").find(":selected").val();
+                var startHourIndex = MHours.indexOf(startHour);
                 var endHourIndex = MHours.indexOf(endHour);
                 var timings = "";
 
@@ -930,7 +935,7 @@
                     //console.log("timings::: " + timings);
                     $("#commonMorningEndMinute").html(timings);
                 }
-                else if (endHour > startHour) {
+                else if (endHourIndex > startHourIndex) {
                     $.each(Times, function (i, value) {
                         timings += "<option value='" + value + "'>" + value + "</option>";
                     });

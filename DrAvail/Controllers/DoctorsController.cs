@@ -242,7 +242,7 @@ namespace DrAvail.Controllers
 
             var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
                              select new { ID = (int)d, Name = d.ToString() };
-            ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
+            ViewBag.Speciality = new SelectList(speciality, "ID", "Name");
 
             var gender = from Gender H in Enum.GetValues(typeof(Gender))
                          select new { Name = H.ToString() };
@@ -259,6 +259,14 @@ namespace DrAvail.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateOnPost()
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.Where(m => m.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid).ToList();
+                _logger.LogError(errors.ToString());
+                SelectList();
+                return View(Doctor);
+
+            }
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(
                                                 User, Doctor,
@@ -586,6 +594,30 @@ namespace DrAvail.Controllers
             return Json(locations2.ToList());
         }
 
+        public void SelectList()
+        {
+            #region selectList
+            ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
+            ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
+            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name");
+
+            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
+                         select new { ID = (int)H, Name = H.ToString() };
+            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
+
+            var district = from District d in Enum.GetValues(typeof(District))
+                           select new { ID = (int)d, Name = d.ToString() };
+            ViewBag.Districts = new SelectList(district, "ID", "Name");
+
+            var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
+                             select new { ID = (int)d, Name = d.ToString() };
+            ViewBag.Speciality = new SelectList(speciality, "ID", "Name");
+            //var gender = from Gender H in Enum.GetValues(typeof(Gender))
+            //             select new { Name = H.ToString() };
+            //ViewBag.Gender = gender.ToList();
+            ViewBag.Gender = Enum.GetNames(typeof(Gender)).Cast<Gender>().ToList();
+            #endregion
+        }
     }
 
 }
