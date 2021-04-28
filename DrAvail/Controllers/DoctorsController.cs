@@ -261,11 +261,8 @@ namespace DrAvail.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var errors = ModelState.Values.Where(m => m.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid).ToList();
-                _logger.LogError(errors.ToString());
                 SelectList();
                 return View(Doctor);
-
             }
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(
@@ -397,7 +394,7 @@ namespace DrAvail.Controllers
             //var gender = from Gender H in Enum.GetValues(typeof(Gender))
             //             select new { Name = H.ToString() };
             //ViewBag.Gender = gender.ToList();
-            ViewBag.Gender = Enum.GetNames(typeof(Gender)).Cast<Gender>().ToList();
+            //ViewBag.Gender = Enum.GetNames(typeof(Gender)).Cast<string>().ToList();
             #endregion
 
             return View(Doctor);
@@ -615,7 +612,7 @@ namespace DrAvail.Controllers
             //var gender = from Gender H in Enum.GetValues(typeof(Gender))
             //             select new { Name = H.ToString() };
             //ViewBag.Gender = gender.ToList();
-            ViewBag.Gender = Enum.GetNames(typeof(Gender)).Cast<Gender>().ToList();
+            //ViewBag.Gender = Enum.GetNames(typeof(Gender)).Cast<string>().ToList();
             #endregion
         }
     }
