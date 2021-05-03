@@ -28,7 +28,7 @@ namespace DrAvail.Models
         public string RegNumber { get; set; }
 
         [Required]
-        public string Speciality { get; set; }
+        public Speciality Speciality { get; set; }
 
         [Required]
         public string Degree { get; set; }
@@ -37,7 +37,7 @@ namespace DrAvail.Models
         [Range(25,100)]
         public int Age { get; set; }
 
-        [NotMapped]
+        [Required]
         [DataType(DataType.Date)]
         [Display(Name="Date of Birth")]
         public DateTime DateOfBirth { get; set; }
