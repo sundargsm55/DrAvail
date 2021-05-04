@@ -282,6 +282,61 @@ namespace DrAvail.Controllers
             //}
             try
             {
+                #region ConditonChecks
+                string[] morningHours = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14" };
+                string[] minutes = {"00", "15", "30", "45"};
+                string[] eveningHours = { "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "00" };
+                string errorMessage = "";
+
+                if(morningHours.Contains(Doctor.CommonAvailability.CommonDays.MorningStartHour)
+                    && minutes.Contains(Doctor.CommonAvailability.CommonDays.MorningStartMinute)
+                    && morningHours.Contains(Doctor.CommonAvailability.CommonDays.MorningEndHour)
+                    && minutes.Contains(Doctor.CommonAvailability.CommonDays.MorningEndMinute)) 
+                {
+                    int morningStartHourIndex = Array.IndexOf(morningHours, Doctor.CommonAvailability.CommonDays.MorningStartHour);
+                    int morningStartMinuteIndex = Array.IndexOf(minutes, Doctor.CommonAvailability.CommonDays.MorningStartMinute);
+                    int morningEndHourIndex = Array.IndexOf(morningHours, Doctor.CommonAvailability.CommonDays.MorningEndHour);
+                    int morningEndMinuteIndex = Array.IndexOf(minutes, Doctor.CommonAvailability.CommonDays.MorningEndMinute);
+
+                    
+                    if (morningEndHourIndex > morningStartHourIndex)
+                    {
+                        if(morningEndHourIndex == morningHours.Length - 1)
+                        {
+                            if(morningEndMinuteIndex != 0)
+                            {
+                                errorMessage = "Morning End Time must not exceed 14:00";
+                                Doctor.CommonAvailability.CommonDays.MorningEndMinute = minutes[0];
+                            }
+                        }
+                    }
+                    else if(morningStartHourIndex == morningEndHourIndex)
+                    {
+                        if(morningEndMinuteIndex <= morningStartMinuteIndex)
+                        {
+                            errorMessage = "Morning End Minute cannot be less than (or) same as Morning Start Minute";
+                        }
+                    }
+                    else
+                    {
+                        errorMessage = "Morning End hour should not be less than Morning start hour";
+                    }
+
+                }
+                else
+                {
+                    errorMessage = "Select valid timing options";
+                }
+
+                if (string.IsNullOrEmpty(errorMessage))
+                {
+                    ViewBag.ErrorMessage = errorMessage;
+                    SelectList();
+                    return View(Doctor);
+                }
+                #endregion
+
+
                 #region Initialize
 
                 int Year = DateTime.Now.Year;
