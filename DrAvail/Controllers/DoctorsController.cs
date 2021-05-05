@@ -29,17 +29,17 @@ namespace DrAvail.Controllers
         //public DrAvail.Services.PaginatedList<Doctor> Doctors { get; set; }
 
         public DoctorsController(IDoctorService doctorService, ApplicationDbContext context,
-            IAuthorizationService authorizationService, 
+            IAuthorizationService authorizationService,
             UserManager<ApplicationUser> userManager,
             ILogger<DoctorsController> logger)
-            :base(context, authorizationService,userManager)
+            : base(context, authorizationService, userManager)
         {
             DoctorService = doctorService;
             //Context = context;
             _logger = logger;
         }
 
-        
+
         // GET: Doctors
         [AllowAnonymous]
         [RequireHttps]
@@ -88,7 +88,7 @@ namespace DrAvail.Controllers
             var pageSize = 4;
             return View(await DrAvail.Services.PaginatedList<Doctor>.CreateAsync(
                 doctorsIQ.AsNoTracking(), pageIndex ?? 1, pageSize));
-            
+
             //return View(await doctorsIQ.AsNoTracking().ToListAsync());
         }
 
@@ -159,7 +159,7 @@ namespace DrAvail.Controllers
                 return NotFound();
             }
 
-            var operation = (status == true)? Operations.Approve : Operations.Reject;
+            var operation = (status == true) ? Operations.Approve : Operations.Reject;
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(User, doctor, operation);
 
@@ -176,12 +176,12 @@ namespace DrAvail.Controllers
             if (Operations.Approve.Equals(operation))
             {
                 message = "<h3>Congratulations!</h3><br> Your account got approved";
-               emailSentStatus = await DoctorService.SendEmail(ip,doctor.EmailId, operation.Name, message,User.Identity.Name,MessageType.AdminToUser);
+                emailSentStatus = await DoctorService.SendEmail(ip, doctor.EmailId, operation.Name, message, User.Identity.Name, MessageType.AdminToUser);
             }
             else
             {
                 message = "Your account is rejected. Please review and update your profile <br> Reject Reason: <br>" + rejectReason;
-               emailSentStatus = await DoctorService.SendEmail(ip,doctor.EmailId, operation.Name,message, User.Identity.Name, MessageType.AdminToUser);
+                emailSentStatus = await DoctorService.SendEmail(ip, doctor.EmailId, operation.Name, message, User.Identity.Name, MessageType.AdminToUser);
 
             }
             _logger.LogInformation($"Ip Address: {ip} \nUserName: {doctor.EmailId}\nSubject: {operation.Name}\nMessage:{message}");
@@ -194,7 +194,7 @@ namespace DrAvail.Controllers
         public async Task<IActionResult> Create()
         {
             //if user is not logged in
-            if(User.Identity.Name == null)
+            if (User.Identity.Name == null)
             {
                 return Forbid();
             }
@@ -213,7 +213,7 @@ namespace DrAvail.Controllers
                 OwnerID = UserManager.GetUserId(User)
             };
 
-            var isAuthorized = await AuthorizationService.AuthorizeAsync(User, Doctor,Operations.Create);
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(User, Doctor, Operations.Create);
 
             if (!isAuthorized.Succeeded)
             {
@@ -283,57 +283,7 @@ namespace DrAvail.Controllers
             try
             {
                 #region ConditonChecks
-                string[] morningHours = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14" };
-                string[] minutes = {"00", "15", "30", "45"};
-                string[] eveningHours = { "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "00" };
-                string errorMessage = "";
 
-                if(morningHours.Contains(Doctor.CommonAvailability.CommonDays.MorningStartHour)
-                    && minutes.Contains(Doctor.CommonAvailability.CommonDays.MorningStartMinute)
-                    && morningHours.Contains(Doctor.CommonAvailability.CommonDays.MorningEndHour)
-                    && minutes.Contains(Doctor.CommonAvailability.CommonDays.MorningEndMinute)) 
-                {
-                    int morningStartHourIndex = Array.IndexOf(morningHours, Doctor.CommonAvailability.CommonDays.MorningStartHour);
-                    int morningStartMinuteIndex = Array.IndexOf(minutes, Doctor.CommonAvailability.CommonDays.MorningStartMinute);
-                    int morningEndHourIndex = Array.IndexOf(morningHours, Doctor.CommonAvailability.CommonDays.MorningEndHour);
-                    int morningEndMinuteIndex = Array.IndexOf(minutes, Doctor.CommonAvailability.CommonDays.MorningEndMinute);
-
-                    
-                    if (morningEndHourIndex > morningStartHourIndex)
-                    {
-                        if(morningEndHourIndex == morningHours.Length - 1)
-                        {
-                            if(morningEndMinuteIndex != 0)
-                            {
-                                errorMessage = "Morning End Time must not exceed 14:00";
-                                Doctor.CommonAvailability.CommonDays.MorningEndMinute = minutes[0];
-                            }
-                        }
-                    }
-                    else if(morningStartHourIndex == morningEndHourIndex)
-                    {
-                        if(morningEndMinuteIndex <= morningStartMinuteIndex)
-                        {
-                            errorMessage = "Morning End Minute cannot be less than (or) same as Morning Start Minute";
-                        }
-                    }
-                    else
-                    {
-                        errorMessage = "Morning End hour should not be less than Morning start hour";
-                    }
-
-                }
-                else
-                {
-                    errorMessage = "Select valid timing options";
-                }
-
-                if (string.IsNullOrEmpty(errorMessage))
-                {
-                    ViewBag.ErrorMessage = errorMessage;
-                    SelectList();
-                    return View(Doctor);
-                }
                 #endregion
 
 
@@ -344,7 +294,7 @@ namespace DrAvail.Controllers
                 int Day = DateTime.Now.Day;
 
                 //Common Days Morning 
-                Doctor.CommonAvailability.CommonDays.MorningStartTime = new DateTime(year: Year, month: Month, day: Day,
+                /*Doctor.CommonAvailability.CommonDays.MorningStartTime = new DateTime(year: Year, month: Month, day: Day,
                     hour: int.Parse(Doctor.CommonAvailability.CommonDays.MorningStartHour),
                     minute: int.Parse(Doctor.CommonAvailability.CommonDays.MorningStartMinute),
                     second: 0);
@@ -363,8 +313,8 @@ namespace DrAvail.Controllers
                 Doctor.CommonAvailability.CommonDays.EveningEndTime = new DateTime(year: Year, month: Month, day: Day,
                     hour: int.Parse(Doctor.CommonAvailability.CommonDays.EveningEndHour),
                     minute: int.Parse(Doctor.CommonAvailability.CommonDays.EveningEndMinute),
-                    second: 0);
-                
+                    second: 0);*/
+
                 //if available on weekends
                 if (Doctor.CommonAvailability.IsAvailableOnWeekend)
                 {
@@ -379,7 +329,7 @@ namespace DrAvail.Controllers
                     else
                     {
                         //Weekend Morning
-                        Doctor.CommonAvailability.Weekends.MorningStartTime = new DateTime(year: Year, month: Month, day: Day,
+                        /*Doctor.CommonAvailability.Weekends.MorningStartTime = new DateTime(year: Year, month: Month, day: Day,
                         hour: int.Parse(Doctor.CommonAvailability.Weekends.MorningStartHour),
                         minute: int.Parse(Doctor.CommonAvailability.Weekends.MorningStartMinute),
                         second: 0);
@@ -398,17 +348,13 @@ namespace DrAvail.Controllers
                         Doctor.CommonAvailability.Weekends.EveningEndTime = new DateTime(year: Year, month: Month, day: Day,
                             hour: int.Parse(Doctor.CommonAvailability.Weekends.EveningEndHour),
                             minute: int.Parse(Doctor.CommonAvailability.Weekends.EveningEndMinute),
-                            second: 0);
+                            second: 0);*/
                     }
                 }
 
                 Doctor.CommonAvailability.AvailabilityType = Doctor.RegNumber + "Common";
                 #endregion
 
-                //Console.WriteLine("----------------------------------------------");
-                //Console.WriteLine("Before INSERT -> Hospital Id: " + doctor.HospitalID);
-                //Console.WriteLine(doctor);
-                //Console.WriteLine("----------------------------------------------");
 
                 if (Doctor.HospitalID != 0)
                 {
@@ -418,9 +364,6 @@ namespace DrAvail.Controllers
                 Context.Doctors.Add(Doctor);
 
                 await Context.SaveChangesAsync();
-                //Console.WriteLine("----------------------------------------------");
-                //Console.WriteLine("After INSERT -> doctor Id: " + doctor.ID);
-                //Console.WriteLine(doctor);
 
                 return RedirectToAction(nameof(Index));
 
@@ -458,7 +401,7 @@ namespace DrAvail.Controllers
         // GET: Doctors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-                     
+
             if (id == null)
             {
                 return NotFound();
@@ -490,14 +433,14 @@ namespace DrAvail.Controllers
             //ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
 
             #region selectList
-            
+
             ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name");
 
             var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
                          select new { ID = (int)H, Name = H.ToString() };
             ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
 
-            
+
             var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
                              select new { ID = (int)d, Name = d.ToString() };
             ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
@@ -563,7 +506,7 @@ namespace DrAvail.Controllers
             }
 
             #region selectList
-            
+
             ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name");
 
             var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
@@ -628,7 +571,7 @@ namespace DrAvail.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        
+
 
 
         public IActionResult AvailabilityCreate()
@@ -638,15 +581,15 @@ namespace DrAvail.Controllers
 
         public JsonResult GetLocations(int Pincode)
         {
-            
+
             var locations2 = from location in Context.Locations
                              where location.Pincode == Pincode
                              select new { Locality = location.Locality, Dis = location.District };
-            
+
             return Json(locations2.ToList());
         }
 
-        public void SelectList()
+        private void SelectList()
         {
             #region selectList
             ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
@@ -669,6 +612,155 @@ namespace DrAvail.Controllers
             //ViewBag.Gender = gender.ToList();
             //ViewBag.Gender = Enum.GetNames(typeof(Gender)).Cast<string>().ToList();
             #endregion
+        }
+
+        private bool VerifyMorningTiming(Availability.Timings timings)
+        {
+            string[] morningHours = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14" };
+            string[] minutes = { "00", "15", "30", "45" };
+            //string[] eveningHours = { "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "00" };
+
+            //Common Morning TImings
+            if (morningHours.Contains(timings.MorningStartHour)
+                && minutes.Contains(timings.MorningStartMinute)
+                && morningHours.Contains(timings.MorningEndHour)
+                && minutes.Contains(timings.MorningEndMinute))
+            {
+                int morningStartHourIndex = Array.IndexOf(morningHours, timings.MorningStartHour);
+                int morningStartMinuteIndex = Array.IndexOf(minutes, timings.MorningStartMinute);
+                int morningEndHourIndex = Array.IndexOf(morningHours, timings.MorningEndHour);
+                int morningEndMinuteIndex = Array.IndexOf(minutes, timings.MorningEndMinute);
+
+
+                if (morningEndHourIndex > morningStartHourIndex)
+                {
+                    if (morningEndHourIndex == morningHours.Length - 1)
+                    {
+                        if (morningEndMinuteIndex != 0)
+                        {
+                            ViewBag.ErrorMessage = "Morning End Time must not exceed 14:00";
+                            return false;
+                            //timings.MorningEndMinute = minutes[0];
+                        }
+                    }
+                }
+                else if (morningStartHourIndex == morningEndHourIndex)
+                {
+                    if (morningEndMinuteIndex <= morningStartMinuteIndex)
+                    {
+                        ViewBag.ErrorMessage = "Morning End Minute cannot be less than (or) same as Morning Start Minute";
+                        return false;
+                    }
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Morning End hour should not be less than Morning start hour";
+                    return false;
+                }
+
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Select valid timing options";
+                return false;
+            }
+            return true;
+        }
+
+        private bool VerifyEveningTiming(Availability.Timings timings)
+        {
+            //string[] morningHours = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14" };
+            string[] minutes = { "00", "15", "30", "45" };
+            string[] eveningHours = { "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "00" };
+
+            if (eveningHours.Contains(timings.EveningStartHour)
+                    && minutes.Contains(timings.EveningStartMinute)
+                    && eveningHours.Contains(timings.EveningEndHour)
+                    && minutes.Contains(timings.EveningEndMinute))
+            {
+                int eveningStartHourIndex = Array.IndexOf(eveningHours, timings.EveningStartHour);
+                int eveningStartMinuteIndex = Array.IndexOf(minutes, timings.EveningStartMinute);
+                int eveningEndHourIndex = Array.IndexOf(eveningHours, timings.EveningEndHour);
+                int eveningEndMinuteIndex = Array.IndexOf(minutes, timings.EveningEndMinute);
+
+
+                if (eveningEndHourIndex < eveningStartHourIndex)
+                {
+                    ViewBag.ErrorMessage = "Evening End hour should not be less than Evening start hour";
+                    return false;
+                }
+                else if (eveningStartHourIndex == eveningEndHourIndex)
+                {
+                    if (eveningEndMinuteIndex <= eveningStartMinuteIndex)
+                    {
+                        ViewBag.ErrorMessage = "Evening End Minute cannot be less than (or) same as Evening Start Minute";
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Select valid timing options";
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool VerifyMinutes(Availability.Timings timings)
+        {
+            string[] minutes = { "00", "15", "30", "45" };
+
+            if (minutes.Contains(timings.MorningStartMinute)
+                    && minutes.Contains(timings.MorningEndMinute)
+                    && minutes.Contains(timings.EveningStartMinute)
+                    && minutes.Contains(timings.EveningEndMinute))
+            {
+                return true;
+            }
+            ViewBag.ErrorMessage = "Invalid Minutes";
+            return false;
+        }
+
+        private bool VerifyTimings(DateTime startTime, DateTime endTime, DateTime minTime, DateTime maxTime)
+        {
+            if (CompareDateTime(startTime, minTime) != DateTimeRelation.IsEarlier)
+            {
+                if (CompareDateTime(endTime, maxTime) != DateTimeRelation.IsLater)
+                {
+                    if(CompareDateTime(startTime,endTime) == DateTimeRelation.IsLater)
+                    {
+                        return true;
+                    }
+                    ViewBag.ErrorMessage = "Start time should not be greater than End Time";
+                    return false;
+                }
+                ViewBag.ErrorMessage = "Invalid End Time";
+                return false;
+            }
+            ViewBag.ErrorMessage = "Invalid Start Time";
+            return false;
+        }
+
+        private DateTimeRelation CompareDateTime(DateTime dt1, DateTime dt2)
+        {
+            int result = DateTime.Compare(dt1, dt2);
+            if (result == 0)
+            {
+                return DateTimeRelation.IsSame;
+            }
+            else if (result > 0)
+            {
+                return DateTimeRelation.IsLater;
+            }
+            return DateTimeRelation.IsEarlier;
+        }
+
+        private enum DateTimeRelation
+        {
+            IsEarlier,
+            IsSame,
+            IsLater
         }
     }
 
