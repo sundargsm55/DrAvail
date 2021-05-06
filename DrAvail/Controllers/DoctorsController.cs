@@ -288,71 +288,65 @@ namespace DrAvail.Controllers
 
 
                 #region Initialize
-
-                int Year = DateTime.Now.Year;
-                int Month = DateTime.Now.Month;
-                int Day = DateTime.Now.Day;
-
-                //Common Days Morning 
-                /*Doctor.CommonAvailability.CommonDays.MorningStartTime = new DateTime(year: Year, month: Month, day: Day,
-                    hour: int.Parse(Doctor.CommonAvailability.CommonDays.MorningStartHour),
-                    minute: int.Parse(Doctor.CommonAvailability.CommonDays.MorningStartMinute),
-                    second: 0);
-
-                Doctor.CommonAvailability.CommonDays.MorningEndTime = new DateTime(year: Year, month: Month, day: Day,
-                    hour: int.Parse(Doctor.CommonAvailability.CommonDays.MorningEndHour),
-                    minute: int.Parse(Doctor.CommonAvailability.CommonDays.MorningEndMinute),
-                    second: 0);
-
-                //Common Days Evening
-                Doctor.CommonAvailability.CommonDays.EveningStartTime = new DateTime(year: Year, month: Month, day: Day,
-                    hour: int.Parse(Doctor.CommonAvailability.CommonDays.EveningStartHour),
-                    minute: int.Parse(Doctor.CommonAvailability.CommonDays.EveningStartMinute),
-                    second: 0);
-
-                Doctor.CommonAvailability.CommonDays.EveningEndTime = new DateTime(year: Year, month: Month, day: Day,
-                    hour: int.Parse(Doctor.CommonAvailability.CommonDays.EveningEndHour),
-                    minute: int.Parse(Doctor.CommonAvailability.CommonDays.EveningEndMinute),
-                    second: 0);*/
-
-                //if available on weekends
-                if (Doctor.CommonAvailability.IsAvailableOnWeekend)
+                bool isTimingsValid = true;
+                List<string> lstErrors = new List<string> ();
+                string errorMessage ="";
+                if (VerifyMinutes(Doctor.CommonAvailability.CommonDays, out errorMessage))
                 {
-                    //if user selects weekend timings should be same as common days
-                    if (Doctor.CommonAvailability.WeekendSameAsCommon)
+                    
+                    if(!VerifyMorningTiming(Doctor.CommonAvailability.CommonDays,out errorMessage))
                     {
-                        Doctor.CommonAvailability.Weekends.MorningStartTime = Doctor.CommonAvailability.CommonDays.MorningStartTime;
-                        Doctor.CommonAvailability.Weekends.MorningEndTime = Doctor.CommonAvailability.CommonDays.MorningEndTime;
-                        Doctor.CommonAvailability.Weekends.EveningStartTime = Doctor.CommonAvailability.CommonDays.EveningStartTime;
-                        Doctor.CommonAvailability.Weekends.EveningEndTime = Doctor.CommonAvailability.CommonDays.EveningEndTime;
+                        lstErrors.Add(errorMessage);
+                        isTimingsValid = false;
                     }
-                    else
+                    
+                    if (!VerifyEveningTiming(Doctor.CommonAvailability.CommonDays, out errorMessage))
                     {
-                        //Weekend Morning
-                        /*Doctor.CommonAvailability.Weekends.MorningStartTime = new DateTime(year: Year, month: Month, day: Day,
-                        hour: int.Parse(Doctor.CommonAvailability.Weekends.MorningStartHour),
-                        minute: int.Parse(Doctor.CommonAvailability.Weekends.MorningStartMinute),
-                        second: 0);
+                        lstErrors.Add(errorMessage);
+                        isTimingsValid = false;
+                    }
 
-                        Doctor.CommonAvailability.Weekends.MorningEndTime = new DateTime(year: Year, month: Month, day: Day,
-                            hour: int.Parse(Doctor.CommonAvailability.Weekends.MorningEndHour),
-                            minute: int.Parse(Doctor.CommonAvailability.Weekends.MorningEndMinute),
-                            second: 0);
+                    if (Doctor.CommonAvailability.IsAvailableOnWeekend)
+                    {
+                        //if user selects weekend timings should be same as common days
+                        if (Doctor.CommonAvailability.WeekendSameAsCommon && isTimingsValid)
+                        {
+                            Doctor.CommonAvailability.Weekends.MorningStartTime = Doctor.CommonAvailability.CommonDays.MorningStartTime;
+                            Doctor.CommonAvailability.Weekends.MorningEndTime = Doctor.CommonAvailability.CommonDays.MorningEndTime;
+                            Doctor.CommonAvailability.Weekends.EveningStartTime = Doctor.CommonAvailability.CommonDays.EveningStartTime;
+                            Doctor.CommonAvailability.Weekends.EveningEndTime = Doctor.CommonAvailability.CommonDays.EveningEndTime;
+                        }
+                        else
+                        {
+                            if (!VerifyMorningTiming(Doctor.CommonAvailability.Weekends, out errorMessage, "Weekend Morning"))
+                            {
+                                lstErrors.Add(errorMessage);
+                                isTimingsValid = false;
+                            }
 
-                        //Weekend Evening
-                        Doctor.CommonAvailability.Weekends.EveningStartTime = new DateTime(year: Year, month: Month, day: Day,
-                            hour: int.Parse(Doctor.CommonAvailability.Weekends.EveningStartHour),
-                            minute: int.Parse(Doctor.CommonAvailability.Weekends.EveningStartMinute),
-                            second: 0);
-
-                        Doctor.CommonAvailability.Weekends.EveningEndTime = new DateTime(year: Year, month: Month, day: Day,
-                            hour: int.Parse(Doctor.CommonAvailability.Weekends.EveningEndHour),
-                            minute: int.Parse(Doctor.CommonAvailability.Weekends.EveningEndMinute),
-                            second: 0);*/
+                            if (!VerifyEveningTiming(Doctor.CommonAvailability.Weekends, out errorMessage, "Weekend Evening"))
+                            {
+                                lstErrors.Add(errorMessage);
+                                isTimingsValid = false;
+                            }
+                        }
                     }
                 }
+                else
+                {
+                    lstErrors.Add(errorMessage);
+                    isTimingsValid = false;
+                }
 
-                Doctor.CommonAvailability.AvailabilityType = Doctor.RegNumber + "Common";
+                if (!isTimingsValid)
+                {
+                    SelectList();
+                    ViewBag.ErrorList = lstErrors;
+                    return View(Doctor);
+                }
+                
+
+                Doctor.CommonAvailability.AvailabilityType = Doctor.RegNumber + "_Common";
                 #endregion
 
 
@@ -371,30 +365,11 @@ namespace DrAvail.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                _logger.LogError("Error in Doctors/Create Action" + e.Message);
             }
 
-            #region selectList
-            ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
-            ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
-            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name");
 
-            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
-                         select new { ID = (int)H, Name = H.ToString() };
-            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
-
-            var district = from District d in Enum.GetValues(typeof(District))
-                           select new { ID = (int)d, Name = d.ToString() };
-            ViewBag.Districts = new SelectList(district, "ID", "Name");
-
-            var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
-                             select new { ID = (int)d, Name = d.ToString() };
-            ViewBag.Speciality = new SelectList(speciality, "ID", "Name");
-            //var gender = from Gender H in Enum.GetValues(typeof(Gender))
-            //             select new { Name = H.ToString() };
-            //ViewBag.Gender = gender.ToList();
-            //ViewBag.Gender = Enum.GetNames(typeof(Gender)).Cast<string>().ToList();
-            #endregion
-
+            SelectList();
             return View(Doctor);
         }
 
@@ -614,9 +589,10 @@ namespace DrAvail.Controllers
             #endregion
         }
 
-        private bool VerifyMorningTiming(Availability.Timings timings)
+        private bool VerifyMorningTiming(Availability.Timings timings ,out string errorMessage, string textToAdd = "Morning")
         {
-            string[] morningHours = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14" };
+            #region AnotherMethod
+            /*string[] morningHours = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14" };
             string[] minutes = { "00", "15", "30", "45" };
             //string[] eveningHours = { "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "00" };
 
@@ -664,12 +640,17 @@ namespace DrAvail.Controllers
                 ViewBag.ErrorMessage = "Select valid timing options";
                 return false;
             }
-            return true;
+            return true*/;
+            #endregion
+            return VerifyTimings(startTime: timings.MorningStartTime,
+                        endTime: timings.MorningEndTime, textToAdd, out errorMessage, minHour: 00, maxHour: 14);
+            
         }
 
-        private bool VerifyEveningTiming(Availability.Timings timings)
+        private bool VerifyEveningTiming(Availability.Timings timings, out string errorMessage, string textToAdd = "Evening")
         {
-            //string[] morningHours = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14" };
+            #region AnotherMethod
+            /*//string[] morningHours = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14" };
             string[] minutes = { "00", "15", "30", "45" };
             string[] eveningHours = { "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "00" };
 
@@ -703,11 +684,14 @@ namespace DrAvail.Controllers
                 ViewBag.ErrorMessage = "Select valid timing options";
                 return false;
             }
+            return true;*/
+            #endregion
 
-            return true;
+            return VerifyTimings(startTime: timings.EveningStartTime,
+                        endTime: timings.EveningEndTime, textToAdd, out errorMessage, minHour: 14, maxHour: 23, maxMintute: 45);
         }
 
-        private bool VerifyMinutes(Availability.Timings timings)
+        private bool VerifyMinutes(Availability.Timings timings, out string errorMessage)
         {
             string[] minutes = { "00", "15", "30", "45" };
 
@@ -716,29 +700,40 @@ namespace DrAvail.Controllers
                     && minutes.Contains(timings.EveningStartMinute)
                     && minutes.Contains(timings.EveningEndMinute))
             {
+                errorMessage = "";
                 return true;
             }
-            ViewBag.ErrorMessage = "Invalid Minutes";
+            errorMessage = "Invalid Minutes";
             return false;
         }
 
-        private bool VerifyTimings(DateTime startTime, DateTime endTime, DateTime minTime, DateTime maxTime)
+        private bool VerifyTimings(DateTime startTime, DateTime endTime, string msg, out string errorMessage, int minHour, int maxHour, int minMintue = 00, int maxMintute = 00)
         {
+            DateTime Now = DateTime.Now;
+            
+            DateTime minTime = new DateTime(year: Now.Year, month: Now.Month, day: Now.Day, hour: minHour, minute: minMintue, second: 0);
+            DateTime maxTime = new DateTime(year: Now.Year, month: Now.Month, day: Now.Day, hour: maxHour, minute: maxMintute, second: 0);
+
             if (CompareDateTime(startTime, minTime) != DateTimeRelation.IsEarlier)
             {
                 if (CompareDateTime(endTime, maxTime) != DateTimeRelation.IsLater)
                 {
                     if(CompareDateTime(startTime,endTime) == DateTimeRelation.IsLater)
                     {
+                        errorMessage = "";
                         return true;
                     }
-                    ViewBag.ErrorMessage = "Start time should not be greater than End Time";
-                    return false;
+                    errorMessage = $"{msg} Start time should not be greater than {msg} End Time";
                 }
-                ViewBag.ErrorMessage = "Invalid End Time";
-                return false;
+                else
+                {
+                    errorMessage = $"Invalid {msg} End Time";
+                }
             }
-            ViewBag.ErrorMessage = "Invalid Start Time";
+            else
+            {
+                errorMessage = $"Invalid {msg} Start Time";
+            }
             return false;
         }
 
