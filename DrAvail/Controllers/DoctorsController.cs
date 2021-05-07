@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using DrAvail.Authorization;
+using DrAvail.Data;
+using DrAvail.Models;
+using DrAvail.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DrAvail.Data;
-using DrAvail.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Identity;
-using DrAvail.Authorization;
-using DrAvail.Services;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DrAvail.Controllers
 {
@@ -718,7 +717,7 @@ namespace DrAvail.Controllers
             {
                 if (CompareDateTime(endTime, maxTime) != DateTimeRelation.IsLater)
                 {
-                    if(CompareDateTime(startTime,endTime) == DateTimeRelation.IsLater)
+                    if(CompareDateTime(startTime,endTime) == DateTimeRelation.IsEarlier)
                     {
                         errorMessage = "";
                         return true;
@@ -727,12 +726,12 @@ namespace DrAvail.Controllers
                 }
                 else
                 {
-                    errorMessage = $"Invalid {msg} End Time";
+                    errorMessage = $"{msg} End Time must not exceed {maxHour}:{maxMintute}";
                 }
             }
             else
             {
-                errorMessage = $"Invalid {msg} Start Time";
+                errorMessage = $"{msg} Start Time cannot be lesser than {minHour}:{minMintue}";
             }
             return false;
         }
