@@ -23,5 +23,13 @@ namespace DrAvail.Services
         int GetDoctorIDByOwnerID(string ownerId);
 
         int GetPendingVerificationCount();
+
+        bool VerifyMorningTiming(Availability.Timings timings, out string errorMessage, string textToAdd);
+
+        bool VerifyEveningTiming(Availability.Timings timings, out string errorMessage, string textToAdd);
+
+        bool VerifyMinutes(Availability.Timings timings, out string errorMessage);
+
+        bool VerifyTimings(DateTime startTime, DateTime endTime, string msg, out string errorMessage, int minHour, int maxHour, int minMintue, int maxMintute);
     }
 }

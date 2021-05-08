@@ -260,7 +260,7 @@ namespace DrAvail.Controllers
         {
             if (!ModelState.IsValid)
             {
-                SelectList();
+                SelectListAll();
                 return View(Doctor);
             }
 
@@ -281,66 +281,11 @@ namespace DrAvail.Controllers
             //}
             try
             {
-                #region ConditonChecks
-
-                #endregion
-
-
-                #region Initialize
-                bool isTimingsValid = true;
-                List<string> lstErrors = new List<string> ();
-                string errorMessage ="";
-                if (VerifyMinutes(Doctor.CommonAvailability.CommonDays, out errorMessage))
+                
+                #region Validation_Initialize
+                
+                if (!ValidateTimings())
                 {
-                    
-                    if(!VerifyMorningTiming(Doctor.CommonAvailability.CommonDays,out errorMessage))
-                    {
-                        lstErrors.Add(errorMessage);
-                        isTimingsValid = false;
-                    }
-                    
-                    if (!VerifyEveningTiming(Doctor.CommonAvailability.CommonDays, out errorMessage))
-                    {
-                        lstErrors.Add(errorMessage);
-                        isTimingsValid = false;
-                    }
-
-                    if (Doctor.CommonAvailability.IsAvailableOnWeekend)
-                    {
-                        //if user selects weekend timings should be same as common days
-                        if (Doctor.CommonAvailability.WeekendSameAsCommon && isTimingsValid)
-                        {
-                            Doctor.CommonAvailability.Weekends.MorningStartTime = Doctor.CommonAvailability.CommonDays.MorningStartTime;
-                            Doctor.CommonAvailability.Weekends.MorningEndTime = Doctor.CommonAvailability.CommonDays.MorningEndTime;
-                            Doctor.CommonAvailability.Weekends.EveningStartTime = Doctor.CommonAvailability.CommonDays.EveningStartTime;
-                            Doctor.CommonAvailability.Weekends.EveningEndTime = Doctor.CommonAvailability.CommonDays.EveningEndTime;
-                        }
-                        else
-                        {
-                            if (!VerifyMorningTiming(Doctor.CommonAvailability.Weekends, out errorMessage, "Weekend Morning"))
-                            {
-                                lstErrors.Add(errorMessage);
-                                isTimingsValid = false;
-                            }
-
-                            if (!VerifyEveningTiming(Doctor.CommonAvailability.Weekends, out errorMessage, "Weekend Evening"))
-                            {
-                                lstErrors.Add(errorMessage);
-                                isTimingsValid = false;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    lstErrors.Add(errorMessage);
-                    isTimingsValid = false;
-                }
-
-                if (!isTimingsValid)
-                {
-                    SelectList();
-                    ViewBag.ErrorList = lstErrors;
                     return View(Doctor);
                 }
                 
@@ -357,18 +302,18 @@ namespace DrAvail.Controllers
                 Context.Doctors.Add(Doctor);
 
                 await Context.SaveChangesAsync();
-
+                _logger.LogInformation("Successfuly Registered details for Doctor ID: " + Doctor.ID);
                 return RedirectToAction(nameof(Index));
 
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                _logger.LogError("Error in Doctors/Create Action" + e.Message);
+                _logger.LogError(e, "Error in Doctors/Create Action for Owner/User ID: " + Doctor.OwnerID);
             }
 
 
-            SelectList();
+            SelectListAll();
             return View(Doctor);
         }
 
@@ -395,30 +340,8 @@ namespace DrAvail.Controllers
                 return Forbid();
             }
 
-            //ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", doctor.CommonAvaliabilityID);
-            //ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID", doctor.CurrentAvaliabilityID);
-            //ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name", doctor.HospitalID);
-            //var district = from District d in Enum.GetValues(typeof(District))
-            //               select new { ID = (int)d, Name = d.ToString() };
-            ////ViewBag.Districts = new SelectList(district, "ID", "Name");
-
-            //var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
-            //                 select new { ID = (int)d, Name = d.ToString() };
-            //ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
-
-            #region selectList
-
-            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name");
-
-            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
-                         select new { ID = (int)H, Name = H.ToString() };
-            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
-
-
-            var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
-                             select new { ID = (int)d, Name = d.ToString() };
-            ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
-            #endregion
+            SelectListHospital();
+            SelectListSpeciality();
 
             return View(doctor);
         }
@@ -446,6 +369,11 @@ namespace DrAvail.Controllers
                     {
                         return Forbid();
                     }
+                    //to Validate Morning/Evening Start & End timings
+                    if (!ValidateTimings())
+                    {
+                        return View(Doctor);
+                    }
 
                     if (Doctor.IsVerified)
                     {
@@ -464,9 +392,13 @@ namespace DrAvail.Controllers
                     }
                     Context.Update(Doctor);
                     await Context.SaveChangesAsync();
+                    _logger.LogInformation("Successfuly updated details for Doctor ID: " + Doctor.ID);
+
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException exception)
                 {
+                    _logger.LogWarning(exception, "Occured in Edit Action for Doctor ID: " + Doctor.ID);
+
                     if (!DoctorService.DoctorExists(Doctor.ID))
                     {
                         return NotFound();
@@ -479,19 +411,8 @@ namespace DrAvail.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            #region selectList
-
-            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name");
-
-            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
-                         select new { ID = (int)H, Name = H.ToString() };
-            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
-
-
-            var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
-                             select new { ID = (int)d, Name = d.ToString() };
-            ViewBag.Speciality = new SelectList(speciality, "Name", "Name");
-            #endregion
+            SelectListHospital();
+            SelectListSpeciality();
 
             return View(Doctor);
         }
@@ -546,8 +467,6 @@ namespace DrAvail.Controllers
         }
 
 
-
-
         public IActionResult AvailabilityCreate()
         {
             return View();
@@ -563,35 +482,47 @@ namespace DrAvail.Controllers
             return Json(locations2.ToList());
         }
 
-        private void SelectList()
+        private void SelectListSpeciality()
         {
-            #region selectList
-            ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
-            ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
+            var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
+                             select new { ID = (int)d, Name = d.ToString() };
+            ViewBag.Speciality = new SelectList(speciality, "ID", "Name");
+        }
+        private void SelectListHospital()
+        {
             ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name");
 
             var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
                          select new { ID = (int)H, Name = H.ToString() };
             ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
 
-            var district = from District d in Enum.GetValues(typeof(District))
+            /*var district = from District d in Enum.GetValues(typeof(District))
                            select new { ID = (int)d, Name = d.ToString() };
-            ViewBag.Districts = new SelectList(district, "ID", "Name");
+            ViewBag.Districts = new SelectList(district, "ID", "Name");*/
 
-            var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
-                             select new { ID = (int)d, Name = d.ToString() };
-            ViewBag.Speciality = new SelectList(speciality, "ID", "Name");
+            
+
             //var gender = from Gender H in Enum.GetValues(typeof(Gender))
             //             select new { Name = H.ToString() };
             //ViewBag.Gender = gender.ToList();
             //ViewBag.Gender = Enum.GetNames(typeof(Gender)).Cast<string>().ToList();
+        }
+
+        private void SelectListAll()
+        {
+            #region selectList
+            ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
+            ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
+            SelectListHospital();
+            SelectListSpeciality();
             #endregion
         }
 
-        private bool VerifyMorningTiming(Availability.Timings timings ,out string errorMessage, string textToAdd = "Morning")
+        #region DoctorServiceMethods
+        /*private bool VerifyMorningTiming(Availability.Timings timings ,out string errorMessage, string textToAdd = "Morning")
         {
             #region AnotherMethod
-            /*string[] morningHours = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14" };
+            *//*string[] morningHours = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14" };
             string[] minutes = { "00", "15", "30", "45" };
             //string[] eveningHours = { "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "00" };
 
@@ -639,7 +570,7 @@ namespace DrAvail.Controllers
                 ViewBag.ErrorMessage = "Select valid timing options";
                 return false;
             }
-            return true*/;
+            return true*//*;
             #endregion
             return VerifyTimings(startTime: timings.MorningStartTime,
                         endTime: timings.MorningEndTime, textToAdd, out errorMessage, minHour: 00, maxHour: 14);
@@ -649,7 +580,7 @@ namespace DrAvail.Controllers
         private bool VerifyEveningTiming(Availability.Timings timings, out string errorMessage, string textToAdd = "Evening")
         {
             #region AnotherMethod
-            /*//string[] morningHours = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14" };
+            *//*//string[] morningHours = { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14" };
             string[] minutes = { "00", "15", "30", "45" };
             string[] eveningHours = { "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "00" };
 
@@ -683,7 +614,7 @@ namespace DrAvail.Controllers
                 ViewBag.ErrorMessage = "Select valid timing options";
                 return false;
             }
-            return true;*/
+            return true;*//*
             #endregion
 
             return VerifyTimings(startTime: timings.EveningStartTime,
@@ -755,6 +686,66 @@ namespace DrAvail.Controllers
             IsEarlier,
             IsSame,
             IsLater
+        }*/
+        #endregion
+
+        private bool ValidateTimings()
+        {
+            bool isTimingsValid = true;
+            List<string> lstErrors = new List<string>();
+            if (DoctorService.VerifyMinutes(Doctor.CommonAvailability.CommonDays, out string errorMessage))
+            {
+
+                if (!DoctorService.VerifyMorningTiming(Doctor.CommonAvailability.CommonDays, out errorMessage, textToAdd: "Week Days"))
+                {
+                    lstErrors.Add(errorMessage);
+                    isTimingsValid = false;
+                }
+
+                if (!DoctorService.VerifyEveningTiming(Doctor.CommonAvailability.CommonDays, out errorMessage, textToAdd: "Week Days"))
+                {
+                    lstErrors.Add(errorMessage);
+                    isTimingsValid = false;
+                }
+
+                if (Doctor.CommonAvailability.IsAvailableOnWeekend)
+                {
+                    //if user selects weekend timings should be same as common days
+                    if (Doctor.CommonAvailability.WeekendSameAsCommon && isTimingsValid)
+                    {
+                        Doctor.CommonAvailability.Weekends.MorningStartTime = Doctor.CommonAvailability.CommonDays.MorningStartTime;
+                        Doctor.CommonAvailability.Weekends.MorningEndTime = Doctor.CommonAvailability.CommonDays.MorningEndTime;
+                        Doctor.CommonAvailability.Weekends.EveningStartTime = Doctor.CommonAvailability.CommonDays.EveningStartTime;
+                        Doctor.CommonAvailability.Weekends.EveningEndTime = Doctor.CommonAvailability.CommonDays.EveningEndTime;
+                    }
+                    else
+                    {
+                        if (!DoctorService.VerifyMorningTiming(Doctor.CommonAvailability.Weekends, out errorMessage, textToAdd:"Weekend"))
+                        {
+                            lstErrors.Add(errorMessage);
+                            isTimingsValid = false;
+                        }
+
+                        if (!DoctorService.VerifyEveningTiming(Doctor.CommonAvailability.Weekends, out errorMessage, textToAdd:"Weekend"))
+                        {
+                            lstErrors.Add(errorMessage);
+                            isTimingsValid = false;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                lstErrors.Add(errorMessage);
+                isTimingsValid = false;
+            }
+
+            if (!isTimingsValid)
+            {
+                SelectListAll();
+                ViewBag.ErrorList = lstErrors;
+            }
+            return isTimingsValid;
         }
     }
 

@@ -10,29 +10,29 @@
 <br />
 
 
-@if (lstErrors is not null && lstErrors.Count!=0)
+@if (lstErrors is not null && lstErrors.Count != 0)
 {
     @*<div aria-live="polite" aria-atomic="true">
         <!-- Position it -->
         <div style="position: absolute; top: 0; right: 0;">*@
-            <div  class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
-            @foreach (var errorMessage in lstErrors)
-            {
-                <!-- Then put toasts within -->
-                <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-                    <div class="toast-header">
-                        <strong class="mr-auto text-danger">Invalid Value Error</strong>
-                        <small class="text-muted">just now</small>
-                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="toast-body">
-                        @errorMessage
-                    </div>
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+        @foreach (var errorMessage in lstErrors)
+        {
+            <!-- Then put toasts within -->
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="mr-auto text-danger">Invalid Value Error</strong>
+                    <small class="text-muted">just now</small>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            }
-        </div>
+                <div class="toast-body">
+                    @errorMessage
+                </div>
+            </div>
+        }
+    </div>
     @*</div>*@
 }
 
@@ -562,47 +562,50 @@
                     </div>
                 </div>
             </div>
-            <div id="addCurrentAvailability" hidden>
-                <h6>Current Availability</h6>
-                <div class="form-group">
-                    <label asp-for="CurrentAvailability.CurrentStartDateTime" class="control-label"></label>
-                    <input asp-for="CurrentAvailability.CurrentStartDateTime" class="form-control" />
-                    <span asp-validation-for="CurrentAvailability.CurrentStartDateTime" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="CurrentAvailability.CurrentEndDateTime" class="control-label"></label>
-                    <input asp-for="CurrentAvailability.CurrentEndDateTime" class="form-control" />
-                    <span asp-validation-for="CurrentAvailability.CurrentEndDateTime" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="CurrentAvailability.ContactPreference" class="control-label"></label>
-                    <select asp-for="CurrentAvailability.ContactPreference" class="form-control">
-                        <option>Always</option>
-                        <option>EmergencyOnly</option>
-                        <option>Never</option>
-                    </select>
-                    <span asp-validation-for="CurrentAvailability.ContactPreference" class="text-danger"></span>
-                </div>
-                <div class="form-group" hidden>
-                    <label asp-for="CurrentAvailability.HospitalID" class="control-label"></label>
-                    <select asp-for="CurrentAvailability.HospitalID" class="form-control" asp-items="ViewBag.HospitalID">
-                    </select>
-                </div>
+            <div id="addCurrentAvailability" class="card mb-3" hidden>
+                <h6 class="card-title text-left">Current Availability</h6>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label asp-for="CurrentAvailability.CurrentStartDateTime" class="control-label">Start Date/Time</label>
+                            <input asp-for="CurrentAvailability.CurrentStartDateTime" class="form-control" />
+                            <span asp-validation-for="CurrentAvailability.CurrentStartDateTime" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="CurrentAvailability.CurrentEndDateTime" class="control-label">End Date/Time</label>
+                            <input asp-for="CurrentAvailability.CurrentEndDateTime" class="form-control" />
+                            <span asp-validation-for="CurrentAvailability.CurrentEndDateTime" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label asp-for="CurrentAvailability.ContactPreference" class="control-label">Contact Preference</label>
+                            <select asp-for="CurrentAvailability.ContactPreference" class="form-control">
+                                <option>Always</option>
+                                <option>EmergencyOnly</option>
+                                <option>Never</option>
+                            </select>
+                            <span asp-validation-for="CurrentAvailability.ContactPreference" class="text-danger"></span>
+                        </div>
+                    </div>
 
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label asp-for="CurrentAvailability.Status" class="control-label"></label>
+                            <select asp-for="CurrentAvailability.Status" class="form-control" id="status" size="1">
+                                <option value="">--Select</option>
+                                <option value="On Vacation">On Vacation</option>
+                                <option value="Available">Available</option>
+                            </select>
+                        </div>
 
-                <div class="form-group" hidden>
-                    <label asp-for="CurrentAvailability.Status" class="control-label"></label>
-                    <select asp-for="CurrentAvailability.Status" class="form-control">
-                        <option value="">--Select</option>
-                        <option value="On Vacation">On Vacation</option>
-                        <option value="Available">Available</option>
-                    </select>
-                </div>
-                <div class="form-group" hidden>
-                    <label asp-for="CurrentAvailability.HospitalID" class="control-label">Hospital Name</label>
-                    <select asp-for="CurrentAvailability.HospitalID" class="form-control" asp-items="ViewBag.HospitalID">
-                        <option value=HospitalID></option>
-                    </select>
+                        <div class="form-group col-md-4" id="currentHospital" style="display:none">
+                            <label asp-for="CurrentAvailability.HospitalID" class="control-label">Available at</label>
+                            <select asp-for="CurrentAvailability.HospitalID" class="form-control" asp-items="ViewBag.HospitalID">
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="form-group">
@@ -610,14 +613,10 @@
             </div>
         </form>
     </div>
-
-    @*</div>*@
-    @*</div>*@
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
     <script src="~/js/custom-methods.js"></script>
 }

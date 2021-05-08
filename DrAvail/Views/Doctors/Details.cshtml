@@ -62,9 +62,12 @@
                         }
                         <br />
                         <br />
-                        <text class="font-weight-bold">Bio: </text>
-                        <br />
-                        <p class="card-text">@Html.DisplayFor(modelItem => Model.Summary)</p>
+                        @if (!string.IsNullOrWhiteSpace(Model.Summary))
+                        {
+                            <p class="font-weight-bold">Bio: </p>
+                            <br />
+                            <p class="card-text">@Html.DisplayFor(modelItem => Model.Summary)</p>
+                        }
                         @*</div>*@
                     </div>
                 </div>
@@ -175,10 +178,10 @@ User, Model, Operations.Reject)).Succeeded)
         <button class="btn btn-danger" data-toggle="modal" data-target="#RejectModal">Reject</button>
 
         @*<form style="display:inline;" method="post">
-            <input type="hidden" name="id" value="@Model.ID" />
-            <input type="hidden" name="status" value=false />
-            <button type="submit" class="btn btn-xs btn-danger">Reject</button>
-        </form>*@
+                <input type="hidden" name="id" value="@Model.ID" />
+                <input type="hidden" name="status" value=false />
+                <button type="submit" class="btn btn-xs btn-danger">Reject</button>
+            </form>*@
         <!-- Modal -->
         <div class="modal fade" id="RejectModal" tabindex="-1" role="dialog" aria-labelledby="RejectModal" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
