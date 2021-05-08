@@ -24,6 +24,7 @@ namespace DrAvail.Models
         //Need to be unique
         [Required]
         [MinLength(6),MaxLength(20)]
+        [UniqueRegisterationNumber]
         [Display(Name ="Registration Number")]
         public string RegNumber { get; set; }
 
@@ -193,4 +194,31 @@ namespace DrAvail.Models
     }
     #endregion
 
+    #region Custom ValidationAttribute
+    public class UniqueRegisterationNumberAttribute : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            if (value is not null)
+            {
+                var registrationNumber = (string)value;
+                Data.ApplicationDbContext context = new Data.ApplicationDbContext();
+                bool IsExists = context.Doctors.Any(d => d.RegNumber.Equals(registrationNumber));
+
+                if (IsExists)
+                {
+                    return new ValidationResult($"{registrationNumber} already exists. Please enter valid Registration Number");
+
+                }
+                return ValidationResult.Success;
+
+            }
+            else
+            {
+                var propertyInfo = validationContext.ObjectType.GetProperty(validationContext.MemberName);
+                return new ValidationResult($"{propertyInfo.Name} is required");
+            }
+        }
+    }
+    #endregion
 }

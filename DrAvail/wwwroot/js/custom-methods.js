@@ -21,15 +21,34 @@
         $("#age").val(year - parseInt(dob));
     });
 
-    $(window).on('load', function () {
-        if ($("#txtPincode").val().length == 6) {
-            $("#txtPincode").trigger('keyup');
+    $("#txtRegistrationNumber").change(function (event) {
+        var registrationNumber = event.currentTarget.value;
+        if (registrationNumber != null && registrationNumber.length > 5) {
+            var url = window.location.origin + "/Doctors/DoctorExistsByRegistrationNumber";
+            $.getJSON(url, { registrationNumber: registrationNumber }, function (data) {
+                if (data == true) {
+                        //console.log("Doctor already exists for Registration Number: " + registrationNumber);
+                        alert("Doctor already exists for Registration Number: " + registrationNumber);
+                }
+                //console.log("Reg Num func: ");
+                //console.log(data);
+            });
         }
+    });
+
+    $(window).on('load', function () {
+
+        $("#txtPincode").trigger('keyup');
+
         var id = $("#selHospitalId").find(":selected").val();
         if (id) {
             $("#selHospitalId").trigger('change');
         }
-    })
+        var n = $("#chkAvailableOnWeekend:checked").length;
+        if (n) {
+            $("#commonWeekendInput").show();
+        }
+    });
 
     function setCommonMorningStartTime() {
         var commonMorningStartHour = $("#commonMorningStartHour").find(":selected").val();
@@ -68,7 +87,7 @@
         var weekendMorningStartMinute = $("#weekendMorningStartMinute").find(":selected").val();
         //var weekendMorningStartTime = new Date(year, month, day, weekendMorningStartHour, weekendMorningStartMinute);
         $("#weekendMorningStartTime").val(weekendMorningStartHour + ":" + weekendMorningStartMinute);
-        console.log("weekendMorningStartTime: " + $("#weekendMorningStartTime").val());
+        //console.log("weekendMorningStartTime: " + $("#weekendMorningStartTime").val());
     }
 
     function setWeekendMorningEndTime() {
@@ -76,7 +95,7 @@
         var weekendMorningEndMinute = $("#weekendMorningEndMinute").find(":selected").val();
         //var weekendMorningEndTime = new Date(year, month, day, weekendMorningEndHour, weekendMorningEndMinute);
         $("#weekendMorningEndTime").val(weekendMorningEndHour + ":" + weekendMorningEndMinute);
-        console.log("weekendMorningEndTime: " + $("#weekendMorningEndTime").val());
+        //console.log("weekendMorningEndTime: " + $("#weekendMorningEndTime").val());
     }
 
     function setWeekendEveningStartTime() {
@@ -84,7 +103,7 @@
         var weekendEveningStartMinute = $("#weekendEveningStartMinute").find(":selected").val();
         //var weekendEveningStartTime = new Date(year, month, day, weekendEveningStartHour, weekendEveningStartMinute);
         $("#weekendEveningStartTime").val(weekendEveningStartHour + ":" + weekendEveningStartMinute);
-        console.log("weekendEveningStartTime: " + $("#weekendEveningStartTime").val());
+        //console.log("weekendEveningStartTime: " + $("#weekendEveningStartTime").val());
     }
 
     function setWeekendEveningEndTime() {
@@ -92,22 +111,22 @@
         var weekendEveningEndMinute = $("#weekendEveningEndMinute").find(":selected").val();
         //var weekendEveningEndTime = new Date(year, month, day, weekendEveningEndHour, weekendEveningEndMinute);
         $("#weekendEveningEndTime").val(weekendEveningEndHour + ":" + weekendEveningEndMinute);
-        console.log("weekendEveningEndTime: " + $("#weekendEveningEndTime").val());
+        //console.log("weekendEveningEndTime: " + $("#weekendEveningEndTime").val());
     }
 
     function setDefaultWeekendTiming(timing = "00:00") {
         //Morning start time
         $("#weekendMorningStartTime").val(timing);
-        console.log("weekendMorningStartTime: " + $("#weekendMorningStartTime").val());
+        //console.log("weekendMorningStartTime: " + $("#weekendMorningStartTime").val());
         //morning end time
         $("#weekendMorningEndTime").val(timing);
-        console.log("weekendMorningEndTime: " + $("#weekendMorningEndTime").val());
+        //console.log("weekendMorningEndTime: " + $("#weekendMorningEndTime").val());
         //evening start time
         $("#weekendEveningStartTime").val(timing);
-        console.log("weekendEveningStartTime: " + $("#weekendEveningStartTime").val());
+        //console.log("weekendEveningStartTime: " + $("#weekendEveningStartTime").val());
         //evening end time
         $("#weekendEveningEndTime").val(timing);
-        console.log("weekendEveningEndTime: " + $("#weekendEveningEndTime").val());
+        //console.log("weekendEveningEndTime: " + $("#weekendEveningEndTime").val());
     }
 
     $('#btnCreate').click(function () {
@@ -118,7 +137,7 @@
         setCommonEveningEndTime();
         //for weekends
         var availableOnWeekend = $('#chkAvailableOnWeekend:checked').length
-        console.log("availableOnWeekend: " + availableOnWeekend);
+        //console.log("availableOnWeekend: " + availableOnWeekend);
         if (availableOnWeekend) {
             setWeekendMorningStartTime();
             setWeekendMorningEndTime();
@@ -689,7 +708,7 @@
         //var source = "#txtPincode";
         //console.log("Pincode: " + $("#txtPincode").val());
         if ($("#txtPincode").val().length == 6) {
-            var url = "Doctors/GetLocations";
+            var url = window.location.origin + "/Doctors/GetLocations";
             //console.log("Url: " + url);
             $.getJSON(url, { Pincode: $("#txtPincode").val() }, function (data) {
                 var items = "";
@@ -714,7 +733,7 @@
         //var source = "#txtPincode";
         //console.log("Pincode: " + $("#txtPincode").val());
         if ($("#txtHospitalPincode").val().length == 6) {
-            var url = "Doctors/GetLocations";
+            var url = window.location.origin + "/Doctors/GetLocations";
             //console.log("Url: " + url);
             $.getJSON(url, { Pincode: $("#txtHospitalPincode").val() }, function (data) {
                 var items = "";
@@ -779,7 +798,7 @@
     });
 
     $('#selHospitalId').change(function () {
-        var url = "Hospitals/FetchHospitalDetails";
+        var url = window.location.origin + "/Hospitals/FetchHospitalDetails";
         $.getJSON(url, { id: $("#selHospitalId").find(":selected").val() }, function (data) {
             if (data.length != 0) {
                 if (data == false) {
@@ -799,4 +818,6 @@
             }
         });
     });
+
+
 });
