@@ -262,12 +262,12 @@ namespace DrAvail.Services
                 }
                 else
                 {
-                    errorMessage = $"{msg} End Time must not exceed {maxHour}:{maxMintute}";
+                    errorMessage = $"{msg} End Time must not exceed {maxHour:D2}:{maxMintute:D2}";
                 }
             }
             else
             {
-                errorMessage = $"{msg} Start Time cannot be lesser than {minHour}:{minMintue}";
+                errorMessage = $"{msg} Start Time cannot be lesser than {minHour:D2}:{minMintue:D2}";
             }
             return false;
         }

@@ -5,6 +5,7 @@
 
     //setting value to availabilityType
     $("#availabilityType").val("Common");
+    OnReload();
 
     var today = new Date();
     var year = today.getFullYear();
@@ -21,34 +22,40 @@
         $("#age").val(year - parseInt(dob));
     });
 
-    $("#txtRegistrationNumber").change(function (event) {
-        var registrationNumber = event.currentTarget.value;
+    function CheckRegistrationNumberExists(registrationNumber) {
         if (registrationNumber != null && registrationNumber.length > 5) {
             var url = window.location.origin + "/Doctors/DoctorExistsByRegistrationNumber";
             $.getJSON(url, { registrationNumber: registrationNumber }, function (data) {
                 if (data == true) {
-                        //console.log("Doctor already exists for Registration Number: " + registrationNumber);
-                        alert("Doctor already exists for Registration Number: " + registrationNumber);
+                    //console.log("Doctor already exists for Registration Number: " + registrationNumber);
+                    alert("Doctor already exists for Registration Number: " + registrationNumber);
+                    return false;
                 }
                 //console.log("Reg Num func: ");
                 //console.log(data);
             });
         }
+        return true;
+    }
+    $("#txtRegistrationNumber").change(function (event) {
+        var registrationNumber = event.currentTarget.value;
+        CheckRegistrationNumberExists(registrationNumber);
     });
 
-    $(window).on('load', function () {
-
+   function OnReload() {
+        //console.log("Inside window on event call")
         $("#txtPincode").trigger('keyup');
+        $("#txtHospitalPincode").trigger('keyup');
 
-        var id = $("#selHospitalId").find(":selected").val();
-        if (id) {
+        var id = parseInt($("#selHospitalId").find(":selected").val());
+        if (id!=0) {
             $("#selHospitalId").trigger('change');
         }
-        var n = $("#chkAvailableOnWeekend:checked").length;
-        if (n) {
-            $("#commonWeekendInput").show();
+        var n = parseInt($("#chkAvailableOnWeekend:checked").length);
+        if (n!=0) {
+            $("#commonWeekendInput").collapse('show');
         }
-    });
+    }
 
     function setCommonMorningStartTime() {
         var commonMorningStartHour = $("#commonMorningStartHour").find(":selected").val();
@@ -130,26 +137,29 @@
     }
 
     $('#btnCreate').click(function () {
-        //for common days
-        setCommonMorningStartTime();
-        setCommonMorningEndTime();
-        setCommonEveningStartTime();
-        setCommonEveningEndTime();
-        //for weekends
-        var availableOnWeekend = $('#chkAvailableOnWeekend:checked').length
-        //console.log("availableOnWeekend: " + availableOnWeekend);
-        if (availableOnWeekend) {
-            setWeekendMorningStartTime();
-            setWeekendMorningEndTime();
-            setWeekendEveningStartTime();
-            setWeekendEveningEndTime();
-        }
-        else {
-            setDefaultWeekendTiming();
+
+        if (CheckRegistrationNumberExists($("#txtRegistrationNumber").val())) {
+            //for common days
+            setCommonMorningStartTime();
+            setCommonMorningEndTime();
+            setCommonEveningStartTime();
+            setCommonEveningEndTime();
+            //for weekends
+            var availableOnWeekend = $('#chkAvailableOnWeekend:checked').length
+            //console.log("availableOnWeekend: " + availableOnWeekend);
+            if (availableOnWeekend !=0) {
+                setWeekendMorningStartTime();
+                setWeekendMorningEndTime();
+                setWeekendEveningStartTime();
+                setWeekendEveningEndTime();
+            }
+            else {
+                setDefaultWeekendTiming();
+            }
         }
 
-        //$('#btnCreate').submit();
-
+        //now it will submit regardless
+        //but need to prevent from submit if above check fails
     });
 
     //commonMorningStartHour
@@ -191,7 +201,7 @@
         var timings = "";
         var items = "";
 
-        if (Tindex != Times.length - 1) {
+        if (Tindex != Times.length-1) {
             $.each(Times, function (i, value) {
                 if (i > Tindex) {
                     timings += "<option value='" + value + "'>" + value + "</option>";
@@ -213,7 +223,7 @@
         }
         else {
             //var timings = "";
-            if (Hindex == MHours.length - 2) {
+            if (Hindex == MHours.length-2) {
                 timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
                 console.log("timing::  " + timings);
             }
@@ -243,7 +253,7 @@
         var endHourIndex = MHours.indexOf(endHour);
         var timings = "";
 
-        if (endHourIndex == MHours.length - 1) {
+        if (endHourIndex == (MHours.length - 1)) {
             timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
             //console.log("timings::: " + timings);
             $("#commonMorningEndMinute").html(timings);
@@ -470,18 +480,29 @@
         var startHourIndex = MHours.indexOf(startHour);
         var endHourIndex = MHours.indexOf(endHour);
         var timings = "";
-        console.log("Weekedn Morning Start Hour Value: " + startHour);
+        /*console.log("Weekedn Morning Start Hour Value: " + startHour);
         console.log("Weekedn Morning Start Hour Index: " + startHourIndex);
 
         console.log("Weekedn Morning End Hour Value: " + endHour);
         console.log("Weekedn Morning End Hour Index: " + endHourIndex);
+        console.log("MHours.length:" + MHours.length);
 
-        if (endHourIndex == MHours.length - 1) {
+        console.log("MHours.length-1: " + MHours.length-1);
+        console.log("endHourIndex == MHours.length - 1" + endHourIndex == MHours.length-1);
+        console.log("endHourIndex > startHourIndex" + endHourIndex > startHourIndex);
+
+        console.log($.type(endHourIndex));
+        console.log($.type(MHours.length));*/
+
+        if(endHourIndex == MHours.length - 1) {
+            //console.log("endHourIndex == MHours.length - 1::: true");
+            $("#weekendMorningEndMinute").empty();
             timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
-            //console.log("timings::: " + timings);
-            $("#commonMorningEndMinute").html(timings);
+            $("#weekendMorningEndMinute").html(timings);
         }
-        else if (endHourIndex > startHourIndex) {
+        else if(endHourIndex > startHourIndex) {
+           // console.log("endHourIndex > startHourIndex::: true");
+
             $.each(Times, function (i, value) {
                 timings += "<option value='" + value + "'>" + value + "</option>";
             });
@@ -541,8 +562,8 @@
         if (Hindex == EHours.length - 2 && Tindex == Times.length - 1) {
             timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
             items += "<option value='" + EHours[EHours.length - 1] + "'>" + EHours[EHours.length - 1] + "</option>";
-            $("#commonEveningEndHour").html(items);
-            $("#commonEveningEndMinute").html(timings);
+            $("#weekendEveningEndHour").html(items);
+            $("#weekendEveningEndMinute").html(timings);
         }
         else if (Tindex != Times.length - 1) {
             $.each(Times, function (i, value) {
@@ -590,9 +611,7 @@
 
         if (endHourIndex == EHours.length - 1) {
             timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
-            //items += "<option value='" + EHours[EHours.length - 1] + "'>" + EHours[EHours.length - 1] + "</option>";
-            //$("#commonEveningEndHour").html(items);
-            $("#commonEveningEndMinute").html(timings);
+            $("#weekendEveningEndMinute").html(timings);
         }
         else if (endHourIndex > startHourIndex) {
             //var timings = "";
@@ -614,43 +633,46 @@
         }
     });
 
+    function CheckWeekendSameAsCommonDays() {
+        if ($("#sameAsCommonDays:checked").length != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    function CopyCommonToWeekend() {
+        var morningStartHour = $("#commonMorningStartHour").find(":selected").val();
+        var morningEndHour = $("#commonMorningEndHour").find(":selected").val();
+        var morningStartMinute = $("#commonMorningStartMinute").find(":selected").val();
+        var morningEndMinute = $("#commonMorningEndMinute").find(":selected").val();
+
+        var eveningStartHour = $("#commonEveningStartHour").find(":selected").val();
+        var eveningEndHour = $("#commonEveningEndHour").find(":selected").val();
+        var eveningStartMinute = $("#commonEveningStartMinute").find(":selected").val();
+        var eveningEndMinute = $("#commonEveningEndMinute").find(":selected").val();
+
+        //$("#weekendMorningStartHour").find("option:contains(" + morningStartHour + ")").attr("selected", true).trigger('change');
+        $("#weekendMorningStartHour").find("option").filter(function () {
+            return morningStartHour === $(this).text();
+        }).attr("selected", true).trigger('change');
+
+        $("#weekendMorningStartMinute").find("option:contains(" + morningStartMinute + ")").attr("selected", true).trigger('change');
+
+        //$("#weekendMorningEndHour").find("option:contains(" + morningEndHour + ")").attr("selected", true).trigger('change');
+        $("#weekendMorningEndHour").find("option").filter(function () {
+            return morningEndHour === $(this).text();
+        }).attr("selected", true).trigger('change');
+
+        $("#weekendMorningEndMinute").find("option:contains(" + morningEndMinute + ")").attr("selected", true);
+
+        $("#weekendEveningStartHour").find("option:contains(" + eveningStartHour + ")").attr("selected", true).trigger('change');
+        $("#weekendEveningStartMinute").find("option:contains(" + eveningStartMinute + ")").attr("selected", true).trigger('change');
+        $("#weekendEveningEndHour").find("option:contains(" + eveningEndHour + ")").attr("selected", true).trigger('change');
+        $("#weekendEveningEndMinute").find("option:contains(" + eveningEndMinute + ")").attr("selected", true);
+    }
     $("#sameAsCommonDays").click(function () {
-        var n = $("#sameAsCommonDays:checked").length;
-        //console.log("n::: " + n);
-        if (n != 0) {
-            //var timings = "";
-            //$.each(Times, function (i, value) {
-            //    timings += "<option value='" + value + "'>" + value + "</option>";
-            //});
-
-            var morningStartHour = $("#commonMorningStartHour").find(":selected").val();
-            var morningEndHour = $("#commonMorningEndHour").find(":selected").val();
-            var morningStartMinute = $("#commonMorningStartMinute").find(":selected").val();
-            var morningEndMinute = $("#commonMorningEndMinute").find(":selected").val();
-
-            var eveningStartHour = $("#commonEveningStartHour").find(":selected").val();
-            var eveningEndHour = $("#commonEveningEndHour").find(":selected").val();
-            var eveningStartMinute = $("#commonEveningStartMinute").find(":selected").val();
-            var eveningEndMinute = $("#commonEveningEndMinute").find(":selected").val();
-
-            //$("#weekendMorningStartHour").find("option:contains(" + morningStartHour + ")").attr("selected", true).trigger('change');
-            $("#weekendMorningStartHour").find("option").filter(function () {
-                return morningStartHour === $(this).text();
-            }).attr("selected", true).trigger('change');
-
-            $("#weekendMorningStartMinute").find("option:contains(" + morningStartMinute + ")").attr("selected", true).trigger('change');
-
-            //$("#weekendMorningEndHour").find("option:contains(" + morningEndHour + ")").attr("selected", true).trigger('change');
-            $("#weekendMorningEndHour").find("option").filter(function () {
-                return morningEndHour === $(this).text();
-            }).attr("selected", true).trigger('change');
-
-            $("#weekendMorningEndMinute").find("option:contains(" + morningEndMinute + ")").attr("selected", true);
-
-            $("#weekendEveningStartHour").find("option:contains(" + eveningStartHour + ")").attr("selected", true).trigger('change');
-            $("#weekendEveningStartMinute").find("option:contains(" + eveningStartMinute + ")").attr("selected", true).trigger('change');
-            $("#weekendEveningEndHour").find("option:contains(" + eveningEndHour + ")").attr("selected", true).trigger('change');
-            $("#weekendEveningEndMinute").find("option:contains(" + eveningEndMinute + ")").attr("selected", true);
+        if (CheckWeekendSameAsCommonDays()) {
+            CopyCommonToWeekend();
             toggleWeekendTiming(true);
         }
         else {
@@ -675,20 +697,20 @@
     $("#txtExperience").change(function () {
         //debugger;
         var exp = $("#txtExperience").val();
-        console.log("\nexp: " + exp);
+        //console.log("\nexp: " + exp);
 
         var dob = $("#dob").val();
-        console.log("\ndob: " + dob);
-        if (dob != "") {
+        //console.log("\ndob: " + dob);
+        if (dob !== "") {
             var age = new Date().getFullYear() - new Date(dob).getFullYear();
-            console.log("Today date: " + new Date().toString());
-            console.log("\nDOB: " + new Date(dob).toString());
+            //console.log("Today date: " + new Date().toString());
+            //console.log("\nDOB: " + new Date(dob).toString());
             console.log("\nAge: " + age);
             if (age > 24) {
                 var diff = age - 25;
-                console.log("\ndiff: " + diff);
+                //console.log("\ndiff: " + diff);
                 if (exp >= 0 && exp <= diff) {
-                    alert('ok');
+                    //alert('ok');
                 }
                 else {
                     alert("You can't have " + exp + " of experience when you are " + age + " year old");
@@ -728,7 +750,7 @@
         }
     });
     //for hostpital
-    $("#txtHospitalPincode").keyup(function () {
+    $("#txtHospitalPincode").on('keyup',function () {
         //debugger;
         //var source = "#txtPincode";
         //console.log("Pincode: " + $("#txtPincode").val());
@@ -793,30 +815,38 @@
         var source = event.currentTarget;
         if (source.id == "Speciality") return;
 
+        //Should be simplied to update the field on which change occurs
+        //example: if CommonMorningEndHour is changed, then change weekendMorningEndHour only
+        if (CheckWeekendSameAsCommonDays()) {
+            CopyCommonToWeekend();
+        }
         $(source).removeClass("selectOpen");
         $(source).attr("size", '1');
     });
 
     $('#selHospitalId').change(function () {
-        var url = window.location.origin + "/Hospitals/FetchHospitalDetails";
-        $.getJSON(url, { id: $("#selHospitalId").find(":selected").val() }, function (data) {
-            if (data.length != 0) {
-                if (data == false) {
-                    console.log("No Hospital found!!!");
-                    return false;
+        var choice = parseInt($("#selHospitalId").find(":selected").val());
+        if(choice!=0){
+            var url = window.location.origin + "/Hospitals/FetchHospitalDetails";
+            $.getJSON(url, { id: choice }, function (data) {
+                if (data.length != 0) {
+                    if (data == false) {
+                        console.log("No Hospital found!!!");
+                        return false;
+                    }
+                    else {
+                        $("#txtHospitalName").val(data.name);
+                        $("#txtHospitalType").val(data.type);
+                        $("#txtHospitalAddress").val(data.address);
+                        $("#txtHospitalPincode").val(data.pincode).trigger('keyup');
+                        //$("#txtHospitalDistrict").val(data.district);
+                        $("#HospitalCity").val(data.city);
+                        $("#txtHospitalEmail").val(data.email);
+                        $("#txtHospitalPhone").val(data.phone);
+                    }
                 }
-                else {
-                    $("#txtHospitalName").val(data.name);
-                    $("#txtHospitalType").val(data.type);
-                    $("#txtHospitalAddress").val(data.address);
-                    $("#txtHospitalPincode").val(data.pincode).trigger('keyup');
-                    //$("#txtHospitalDistrict").val(data.district);
-                    $("#HospitalCity").val(data.city);
-                    $("#txtHospitalEmail").val(data.email);
-                    $("#txtHospitalPhone").val(data.phone);
-                }
-            }
-        });
+            });
+        }
     });
 
 
