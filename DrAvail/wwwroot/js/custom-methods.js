@@ -28,7 +28,7 @@
             $.getJSON(url, { registrationNumber: registrationNumber }, function (data) {
                 if (data == true) {
                     //console.log("Doctor already exists for Registration Number: " + registrationNumber);
-                    alert("Doctor already exists for Registration Number: " + registrationNumber);
+                    alert("Doctor already exists for Registration Number: " + registrationNumber + "Please enter valid Registration Number");
                     return false;
                 }
                 //console.log("Reg Num func: ");
@@ -738,12 +738,13 @@
                     console.log("No location found!!!");
                     return false;
                 }
-                $("#City").empty();
+                console.log($("#City").find(":selected").val());
+                //$("#City").empty();
                 $("#txtDistrict").val(data[0].dis);
                 //$("txtDistrict").text = data[0].dis;
                 //console.log(data[0].dis);
                 $.each(data, function (i, location) {
-                    items += "<option value='" + location.locality + "'>" + location.locality + "</option>";
+                    items += "<option value='" + location.city + "'>" + location.city + "</option>";
                 });
                 $("#City").html(items);
             });
@@ -764,11 +765,11 @@
                     return false;
                 }
                 $("#HospitalCity").empty();
-                $("#txtHospitalDistrict").val(data[0].dis);
+                $("#txtHospitalDistrict").val(data[0].district);
                 //$("txtDistrict").text = data[0].dis;
                 //console.log(data[0].dis);
                 $.each(data, function (i, location) {
-                    items += "<option value='" + location.locality + "'>" + location.locality + "</option>";
+                    items += "<option value='" + location.city + "'>" + location.city + "</option>";
                 });
                 $("#HospitalCity").html(items);
             });

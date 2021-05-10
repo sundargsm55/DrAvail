@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -228,27 +229,28 @@ namespace DrAvail.Controllers
             //}
 
             #region selectList
-            ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
-            ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
-            ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name");
+            //ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
+            //ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
+            //ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name");
 
-            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
-                         select new { ID = (int)H, Name = H.ToString() };
-            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
+            //var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
+            //             select new { ID = (int)H, Name = H.ToString() };
+            //ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
 
-            var district = from District d in Enum.GetValues(typeof(District))
-                           select new { ID = (int)d, Name = d.ToString() };
-            ViewBag.Districts = new SelectList(district, "ID", "Name");
+            //var district = from District d in Enum.GetValues(typeof(District))
+            //               select new { ID = (int)d, Name = d.ToString() };
+            //ViewBag.Districts = new SelectList(district, "ID", "Name");
 
-            var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
-                             select new { ID = (int)d, Name = d.ToString() };
-            ViewBag.Speciality = new SelectList(speciality, "ID", "Name");
+            //var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
+            //                 select new { ID = (int)d, Name = d.ToString() };
+            //ViewBag.Speciality = new SelectList(speciality, "ID", "Name");
 
-            var gender = from Gender H in Enum.GetValues(typeof(Gender))
-                         select new { Name = H.ToString() };
-            ViewBag.Gender = gender.ToList();
+            //var gender = from Gender H in Enum.GetValues(typeof(Gender))
+            //             select new { Name = H.ToString() };
+            //ViewBag.Gender = gender.ToList();
             #endregion
 
+            SelectListAll();
             return View();
         }
 
@@ -346,6 +348,7 @@ namespace DrAvail.Controllers
                 return Forbid();
             }
 
+            Doctor = doctor;
             doctor.CommonAvailability.CommonDays.MorningStartHour = doctor.CommonAvailability.CommonDays.MorningStartTime.Hour.ToString("D2");
             doctor.CommonAvailability.CommonDays.MorningStartMinute = doctor.CommonAvailability.CommonDays.MorningStartTime.Minute.ToString("D2");
             doctor.CommonAvailability.CommonDays.MorningEndHour = doctor.CommonAvailability.CommonDays.MorningEndTime.Hour.ToString("D2");
@@ -362,6 +365,8 @@ namespace DrAvail.Controllers
 
             SelectListHospital();
             SelectListSpeciality();
+            SelectListCity();
+            SelectListHospitalCity();
 
             return View(doctor);
         }
@@ -392,6 +397,11 @@ namespace DrAvail.Controllers
                     //to Validate Morning/Evening Start & End timings
                     if (!ValidateTimings())
                     {
+                        SelectListHospital();
+                        SelectListSpeciality();
+                        SelectListCity();
+                        SelectListHospitalCity();
+
                         return View(Doctor);
                     }
 
@@ -433,7 +443,8 @@ namespace DrAvail.Controllers
 
             SelectListHospital();
             SelectListSpeciality();
-
+            SelectListCity();
+            SelectListHospitalCity();
             return View(Doctor);
         }
 
@@ -497,7 +508,7 @@ namespace DrAvail.Controllers
 
             var locations2 = from location in Context.Locations
                              where location.Pincode == Pincode
-                             select new { Locality = location.Locality, Dis = location.District };
+                             select new { city = location.Locality, district = location.District };
 
             return Json(locations2.ToList());
         }
@@ -507,6 +518,44 @@ namespace DrAvail.Controllers
             return Json(DoctorService.DoctorExistsByRegistrationNumber(registrationNumber));
         }
 
+        private void SelectListCity()
+        {
+            
+            if (Doctor is not null && Doctor.Pincode > 100000)
+            {
+                var options = from location in Context.Locations
+                                 where location.Pincode == Doctor.Pincode
+                                 select new { city = location.Locality};
+                ViewBag.City = new SelectList(options, "city", "city");
+            }
+            else
+            {
+
+                ViewBag.City = new SelectList(new List<string> { "Please enter Pincode" });
+            }
+
+        }
+
+        private void SelectListHospitalCity()
+        {
+
+            if (Doctor is not null && Doctor.Hospital is not null && Doctor.Hospital.Pincode > 100000)
+            {
+                var options = from location in Context.Locations
+                              where location.Pincode == Doctor.Hospital.Pincode
+                              select new { HospitalCity = location.Locality };
+                ViewBag.HospitalCity = new SelectList(options, "HospitalCity", "HospitalCity");
+                Console.WriteLine(options.ToList());
+                Console.WriteLine("Hospital City Available: " + options.Count());
+
+            }
+            else
+            {
+
+                ViewBag.HospitalCity = new SelectList(new List<string> { "Please enter Pincode" });
+            }
+
+        }
         private void SelectListSpeciality()
         {
             var speciality = from Speciality d in Enum.GetValues(typeof(Speciality))
@@ -540,6 +589,8 @@ namespace DrAvail.Controllers
             ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
             SelectListHospital();
             SelectListSpeciality();
+            SelectListCity();
+            SelectListHospitalCity();
             #endregion
         }
 
@@ -775,4 +826,27 @@ namespace DrAvail.Controllers
 
     }
 
+    internal class NewClass
+    {
+        public string Value { get; }
+        public string Option { get; }
+
+        public NewClass(string value, string option)
+        {
+            Value = value;
+            Option = option;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is NewClass other &&
+                   Value == other.Value &&
+                   Option == other.Option;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Value, Option);
+        }
+    }
 }

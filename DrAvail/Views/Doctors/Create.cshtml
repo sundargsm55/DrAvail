@@ -181,8 +181,8 @@
                         <div class="form-group col-md-4">
                             <label asp-for="City" class="control-label"></label>
                             @*<input asp-for="City" class="form-control" />*@
-                            <select asp-for="City" class="form-control" id="City">
-                                <option value="">Please enter Pincode</option>
+                            <select asp-for="City" class="form-control" id="City" asp-items="@ViewBag.City">
+                                @*<option value="">Please enter Pincode</option>*@
                             </select>
                             <span asp-validation-for="City" class="text-danger"></span>
                         </div>
@@ -252,14 +252,14 @@
                         <div class="form-group col-md-4">
                             <label asp-for="Hospital.City" class="control-label"></label>
                             @*<input asp-for="City" class="form-control" />*@
-                            <select asp-for="Hospital.City" class="form-control" id="HospitalCity" size="1">
-                                <option value="">Please enter Pincode</option>
+                            <select asp-for="Hospital.City" class="form-control" id="HospitalCity" size="1" asp-items="@ViewBag.HospitalCity">
+                                @*<option value="0">Please enter Pincode</option>*@
                             </select>
                             <span asp-validation-for="Hospital.City" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-4">
                             <label asp-for="Hospital.District" class="control-label"></label>
-                            <input asp-for="Hospital.District" class="form-control" id="txtHospitalDistrict" readonly value="Please enter valid Pincode" />
+                            <input asp-for="Hospital.District" class="form-control" id="txtHospitalDistrict" readonly placeholder="Please enter valid Pincode" />
                             <span asp-validation-for="Hospital.District" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-3">
