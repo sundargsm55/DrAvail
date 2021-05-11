@@ -220,7 +220,7 @@ namespace DrAvail.Controllers
                 return Forbid();
             }
 
-            ViewBag.ErrorList = new List<string>() { "Test error1", "Test error 2", };
+            //ViewBag.ErrorList = new List<string>() { "Test error1", "Test error 2", };
 
             //if (!User.IsInRole(Constants.AdministratorsRole))
             //{
@@ -545,8 +545,8 @@ namespace DrAvail.Controllers
                               where location.Pincode == Doctor.Hospital.Pincode
                               select new { HospitalCity = location.Locality };
                 ViewBag.HospitalCity = new SelectList(options, "HospitalCity", "HospitalCity");
-                Console.WriteLine(options.ToList());
-                Console.WriteLine("Hospital City Available: " + options.Count());
+                //Console.WriteLine(options.ToList());
+                //Console.WriteLine("Hospital City Available: " + options.Count());
 
             }
             else

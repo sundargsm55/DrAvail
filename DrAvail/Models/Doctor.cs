@@ -24,7 +24,7 @@ namespace DrAvail.Models
         //Need to be unique
         [Required]
         [MinLength(6),MaxLength(20)]
-        [UniqueRegisterationNumber]
+        [Unique]
         [Display(Name ="Registration Number")]
         public string RegNumber { get; set; }
 
@@ -72,6 +72,7 @@ namespace DrAvail.Models
         [Required]
         [EmailAddress]
         [Display(Name="Email Address")]
+        [Unique]
         public string EmailId { get; set; }
 
         [Required]
@@ -195,19 +196,31 @@ namespace DrAvail.Models
     #endregion
 
     #region Custom ValidationAttribute
-    public class UniqueRegisterationNumberAttribute : ValidationAttribute
+    public class UniqueAttribute : ValidationAttribute
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
+            var propertyInfo = validationContext.ObjectType.GetProperty(validationContext.MemberName);
+
             if (value is not null)
             {
-                var registrationNumber = (string)value;
+                var strValue = (string)value;
                 Data.ApplicationDbContext context = new Data.ApplicationDbContext();
-                bool IsExists = context.Doctors.Any(d => d.RegNumber.Equals(registrationNumber));
+                bool IsExists = false;
+
+                if (propertyInfo.Name.Equals("EmailId"))
+                {
+                    IsExists = context.Doctors.Any(d => d.EmailId.Equals(strValue));
+                }
+                else if (propertyInfo.Name.Equals("RegNumber"))
+                {
+                    IsExists = context.Doctors.Any(d => d.RegNumber.Equals(strValue));
+
+                }
 
                 if (IsExists)
                 {
-                    return new ValidationResult($"{registrationNumber} already exists. Please enter valid Registration Number");
+                    return new ValidationResult($"{strValue} already exists. Please enter valid {GetAttributeDisplayName(propertyInfo)}");
 
                 }
                 return ValidationResult.Success;
@@ -215,9 +228,16 @@ namespace DrAvail.Models
             }
             else
             {
-                var propertyInfo = validationContext.ObjectType.GetProperty(validationContext.MemberName);
-                return new ValidationResult($"{propertyInfo.Name} is required");
+                return new ValidationResult($"{GetAttributeDisplayName(propertyInfo)} is required");
             }
+        }
+
+        private static string GetAttributeDisplayName(System.Reflection.PropertyInfo property)
+        {
+            var atts = property.GetCustomAttributes(typeof(DisplayAttribute), true);
+            if (atts is null || atts.Length == 0)
+                return property.Name;
+            return (atts[0] as DisplayAttribute).GetName();
         }
     }
     #endregion

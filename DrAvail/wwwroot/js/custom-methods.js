@@ -28,7 +28,7 @@
             $.getJSON(url, { registrationNumber: registrationNumber }, function (data) {
                 if (data == true) {
                     //console.log("Doctor already exists for Registration Number: " + registrationNumber);
-                    alert("Doctor already exists for Registration Number: " + registrationNumber + "Please enter valid Registration Number");
+                    alert("Doctor already exists for Registration Number: " + registrationNumber + ". \nPlease enter valid Registration Number");
                     return false;
                 }
                 //console.log("Reg Num func: ");
@@ -42,18 +42,28 @@
         CheckRegistrationNumberExists(registrationNumber);
     });
 
-   function OnReload() {
+    function OnReload() {
         //console.log("Inside window on event call")
         $("#txtPincode").trigger('keyup');
         $("#txtHospitalPincode").trigger('keyup');
 
         var id = parseInt($("#selHospitalId").find(":selected").val());
-        if (id!=0) {
+        if (id != 0) {
             $("#selHospitalId").trigger('change');
         }
         var n = parseInt($("#chkAvailableOnWeekend:checked").length);
-        if (n!=0) {
+        if (n != 0) {
             $("#commonWeekendInput").collapse('show');
+        }
+    }
+
+    function SetTimeFromHourMinute(target) {
+        if (target != null && target.contains("Time")) {
+            var Hour = $(target.replace("Time","Hour")).find(":selected").val();
+            var Minute = $(target.replace("Time", "Minute")).find(":selected").val();
+            $(source).val(Hour + ":" + Minute);
+        console.log("commonMorningStartTime: " + $("#commonMorningStartTime").val());
+
         }
     }
 
@@ -140,14 +150,15 @@
 
         if (CheckRegistrationNumberExists($("#txtRegistrationNumber").val())) {
             //for common days
-            setCommonMorningStartTime();
+            //setCommonMorningStartTime();
+            SetTimeFromHourMinute("#commonMorningStartTime");
             setCommonMorningEndTime();
             setCommonEveningStartTime();
             setCommonEveningEndTime();
             //for weekends
             var availableOnWeekend = $('#chkAvailableOnWeekend:checked').length
             //console.log("availableOnWeekend: " + availableOnWeekend);
-            if (availableOnWeekend !=0) {
+            if (availableOnWeekend != 0) {
                 setWeekendMorningStartTime();
                 setWeekendMorningEndTime();
                 setWeekendEveningStartTime();
@@ -158,6 +169,7 @@
             }
         }
 
+        return false;
         //now it will submit regardless
         //but need to prevent from submit if above check fails
     });
@@ -201,7 +213,7 @@
         var timings = "";
         var items = "";
 
-        if (Tindex != Times.length-1) {
+        if (Tindex != Times.length - 1) {
             $.each(Times, function (i, value) {
                 if (i > Tindex) {
                     timings += "<option value='" + value + "'>" + value + "</option>";
@@ -223,7 +235,7 @@
         }
         else {
             //var timings = "";
-            if (Hindex == MHours.length-2) {
+            if (Hindex == MHours.length - 2) {
                 timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
                 console.log("timing::  " + timings);
             }
@@ -480,28 +492,15 @@
         var startHourIndex = MHours.indexOf(startHour);
         var endHourIndex = MHours.indexOf(endHour);
         var timings = "";
-        /*console.log("Weekedn Morning Start Hour Value: " + startHour);
-        console.log("Weekedn Morning Start Hour Index: " + startHourIndex);
 
-        console.log("Weekedn Morning End Hour Value: " + endHour);
-        console.log("Weekedn Morning End Hour Index: " + endHourIndex);
-        console.log("MHours.length:" + MHours.length);
-
-        console.log("MHours.length-1: " + MHours.length-1);
-        console.log("endHourIndex == MHours.length - 1" + endHourIndex == MHours.length-1);
-        console.log("endHourIndex > startHourIndex" + endHourIndex > startHourIndex);
-
-        console.log($.type(endHourIndex));
-        console.log($.type(MHours.length));*/
-
-        if(endHourIndex == MHours.length - 1) {
+        if (endHourIndex == MHours.length - 1) {
             //console.log("endHourIndex == MHours.length - 1::: true");
             $("#weekendMorningEndMinute").empty();
             timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
             $("#weekendMorningEndMinute").html(timings);
         }
-        else if(endHourIndex > startHourIndex) {
-           // console.log("endHourIndex > startHourIndex::: true");
+        else if (endHourIndex > startHourIndex) {
+            // console.log("endHourIndex > startHourIndex::: true");
 
             $.each(Times, function (i, value) {
                 timings += "<option value='" + value + "'>" + value + "</option>";
@@ -641,7 +640,18 @@
     }
 
     function CopyCommonToWeekend() {
-        var morningStartHour = $("#commonMorningStartHour").find(":selected").val();
+
+        CopyToWeekend("#commonMorningStartHour");
+        CopyToWeekend("#commonMorningStartMinute");
+        CopyToWeekend("#commonMorningEndHour");
+        CopyToWeekend("#commonMorningEndMinute");
+
+        CopyToWeekend("#commonEveningStartHour");
+        CopyToWeekend("#commonEveningStartMinute");
+        CopyToWeekend("#commonEveningEndHour");
+        CopyToWeekend("#commonEveningEndMinute");
+
+        /*var morningStartHour = $("#commonMorningStartHour").find(":selected").val();
         var morningEndHour = $("#commonMorningEndHour").find(":selected").val();
         var morningStartMinute = $("#commonMorningStartMinute").find(":selected").val();
         var morningEndMinute = $("#commonMorningEndMinute").find(":selected").val();
@@ -669,6 +679,7 @@
         $("#weekendEveningStartMinute").find("option:contains(" + eveningStartMinute + ")").attr("selected", true).trigger('change');
         $("#weekendEveningEndHour").find("option:contains(" + eveningEndHour + ")").attr("selected", true).trigger('change');
         $("#weekendEveningEndMinute").find("option:contains(" + eveningEndMinute + ")").attr("selected", true);
+        */
     }
     $("#sameAsCommonDays").click(function () {
         if (CheckWeekendSameAsCommonDays()) {
@@ -681,17 +692,21 @@
 
     });
 
+    function disableAttribute(source, status) {
+        $(source).attr("disabled", status);
+    }
+
     function toggleWeekendTiming(status) {
 
-        $("#weekendMorningStartHour").attr("disabled", status);
-        $("#weekendMorningEndHour").attr("disabled", status);
-        $("#weekendMorningStartMinute").attr("disabled", status);
-        $("#weekendMorningEndMinute").attr("disabled", status);
+        disableAttribute("#weekendMorningStartHour", status);
+        disableAttribute("#weekendMorningEndHour", status);
+        disableAttribute("#weekendMorningStartMinute", status);
+        disableAttribute("#weekendMorningEndMinute", status);
 
-        $("#weekendEveningStartHour").attr("disabled", status);
-        $("#weekendEveningEndHour").attr("disabled", status);
-        $("#weekendEveningStartMinute").attr("disabled", status);
-        $("#weekendEveningEndMinute").attr("disabled", status);
+        disableAttribute("#weekendEveningStartHour", status);
+        disableAttribute("#weekendEveningEndHour", status);
+        disableAttribute("#weekendEveningStartMinute", status);
+        disableAttribute("#weekendEveningEndMinute", status);
     }
 
     $("#txtExperience").change(function () {
@@ -740,7 +755,7 @@
                 }
                 console.log($("#City").find(":selected").val());
                 //$("#City").empty();
-                $("#txtDistrict").val(data[0].dis);
+                $("#txtDistrict").val(data[0].district);
                 //$("txtDistrict").text = data[0].dis;
                 //console.log(data[0].dis);
                 $.each(data, function (i, location) {
@@ -751,7 +766,7 @@
         }
     });
     //for hostpital
-    $("#txtHospitalPincode").on('keyup',function () {
+    $("#txtHospitalPincode").on('keyup', function () {
         //debugger;
         //var source = "#txtPincode";
         //console.log("Pincode: " + $("#txtPincode").val());
@@ -807,27 +822,40 @@
     $("select").focusout(function (event) {
         var source = event.currentTarget;
         if (source.id == "Speciality") return;
-
+        //Should be simplied to update the field on which change occurs
+        //example: if CommonMorningEndHour is changed, then change weekendMorningEndHour only
+        if (CheckWeekendSameAsCommonDays()) {
+            if (source.id.startsWith("common")) {
+                CopyToWeekend("#"+source.id);
+            }
+        }
         $(source).removeClass("selectOpen");
         $(source).attr("size", '1');
     });
+
+    function CopyToWeekend(source) {
+        console.log("CopyToWeekend source: " + source);
+        var destination = source.replace("common", "weekend");
+        //console.log("source: " + source);
+        //console.log("destination: " + destination);
+
+        $(destination).find("option").filter(function () {
+            return $(source).find(":selected").val() === $(this).text();
+        }).attr("selected", true).trigger('change');
+    }
 
     $("select").mouseleave(function (event) {
         var source = event.currentTarget;
         if (source.id == "Speciality") return;
 
-        //Should be simplied to update the field on which change occurs
-        //example: if CommonMorningEndHour is changed, then change weekendMorningEndHour only
-        if (CheckWeekendSameAsCommonDays()) {
-            CopyCommonToWeekend();
-        }
+
         $(source).removeClass("selectOpen");
         $(source).attr("size", '1');
     });
 
     $('#selHospitalId').change(function () {
         var choice = parseInt($("#selHospitalId").find(":selected").val());
-        if(choice!=0){
+        if (choice != 0) {
             var url = window.location.origin + "/Hospitals/FetchHospitalDetails";
             $.getJSON(url, { id: choice }, function (data) {
                 if (data.length != 0) {
