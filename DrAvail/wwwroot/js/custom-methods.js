@@ -29,13 +29,13 @@
                 if (data == true) {
                     //console.log("Doctor already exists for Registration Number: " + registrationNumber);
                     alert("Doctor already exists for Registration Number: " + registrationNumber + ". \nPlease enter valid Registration Number");
-                    return false;
+                    return true;
                 }
                 //console.log("Reg Num func: ");
                 //console.log(data);
             });
         }
-        return true;
+        return false;
     }
     $("#txtRegistrationNumber").change(function (event) {
         var registrationNumber = event.currentTarget.value;
@@ -58,11 +58,11 @@
     }
 
     function SetTimeFromHourMinute(target) {
-        if (target != null && target.contains("Time")) {
-            var Hour = $(target.replace("Time","Hour")).find(":selected").val();
+        if (target != null && target.endsWith("Time")) {
+            var Hour = $(target.replace("Time", "Hour")).find(":selected").val();
             var Minute = $(target.replace("Time", "Minute")).find(":selected").val();
-            $(source).val(Hour + ":" + Minute);
-        console.log("commonMorningStartTime: " + $("#commonMorningStartTime").val());
+            $(target).val(Hour + ":" + Minute);
+            console.log("commonMorningStartTime: " + $(target).val());
 
         }
     }
@@ -146,32 +146,50 @@
         //console.log("weekendEveningEndTime: " + $("#weekendEveningEndTime").val());
     }
 
-    $('#btnCreate').click(function () {
-
-        if (CheckRegistrationNumberExists($("#txtRegistrationNumber").val())) {
+    $('#btnCreate').click(function (event) {
+        var status = CheckRegistrationNumberExists($("#txtRegistrationNumber").val());
+        console.log("CheckRegistrationNumberExists: " + status);
+        if (!CheckRegistrationNumberExists($("#txtRegistrationNumber").val())) {
             //for common days
             //setCommonMorningStartTime();
+            console.log("Inside if part CheckRegistrationNumberExists");
             SetTimeFromHourMinute("#commonMorningStartTime");
-            setCommonMorningEndTime();
+            SetTimeFromHourMinute("#commonMorningEndTime");
+            SetTimeFromHourMinute("#commonEveningStartTime");
+            SetTimeFromHourMinute("#commonEveningEndTime");
+
+            /*setCommonMorningEndTime();
             setCommonEveningStartTime();
-            setCommonEveningEndTime();
+            setCommonEveningEndTime();*/
             //for weekends
             var availableOnWeekend = $('#chkAvailableOnWeekend:checked').length
             //console.log("availableOnWeekend: " + availableOnWeekend);
             if (availableOnWeekend != 0) {
+
+                SetTimeFromHourMinute("#weekendMorningStartTime");
+                SetTimeFromHourMinute("#weekendMorningEndTime");
+                SetTimeFromHourMinute("#weekendEveningStartTime");
+                SetTimeFromHourMinute("#weekendEveningEndTime");
+/*
                 setWeekendMorningStartTime();
                 setWeekendMorningEndTime();
                 setWeekendEveningStartTime();
-                setWeekendEveningEndTime();
+                setWeekendEveningEndTime();*/
             }
             else {
                 setDefaultWeekendTiming();
             }
         }
+        else {
+            //now it will submit regardless
+            //but need to prevent from submit if above check fails
+            console.log("else CheckRegistrationNumberExists");
 
-        return false;
-        //now it will submit regardless
-        //but need to prevent from submit if above check fails
+            event.preventDefault();
+            return;
+        }
+
+
     });
 
     //commonMorningStartHour
@@ -639,6 +657,22 @@
         return false;
     }
 
+    function CopyToWeekend(source) {
+        //console.log("CopyToWeekend source: " + source);
+        var target = source.replace("common", "weekend");
+        //console.log("source: " + source);
+        //console.log("destination: " + destination);
+
+        /*$(destination).find("option").filter(function () {
+            return $(source).find(":selected").val() === $(this).text();
+        }).attr("selected", true).trigger('change');*/
+
+        $(target).val($(source).find(":selected").val()).trigger('change');
+
+        //console.log("source value: " + $(source).find(":selected").val());
+        //console.log("destination value: " + $(destination).find(":selected").val());
+    }
+
     function CopyCommonToWeekend() {
 
         CopyToWeekend("#commonMorningStartHour");
@@ -709,7 +743,7 @@
         disableAttribute("#weekendEveningEndMinute", status);
     }
 
-    $("#txtExperience").change(function () {
+    $("#txtExperience").on('change', function () {
         //debugger;
         var exp = $("#txtExperience").val();
         //console.log("\nexp: " + exp);
@@ -740,7 +774,7 @@
         }
     });
     //for doctor
-    $("#txtPincode").keyup(function () {
+    $("#txtPincode").on('keyup', function () {
         //debugger;
         //var source = "#txtPincode";
         //console.log("Pincode: " + $("#txtPincode").val());
@@ -753,7 +787,7 @@
                     console.log("No location found!!!");
                     return false;
                 }
-                console.log($("#City").find(":selected").val());
+                //console.log($("#City").find(":selected").val());
                 //$("#City").empty();
                 $("#txtDistrict").val(data[0].district);
                 //$("txtDistrict").text = data[0].dis;
@@ -793,7 +827,7 @@
 
     //City select list
     //on mousedown event
-    $("select").mousedown(function (event) {
+    $("select").on('mousedown', function (event) {
         var source = event.currentTarget;
         if (source.id == "Speciality") return;
         //console.log("Option lenght: " + $(source).find("option").length);
@@ -802,7 +836,7 @@
         }
     });
     //on click event
-    $("select").click(function (event) {
+    $("select").on('click', function (event) {
         var source = event.currentTarget;
         if (source.id == "Speciality") return;
         //console.log($(source).attr("size"));
@@ -813,38 +847,33 @@
             }
         }
         else {
+            if (CheckWeekendSameAsCommonDays()) {
+                if (source.id.startsWith("common")) {
+                    CopyToWeekend("#" + source.id);
+                }
+            }
             $(source).removeClass("selectOpen");
             $(source).attr("size", '1');
         }
     });
 
     //restting when loses focus
-    $("select").focusout(function (event) {
+    $("select").on('focusout', function (event) {
         var source = event.currentTarget;
         if (source.id == "Speciality") return;
         //Should be simplied to update the field on which change occurs
         //example: if CommonMorningEndHour is changed, then change weekendMorningEndHour only
         if (CheckWeekendSameAsCommonDays()) {
             if (source.id.startsWith("common")) {
-                CopyToWeekend("#"+source.id);
+                CopyToWeekend("#" + source.id);
             }
         }
         $(source).removeClass("selectOpen");
         $(source).attr("size", '1');
     });
 
-    function CopyToWeekend(source) {
-        console.log("CopyToWeekend source: " + source);
-        var destination = source.replace("common", "weekend");
-        //console.log("source: " + source);
-        //console.log("destination: " + destination);
 
-        $(destination).find("option").filter(function () {
-            return $(source).find(":selected").val() === $(this).text();
-        }).attr("selected", true).trigger('change');
-    }
-
-    $("select").mouseleave(function (event) {
+    $("select").on('mouseleave', function (event) {
         var source = event.currentTarget;
         if (source.id == "Speciality") return;
 
@@ -869,6 +898,7 @@
                         $("#txtHospitalAddress").val(data.address);
                         $("#txtHospitalPincode").val(data.pincode).trigger('keyup');
                         //$("#txtHospitalDistrict").val(data.district);
+                        console.log("Hospital City: " + data.city);
                         $("#HospitalCity").val(data.city);
                         $("#txtHospitalEmail").val(data.email);
                         $("#txtHospitalPhone").val(data.phone);

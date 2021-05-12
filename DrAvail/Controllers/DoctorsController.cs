@@ -349,17 +349,12 @@ namespace DrAvail.Controllers
             }
 
             Doctor = doctor;
-            doctor.CommonAvailability.CommonDays.MorningStartHour = doctor.CommonAvailability.CommonDays.MorningStartTime.Hour.ToString("D2");
-            doctor.CommonAvailability.CommonDays.MorningStartMinute = doctor.CommonAvailability.CommonDays.MorningStartTime.Minute.ToString("D2");
-            doctor.CommonAvailability.CommonDays.MorningEndHour = doctor.CommonAvailability.CommonDays.MorningEndTime.Hour.ToString("D2");
-            doctor.CommonAvailability.CommonDays.MorningEndMinute = doctor.CommonAvailability.CommonDays.MorningEndTime.Minute.ToString("D2");
+
+            SetHourMinuteFromTime(doctor.CommonAvailability.CommonDays);
 
             if (doctor.CommonAvailability.IsAvailableOnWeekend)
             {
-                doctor.CommonAvailability.Weekends.MorningStartHour = doctor.CommonAvailability.Weekends.MorningStartTime.Hour.ToString("D2");
-                doctor.CommonAvailability.Weekends.MorningStartMinute = doctor.CommonAvailability.Weekends.MorningStartTime.Minute.ToString("D2");
-                doctor.CommonAvailability.Weekends.MorningEndHour = doctor.CommonAvailability.Weekends.MorningEndTime.Hour.ToString("D2");
-                doctor.CommonAvailability.Weekends.MorningEndMinute = doctor.CommonAvailability.Weekends.MorningEndTime.Minute.ToString("D2");
+                SetHourMinuteFromTime(doctor.CommonAvailability.Weekends);
             }
 
 
@@ -518,14 +513,27 @@ namespace DrAvail.Controllers
             return Json(DoctorService.DoctorExistsByRegistrationNumber(registrationNumber));
         }
 
+        private static void SetHourMinuteFromTime(Availability.Timings timings)
+        {
+            timings.MorningStartHour = timings.MorningStartTime.Hour.ToString("D2");
+            timings.MorningStartMinute = timings.MorningStartTime.Minute.ToString("D2");
+            timings.MorningEndHour = timings.MorningEndTime.Hour.ToString("D2");
+            timings.MorningEndMinute = timings.MorningEndTime.Minute.ToString("D2");
+
+            timings.EveningStartHour = timings.EveningStartTime.Hour.ToString("D2");
+            timings.EveningStartMinute = timings.EveningStartTime.Minute.ToString("D2");
+            timings.EveningEndHour = timings.EveningEndTime.Hour.ToString("D2");
+            timings.EveningEndMinute = timings.EveningEndTime.Minute.ToString("D2");
+        }
+
         private void SelectListCity()
         {
-            
+
             if (Doctor is not null && Doctor.Pincode > 100000)
             {
                 var options = from location in Context.Locations
-                                 where location.Pincode == Doctor.Pincode
-                                 select new { city = location.Locality};
+                              where location.Pincode == Doctor.Pincode
+                              select new { city = location.Locality };
                 ViewBag.City = new SelectList(options, "city", "city");
             }
             else

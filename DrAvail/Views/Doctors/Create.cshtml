@@ -638,10 +638,11 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $(".toast").toast();
-            $("#btnCreate").attr("disabled", true);
-            $("input").change(function () {
+            @*$("#btnCreate").attr("disabled", true);
+            
+            $("input").one('keydown click', function () {
                 $("#btnCreate").attr("disabled", false);
-            });
+            });*@
         });
     </script>
     @*<script src="https://code.jquery.com/jquery-1.12.4.js"></script>*@
