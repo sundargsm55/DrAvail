@@ -56,7 +56,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <form asp-action="Create" method="post">
+        <form asp-action="Edit" method="post" id="myForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="card mb-3" id="divBasicInformaiton">
                 <h6 class="card-title text-left">Basic Information</h6>
@@ -503,7 +503,8 @@
                         <div class="form-group col-md-3">
                             <label asp-for="CommonAvailability.Weekends.MorningEndMinute" class="control-label">Morning End Minute</label>
                             <select asp-for="CommonAvailability.Weekends.MorningEndMinute" class="form-control" size="1" id="weekendMorningEndMinute">
-                                <option>15</option>
+                                <option>00</option>
+                                <option selected="selected">15</option>
                                 <option>30</option>
                                 <option>45</option>
                             </select>
@@ -567,7 +568,8 @@
                         <div class="form-group col-md-3">
                             <label asp-for="CommonAvailability.Weekends.EveningEndMinute" class="control-label">Evening End Minute</label>
                             <select asp-for="CommonAvailability.Weekends.EveningEndMinute" class="form-control" size="1" id="weekendEveningEndMinute">
-                                <option>15</option>
+                                <option>00</option>
+                                <option selected="selected">15</option>
                                 <option>30</option>
                                 <option>45</option>
                             </select>
@@ -628,7 +630,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="submit" id="btnCreate" value="Save Changes" class="btn btn-danger" />
+                <input type="button" id="btnSave" value="Save Changes" class="btn btn-danger" />
             </div>
         </form>
     </div>

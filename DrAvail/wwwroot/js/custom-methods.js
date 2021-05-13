@@ -17,7 +17,7 @@
         setDate: new Date(year - 25, month, day)
     });
 
-    $("#dob").change(function (event) {
+    $("#dob").on('change',function (event) {
         var dob = event.currentTarget.value.split("/")[2];
         $("#age").val(year - parseInt(dob));
     });
@@ -37,7 +37,7 @@
         }
         return false;
     }
-    $("#txtRegistrationNumber").change(function (event) {
+    $("#txtRegistrationNumber").on('change',function (event) {
         var registrationNumber = event.currentTarget.value;
         CheckRegistrationNumberExists(registrationNumber);
     });
@@ -51,6 +51,8 @@
         if (id != 0) {
             $("#selHospitalId").trigger('change');
         }
+
+        
         var n = parseInt($("#chkAvailableOnWeekend:checked").length);
         if (n != 0) {
             $("#commonWeekendInput").collapse('show');
@@ -62,7 +64,7 @@
             var Hour = $(target.replace("Time", "Hour")).find(":selected").val();
             var Minute = $(target.replace("Time", "Minute")).find(":selected").val();
             $(target).val(Hour + ":" + Minute);
-            console.log("commonMorningStartTime: " + $(target).val());
+            //console.log("commonMorningStartTime: " + $(target).val());
 
         }
     }
@@ -146,9 +148,9 @@
         //console.log("weekendEveningEndTime: " + $("#weekendEveningEndTime").val());
     }
 
-    $('#btnCreate').click(function (event) {
-        var status = CheckRegistrationNumberExists($("#txtRegistrationNumber").val());
-        console.log("CheckRegistrationNumberExists: " + status);
+    $('#btnSave').on('click',function (event) {
+        //var status = CheckRegistrationNumberExists($("#txtRegistrationNumber").val());
+        //console.log("CheckRegistrationNumberExists: " + status);
         if (!CheckRegistrationNumberExists($("#txtRegistrationNumber").val())) {
             //for common days
             //setCommonMorningStartTime();
@@ -179,6 +181,7 @@
             else {
                 setDefaultWeekendTiming();
             }
+            $('#myForm').submit(); //submit the form
         }
         else {
             //now it will submit regardless
@@ -684,36 +687,6 @@
         CopyToWeekend("#commonEveningStartMinute");
         CopyToWeekend("#commonEveningEndHour");
         CopyToWeekend("#commonEveningEndMinute");
-
-        /*var morningStartHour = $("#commonMorningStartHour").find(":selected").val();
-        var morningEndHour = $("#commonMorningEndHour").find(":selected").val();
-        var morningStartMinute = $("#commonMorningStartMinute").find(":selected").val();
-        var morningEndMinute = $("#commonMorningEndMinute").find(":selected").val();
-
-        var eveningStartHour = $("#commonEveningStartHour").find(":selected").val();
-        var eveningEndHour = $("#commonEveningEndHour").find(":selected").val();
-        var eveningStartMinute = $("#commonEveningStartMinute").find(":selected").val();
-        var eveningEndMinute = $("#commonEveningEndMinute").find(":selected").val();
-
-        //$("#weekendMorningStartHour").find("option:contains(" + morningStartHour + ")").attr("selected", true).trigger('change');
-        $("#weekendMorningStartHour").find("option").filter(function () {
-            return morningStartHour === $(this).text();
-        }).attr("selected", true).trigger('change');
-
-        $("#weekendMorningStartMinute").find("option:contains(" + morningStartMinute + ")").attr("selected", true).trigger('change');
-
-        //$("#weekendMorningEndHour").find("option:contains(" + morningEndHour + ")").attr("selected", true).trigger('change');
-        $("#weekendMorningEndHour").find("option").filter(function () {
-            return morningEndHour === $(this).text();
-        }).attr("selected", true).trigger('change');
-
-        $("#weekendMorningEndMinute").find("option:contains(" + morningEndMinute + ")").attr("selected", true);
-
-        $("#weekendEveningStartHour").find("option:contains(" + eveningStartHour + ")").attr("selected", true).trigger('change');
-        $("#weekendEveningStartMinute").find("option:contains(" + eveningStartMinute + ")").attr("selected", true).trigger('change');
-        $("#weekendEveningEndHour").find("option:contains(" + eveningEndHour + ")").attr("selected", true).trigger('change');
-        $("#weekendEveningEndMinute").find("option:contains(" + eveningEndMinute + ")").attr("selected", true);
-        */
     }
     $("#sameAsCommonDays").click(function () {
         if (CheckWeekendSameAsCommonDays()) {
@@ -773,6 +746,7 @@
             alert("Enter Date of Birth");
         }
     });
+
     //for doctor
     $("#txtPincode").on('keyup', function () {
         //debugger;
@@ -780,13 +754,12 @@
         //console.log("Pincode: " + $("#txtPincode").val());
         if ($("#txtPincode").val().length == 6) {
             var url = window.location.origin + "/Doctors/GetLocations";
-            //console.log("Url: " + url);
             $.getJSON(url, { Pincode: $("#txtPincode").val() }, function (data) {
-                var items = "";
                 if (data.length == 0) {
                     console.log("No location found!!!");
                     return false;
                 }
+                var items = "";
                 //console.log($("#City").find(":selected").val());
                 //$("#City").empty();
                 $("#txtDistrict").val(data[0].district);
@@ -806,14 +779,13 @@
         //console.log("Pincode: " + $("#txtPincode").val());
         if ($("#txtHospitalPincode").val().length == 6) {
             var url = window.location.origin + "/Doctors/GetLocations";
-            //console.log("Url: " + url);
             $.getJSON(url, { Pincode: $("#txtHospitalPincode").val() }, function (data) {
-                var items = "";
                 if (data.length == 0) {
                     console.log("No location found!!!");
                     return false;
                 }
-                $("#HospitalCity").empty();
+                var items = "";
+                //$("#HospitalCity").empty();
                 $("#txtHospitalDistrict").val(data[0].district);
                 //$("txtDistrict").text = data[0].dis;
                 //console.log(data[0].dis);
@@ -882,7 +854,7 @@
         $(source).attr("size", '1');
     });
 
-    $('#selHospitalId').change(function () {
+    $('#selHospitalId').one('change click',function () {
         var choice = parseInt($("#selHospitalId").find(":selected").val());
         if (choice != 0) {
             var url = window.location.origin + "/Hospitals/FetchHospitalDetails";
@@ -898,8 +870,8 @@
                         $("#txtHospitalAddress").val(data.address);
                         $("#txtHospitalPincode").val(data.pincode).trigger('keyup');
                         //$("#txtHospitalDistrict").val(data.district);
-                        console.log("Hospital City: " + data.city);
                         $("#HospitalCity").val(data.city);
+                        console.log("Hospital City: " + $("#HospitalCity").val());
                         $("#txtHospitalEmail").val(data.email);
                         $("#txtHospitalPhone").val(data.phone);
                     }
