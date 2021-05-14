@@ -56,7 +56,7 @@ namespace DrAvail.Models
         public int ID { get; set; }
 
         [Required]
-        public string AvailabilityType { get; set; } = "Common";
+        public string AvailabilityType { get; set; }
 
         [MaxLength(15)]
         public string Status { get; set; } = "Available";
@@ -92,7 +92,7 @@ namespace DrAvail.Models
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var availability = (Availability)validationContext.ObjectInstance;
-            if (!string.IsNullOrEmpty(availability.AvailabilityType) || availability.AvailabilityType.Contains("Common"))
+            if (!string.IsNullOrEmpty(availability.AvailabilityType) && availability.AvailabilityType.Contains("Common"))
                 return ValidationResult.Success;
 
             if (value == null) {

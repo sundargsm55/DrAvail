@@ -1,4 +1,6 @@
 ﻿$(document).ready(function () {
+    $(".toast").toast();
+
     var MHours = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14"];
     var Times = ["00", "15", "30", "45"];
     var EHours = ["14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "00"];
@@ -56,7 +58,13 @@
         var n = parseInt($("#chkAvailableOnWeekend:checked").length);
         if (n != 0) {
             $("#commonWeekendInput").collapse('show');
+            if (CheckWeekendSameAsCommonDays()) {
+                //CopyCommonToWeekend();
+                toggleWeekendTiming(true);
+            }
         }
+
+        $("#status").trigger('click');
     }
 
     function SetTimeFromHourMinute(target) {
@@ -149,11 +157,11 @@
     }
 
     $('#btnSave').on('click',function (event) {
-        //var status = CheckRegistrationNumberExists($("#txtRegistrationNumber").val());
-        //console.log("CheckRegistrationNumberExists: " + status);
-        if (!CheckRegistrationNumberExists($("#txtRegistrationNumber").val())) {
+        var IsExist = CheckRegistrationNumberExists($("#txtRegistrationNumber").val());
+        if (!IsExist) {
             //for common days
             //setCommonMorningStartTime();
+            console.log("CheckRegistrationNumberExists: " + !(IsExist));
             console.log("Inside if part CheckRegistrationNumberExists");
             SetTimeFromHourMinute("#commonMorningStartTime");
             SetTimeFromHourMinute("#commonMorningEndTime");
@@ -310,6 +318,10 @@
         }
     });
 
+    $("#commonMorningEndMinute").on('focus', function () {
+        console.log('trigged commonMorningEndMinute focus event');
+        $("#commonMorningEndHour").trigger('change');
+    });
     //commonEveningStartHour
     $("#commonEveningStartHour").change(function () {
         //debugger;
@@ -688,6 +700,7 @@
         CopyToWeekend("#commonEveningEndHour");
         CopyToWeekend("#commonEveningEndMinute");
     }
+
     $("#sameAsCommonDays").click(function () {
         if (CheckWeekendSameAsCommonDays()) {
             CopyCommonToWeekend();
@@ -880,5 +893,17 @@
         }
     });
 
+    $("#status").on('click',function () {
+        console.log($("#status").find(":selected").val());
+        if ($("#status").find(":selected").val() == "Available") {
+            $("#currentHospital").show();
+            console.log("Show : " + $("#status").find(":selected").val());
+
+        }
+        else {
+            $("#currentHospital").hide();
+            console.log("Hide : " + $("#status").find(":selected").val());
+        }
+    });
 
 });

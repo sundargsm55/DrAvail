@@ -302,6 +302,7 @@ namespace DrAvail.Controllers
                     Doctor.Hospital = null;
                     //_context.Entry(doctor.Hospital).State = EntityState.Unchanged;
                 }
+                Doctor.DateCreated = DateTime.Now;
                 Context.Doctors.Add(Doctor);
 
                 await Context.SaveChangesAsync();
@@ -400,6 +401,7 @@ namespace DrAvail.Controllers
                         return View(Doctor);
                     }
 
+                    
                     if (Doctor.IsVerified)
                     {
                         // If the doctor details are updated after verification, 
@@ -415,6 +417,7 @@ namespace DrAvail.Controllers
                             Doctor.IsVerified = false;
                         }
                     }
+                    Doctor.LastModified = DateTime.Now;
                     Context.Update(Doctor);
                     await Context.SaveChangesAsync();
                     _logger.LogInformation("Successfuly updated details for Doctor ID: " + Doctor.ID);
@@ -823,6 +826,16 @@ namespace DrAvail.Controllers
                 lstErrors.Add(errorMessage);
                 isTimingsValid = false;
             }
+            if(Doctor.CurrentAvailability.CurrentStartDateTime is not null && Doctor.CurrentAvailability.CurrentEndDateTime is not null)
+            {
+                if (Utilities.CompareDateTime((DateTime)Doctor.CurrentAvailability.CurrentStartDateTime,
+                (DateTime)Doctor.CurrentAvailability.CurrentEndDateTime) != Utilities.DateTimeRelation.IsLater)
+                {
+                    lstErrors.Add("Current Availablity Start must not be same or lesser than End Time");
+                    isTimingsValid = false;
+                }
+            }
+            
 
             if (!isTimingsValid)
             {
@@ -834,27 +847,4 @@ namespace DrAvail.Controllers
 
     }
 
-    internal class NewClass
-    {
-        public string Value { get; }
-        public string Option { get; }
-
-        public NewClass(string value, string option)
-        {
-            Value = value;
-            Option = option;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is NewClass other &&
-                   Value == other.Value &&
-                   Option == other.Option;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Value, Option);
-        }
-    }
 }

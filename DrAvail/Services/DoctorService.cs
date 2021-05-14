@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static DrAvail.Services.Utilities;
 
 namespace DrAvail.Services
 {
@@ -272,25 +273,5 @@ namespace DrAvail.Services
             return false;
         }
 
-        private static DateTimeRelation CompareDateTime(DateTime dt1, DateTime dt2)
-        {
-            int result = DateTime.Compare(dt1, dt2);
-            if (result == 0)
-            {
-                return DateTimeRelation.IsSame;
-            }
-            else if (result > 0)
-            {
-                return DateTimeRelation.IsLater;
-            }
-            return DateTimeRelation.IsEarlier;
-        }
-
-        private enum DateTimeRelation
-        {
-            IsEarlier,
-            IsSame,
-            IsLater
-        }
     }
 }

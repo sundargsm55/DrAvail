@@ -95,7 +95,7 @@ namespace DrAvail.Models
 
         public Availability CurrentAvailability { get; set; }
 
-        public DateTime DateCreated { get; set; } = DateTime.Now;
+        public DateTime DateCreated { get; set; }
 
         public DateTime? LastModified { get; set; }
     }
@@ -201,7 +201,7 @@ namespace DrAvail.Models
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var propertyInfo = validationContext.ObjectType.GetProperty(validationContext.MemberName);
-
+            Doctor doctor = (Doctor)validationContext.ObjectInstance;
             if (value is not null)
             {
                 var strValue = (string)value;
@@ -210,11 +210,11 @@ namespace DrAvail.Models
 
                 if (propertyInfo.Name.Equals("EmailId"))
                 {
-                    IsExists = context.Doctors.Any(d => d.EmailId.Equals(strValue));
+                    IsExists = context.Doctors.Any(d => d.EmailId.Equals(strValue) && d.ID != doctor.ID);
                 }
                 else if (propertyInfo.Name.Equals("RegNumber"))
                 {
-                    IsExists = context.Doctors.Any(d => d.RegNumber.Equals(strValue));
+                    IsExists = context.Doctors.Any(d => d.RegNumber.Equals(strValue) && d.ID != doctor.ID);
 
                 }
 

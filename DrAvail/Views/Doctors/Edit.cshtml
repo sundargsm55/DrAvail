@@ -357,6 +357,7 @@
                         <div class="form-group col-md-3">
                             <label asp-for="CommonAvailability.CommonDays.MorningEndMinute" class="control-label">Morning End Minute</label>
                             <select asp-for="CommonAvailability.CommonDays.MorningEndMinute" class="form-control" size="1" id="commonMorningEndMinute">
+                                <option>00</option>
                                 <option>15</option>
                                 <option>30</option>
                                 <option>45</option>
@@ -420,6 +421,7 @@
                         <div class="form-group col-md-3">
                             <label asp-for="CommonAvailability.CommonDays.EveningEndMinute" class="control-label">Evening End Minute</label>
                             <select asp-for="CommonAvailability.CommonDays.EveningEndMinute" class="form-control" size="1" id="commonEveningEndMinute">
+                                <option>00</option>
                                 <option>15</option>
                                 <option>30</option>
                                 <option>45</option>
@@ -504,7 +506,7 @@
                             <label asp-for="CommonAvailability.Weekends.MorningEndMinute" class="control-label">Morning End Minute</label>
                             <select asp-for="CommonAvailability.Weekends.MorningEndMinute" class="form-control" size="1" id="weekendMorningEndMinute">
                                 <option>00</option>
-                                <option selected="selected">15</option>
+                                <option>15</option>
                                 <option>30</option>
                                 <option>45</option>
                             </select>
@@ -569,7 +571,7 @@
                             <label asp-for="CommonAvailability.Weekends.EveningEndMinute" class="control-label">Evening End Minute</label>
                             <select asp-for="CommonAvailability.Weekends.EveningEndMinute" class="form-control" size="1" id="weekendEveningEndMinute">
                                 <option>00</option>
-                                <option selected="selected">15</option>
+                                <option>15</option>
                                 <option>30</option>
                                 <option>45</option>
                             </select>
@@ -641,27 +643,4 @@
     @*<script src="https://code.jquery.com/jquery-1.12.4.js"></script>*@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="~/js/custom-methods.js"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(".toast").toast();
-            @*$("#btnCreate").attr("disabled", true);
-            $("input").change(function () {
-                $("#btnCreate").attr("disabled", false);
-            });*@
-            //to show/select Hospital
-            $("#status").click(function () {
-                console.log($("#status").find(":selected").val());
-                if ($("#status").find(":selected").val() == "Available") {
-                    $("#currentHospital").show();
-                    console.log("Show : " + $("#status").find(":selected").val());
-
-                }
-                else {
-                    $("#currentHospital").hide();
-                    console.log("Hide : " + $("#status").find(":selected").val());
-                }
-            });
-        });
-    </script>
 }

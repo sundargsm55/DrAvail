@@ -1,5 +1,5 @@
 ﻿@model DrAvail.Models.Doctor
-
+@using static DrAvail.Services.Utilities 
 @{
     ViewData["Title"] = Model.Name;
     var age = DateTime.Now.Year - Model.DateOfBirth.Year;
@@ -43,8 +43,8 @@
                         </h5>
                         <p class="card-text">@Html.DisplayFor(modelItem => Model.Degree)</p>
                         <p class="card-text">@Html.DisplayFor(modelItem => Model.Speciality)</p>
-                        <p class="card-text">@Html.DisplayFor(modelItem => Model.Age) years old</p>
-                        <p class="card-text">@age</p>
+                        @*<p class="card-text">@Html.DisplayFor(modelItem => Model.Age) years old</p>*@
+                        <p class="card-text">@age years old</p>
                         <p class="card-text text-muted">
                             @Html.DisplayFor(modelItem => Model.Experience) years experience overall
                         </p>
@@ -65,7 +65,6 @@
                         @if (!string.IsNullOrWhiteSpace(Model.Summary))
                         {
                             <p class="font-weight-bold">Bio: </p>
-                            <br />
                             <p class="card-text">@Html.DisplayFor(modelItem => Model.Summary)</p>
                         }
                         @*</div>*@
@@ -93,7 +92,8 @@
                 }
                 else
                 {
-                    @if (DateTime.Compare(Model.CurrentAvailability.CurrentStartDateTime.Value, DateTime.Now) >= 0 && DateTime.Compare(Model.CurrentAvailability.CurrentEndDateTime.Value, DateTime.Now) <= 0)
+                    @if (CompareDateTime(Model.CurrentAvailability.CurrentStartDateTime.Value, DateTime.Now) != DateTimeRelation.IsEarlier 
+                        && CompareDateTime(Model.CurrentAvailability.CurrentEndDateTime.Value, DateTime.Now) == DateTimeRelation.IsEarlier)
                     {
                         @if (Model.CurrentAvailability.Hospital != null)
                         {
