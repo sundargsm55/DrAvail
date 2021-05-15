@@ -44,11 +44,11 @@
                     {
                         if ("Male".Equals(item.Gender.ToString()))
                         {
-                            <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px;object-fit:cover" src="/Images/img_avatar3.png" alt="...">
+                            <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px;object-fit:cover" src="/Images/user.png" alt="...">
                         }
                         else
                         {
-                            <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
+                            <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/user-female.png" alt="...">
                         }
                     }
                 }
@@ -88,9 +88,9 @@
                         <div class="btn-group-vertical" role="group" aria-label="action button group">
                             @if ((await AuthorizationService.AuthorizeAsync(User, item, Operations.Update)).Succeeded)
                             {
-                                <a class="btn btn-outline-danger m-1 rounded"  asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                                <a class="btn btn-outline-danger m-1 rounded" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
                             }
-                            <a class="btn btn-outline-info m-1 box-shadow"  asp-action="Details" asp-route-id="@item.ID">Details</a>
+                            <a class="btn btn-outline-info m-1 box-shadow" asp-action="Details" asp-route-id="@item.ID">Details</a>
                         </div>
                     </div>
                 </div>

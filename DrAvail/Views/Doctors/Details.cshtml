@@ -1,5 +1,5 @@
 ﻿@model DrAvail.Models.Doctor
-@using static DrAvail.Services.Utilities 
+@using static DrAvail.Services.Utilities
 @{
     ViewData["Title"] = Model.Name;
     var age = DateTime.Now.Year - Model.DateOfBirth.Year;
@@ -8,8 +8,8 @@
 <h4>Details</h4>
 
 <div class="row">
-    <div class="col-md-9">
-        <div class="card text-dark bg-light mb-3 float-left w-auto">
+    <div class="col-md-8">
+        <div class="card text-dark bg-light mb-3 float-left w-75">
             <div class="row">
                 <div class="col float-left">
                     @{
@@ -23,13 +23,13 @@
                             if ("Male".Equals(Model.Gender.ToString()))
                             {
                                 @*<div class="col-md-3">*@
-                                <img class="img-fluid card-img" style="border-bottom-left-radius:20px;border-top-left-radius:20px;object-fit:cover" src="/Images/img_avatar3.png" alt="...">
+                                <img class="img-fluid card-img" style="border-bottom-left-radius:20px;border-top-left-radius:20px;object-fit:cover" src="/Images/user.png" alt="...">
                                 @*</div>*@
                             }
                             else
                             {
                                 @*<div class="col-md-3">*@
-                                <img class="img-fluid card-img" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/img_avatar5.png" alt="...">
+                                <img class="img-fluid card-img" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/user-female.png" alt="...">
                                 @*</div>*@
                             }
                         }
@@ -73,9 +73,9 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="card float-right w-75">
-            <h6 class="card-header">Timings</h6>
+            <h6 class="card-header">Availability</h6>
             <div class="card-body">
                 @if (Model.CurrentAvailability.CurrentStartDateTime == null || Model.CurrentAvailability.CurrentEndDateTime == null)
                 {
@@ -92,9 +92,11 @@
                 }
                 else
                 {
-                    @if (CompareDateTime(Model.CurrentAvailability.CurrentStartDateTime.Value, DateTime.Now) != DateTimeRelation.IsEarlier 
-                        && CompareDateTime(Model.CurrentAvailability.CurrentEndDateTime.Value, DateTime.Now) == DateTimeRelation.IsEarlier)
+                    @if (CompareDateTime(Model.CurrentAvailability.CurrentStartDateTime.Value, DateTime.Now) == DateTimeRelation.IsEarlier
+                     && CompareDateTime(Model.CurrentAvailability.CurrentEndDateTime.Value, DateTime.Now) == DateTimeRelation.IsLater)
                     {
+                        
+                        <text>Status: </text>@Model.CurrentAvailability.Status
                         @if (Model.CurrentAvailability.Hospital != null)
                         {
                             <p class="card-text">
@@ -214,10 +216,18 @@ User, Model, Operations.Reject)).Succeeded)
 }
 <br />
 <hr />
-<div>
+<div class="btn-block" id="divBtnBlock">
     @if ((await AuthorizationService.AuthorizeAsync(User, Model, Operations.Update)).Succeeded)
     {
-        <a class="btn btn-danger" asp-action="Edit" asp-route-id="@Model.ID">Edit</a> <text> | </text>
+        <a class="btn btn-danger" asp-action="Edit" asp-route-id="@Model.ID">
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+        </a> <text> | </text>
+    }
+    @if ((await AuthorizationService.AuthorizeAsync(User, Model, Operations.Delete)).Succeeded)
+    {
+        <a class="btn btn-danger m-1 rounded" asp-action="Delete" asp-route-id="@Model.ID">
+            <i class="fa fa-trash" aria-hidden="true"></i>
+        </a>
     }
     <a asp-action="Index">Back to List</a>
 </div>

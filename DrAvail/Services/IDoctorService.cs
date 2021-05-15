@@ -32,6 +32,6 @@ namespace DrAvail.Services
 
         bool VerifyTimings(DateTime startTime, DateTime endTime, string msg, out string errorMessage, int minHour, int maxHour, int minMintue, int maxMintute);
 
-        bool DoctorExistsByRegistrationNumber(string registrationNumber);
+        bool DoctorExistsByRegistrationNumber(string registrationNumber, int id);
     }
 }

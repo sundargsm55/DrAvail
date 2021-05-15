@@ -56,7 +56,7 @@ namespace DrAvail.Models
         public int ID { get; set; }
 
         [Required]
-        public string AvailabilityType { get; set; }
+        public string AvailabilityType { get; set; } = "Common";
 
         [MaxLength(15)]
         public string Status { get; set; } = "Available";
@@ -71,6 +71,9 @@ namespace DrAvail.Models
         public Timings Weekends { get; set; }
 
         //for current availability
+
+        [NotMapped]
+        public bool IsCurrentAvailabilityAdded { get; set; } = false;
 
         [RequireWhenCurrent]
         public DateTime? CurrentStartDateTime { get; set; }
@@ -92,7 +95,7 @@ namespace DrAvail.Models
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var availability = (Availability)validationContext.ObjectInstance;
-            if (!string.IsNullOrEmpty(availability.AvailabilityType) && availability.AvailabilityType.Contains("Common"))
+            if (availability.AvailabilityType.Contains("Common"))
                 return ValidationResult.Success;
 
             if (value == null) {

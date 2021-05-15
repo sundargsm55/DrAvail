@@ -27,7 +27,7 @@
     function CheckRegistrationNumberExists(registrationNumber) {
         if (registrationNumber != null && registrationNumber.length > 5) {
             var url = window.location.origin + "/Doctors/DoctorExistsByRegistrationNumber";
-            $.getJSON(url, { registrationNumber: registrationNumber }, function (data) {
+            $.getJSON(url, { registrationNumber: registrationNumber, id:$('#txtID').val() }, function (data) {
                 if (data == true) {
                     //console.log("Doctor already exists for Registration Number: " + registrationNumber);
                     alert("Doctor already exists for Registration Number: " + registrationNumber + ". \nPlease enter valid Registration Number");
@@ -64,6 +64,10 @@
             }
         }
 
+        if ($('#chkAddCurrentAvailability:checked').length !=0) {
+            $("#addCurrentAvailability").toggle();
+            $('#showCurrentAvailability').toggle();
+        }
         $("#status").trigger('click');
     }
 
@@ -906,4 +910,13 @@
         }
     });
 
+    $('#btnAddCurrentAvailability').on('click', function () {
+        //$("#addCurrentAvailability").toggle();
+        $('#chkAddCurrentAvailability').each(function () { this.checked = !this.checked; });
+    });
+
+    $('#btnRemoveCurrentAvailability').on('click', function () {
+        //$("#addCurrentAvailability").toggle();
+        $('#chkAddCurrentAvailability').each(function () { this.checked = !this.checked; });
+    });
 });

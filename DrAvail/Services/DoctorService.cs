@@ -117,9 +117,9 @@ namespace DrAvail.Services
             return _context.Doctors.Where(d => d.IsVerified == false).Count();
         }
 
-        public bool DoctorExistsByRegistrationNumber(string registrationNumber)
+        public bool DoctorExistsByRegistrationNumber(string registrationNumber,int id)
         {
-            return _context.Doctors.Any(d => d.RegNumber.Equals(registrationNumber));
+            return _context.Doctors.Any(d => d.RegNumber.Equals(registrationNumber) && d.ID!=id);
         }
 
         public bool VerifyMorningTiming(Availability.Timings timings, out string errorMessage, string textToAdd)

@@ -292,20 +292,19 @@ namespace DrAvail.Controllers
                     return View(Doctor);
                 }
 
-
-                Doctor.CommonAvailability.AvailabilityType = Doctor.RegNumber + "_Common";
-                #endregion
-
-
                 if (Doctor.HospitalID != 0)
                 {
                     Doctor.Hospital = null;
                     //_context.Entry(doctor.Hospital).State = EntityState.Unchanged;
                 }
                 Doctor.DateCreated = DateTime.Now;
-                Context.Doctors.Add(Doctor);
+                Doctor.CommonAvailability.AvailabilityType = Doctor.RegNumber + "_Common";
+                Doctor.CurrentAvailability.AvailabilityType = Doctor.RegNumber + "_Current";
+                #endregion
 
+                Context.Doctors.Add(Doctor);
                 await Context.SaveChangesAsync();
+                
                 _logger.LogInformation("Successfuly Registered details for Doctor ID: " + Doctor.ID);
                 return RedirectToAction(nameof(Index));
 
@@ -333,6 +332,7 @@ namespace DrAvail.Controllers
             var doctor = await Context.Doctors
                 .Include(d => d.CommonAvailability)
                 .Include(d => d.CurrentAvailability)
+                .Include(d => d.CurrentAvailability.Hospital)
                 .Include(d => d.Hospital)
                 .FirstOrDefaultAsync(d => d.ID == id);
 
@@ -358,6 +358,10 @@ namespace DrAvail.Controllers
                 SetHourMinuteFromTime(doctor.CommonAvailability.Weekends);
             }
 
+            if(doctor.CurrentAvailability.CurrentStartDateTime is not null)
+            {
+                doctor.CurrentAvailability.IsCurrentAvailabilityAdded = true;
+            }
 
             SelectListHospital();
             SelectListSpeciality();
@@ -511,9 +515,9 @@ namespace DrAvail.Controllers
             return Json(locations2.ToList());
         }
 
-        public JsonResult DoctorExistsByRegistrationNumber(string registrationNumber)
+        public JsonResult DoctorExistsByRegistrationNumber(string registrationNumber, int id)
         {
-            return Json(DoctorService.DoctorExistsByRegistrationNumber(registrationNumber));
+            return Json(DoctorService.DoctorExistsByRegistrationNumber(registrationNumber,id));
         }
 
         private static void SetHourMinuteFromTime(Availability.Timings timings)
@@ -829,9 +833,9 @@ namespace DrAvail.Controllers
             if(Doctor.CurrentAvailability.CurrentStartDateTime is not null && Doctor.CurrentAvailability.CurrentEndDateTime is not null)
             {
                 if (Utilities.CompareDateTime((DateTime)Doctor.CurrentAvailability.CurrentStartDateTime,
-                (DateTime)Doctor.CurrentAvailability.CurrentEndDateTime) != Utilities.DateTimeRelation.IsLater)
+                (DateTime)Doctor.CurrentAvailability.CurrentEndDateTime) != Utilities.DateTimeRelation.IsEarlier)
                 {
-                    lstErrors.Add("Current Availablity Start must not be same or lesser than End Time");
+                    lstErrors.Add("Current Availablity Start Time must not be same or lesser than End Time");
                     isTimingsValid = false;
                 }
             }
