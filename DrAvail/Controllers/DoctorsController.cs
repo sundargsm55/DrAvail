@@ -351,6 +351,7 @@ namespace DrAvail.Controllers
 
             Doctor = doctor;
 
+            
             SetHourMinuteFromTime(doctor.CommonAvailability.CommonDays);
 
             if (doctor.CommonAvailability.IsAvailableOnWeekend)
@@ -405,7 +406,15 @@ namespace DrAvail.Controllers
                         return View(Doctor);
                     }
 
-                    
+                    if (Doctor.HospitalID != 0)
+                    {
+                        Doctor.Hospital = null;
+                        //_context.Entry(doctor.Hospital).State = EntityState.Unchanged;
+                    }
+
+                    Doctor.CommonAvailability.ID = Doctor.CommonAvaliabilityID;
+                    Doctor.CurrentAvailability.ID = Doctor.CurrentAvaliabilityID ?? 0;
+
                     if (Doctor.IsVerified)
                     {
                         // If the doctor details are updated after verification, 
@@ -783,7 +792,7 @@ namespace DrAvail.Controllers
         private bool ValidateTimings()
         {
             bool isTimingsValid = true;
-            List<string> lstErrors = new List<string>();
+            List<string> lstErrors = new();
             if (DoctorService.VerifyMinutes(Doctor.CommonAvailability.CommonDays, out string errorMessage))
             {
 

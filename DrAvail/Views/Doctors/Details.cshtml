@@ -9,7 +9,7 @@
 
 <div class="row">
     <div class="col-md-8">
-        <div class="card text-dark bg-light mb-3 float-left w-75">
+        <div class="card text-dark bg-light mb-3">
             <div class="row">
                 <div class="col float-left">
                     @{
@@ -93,25 +93,35 @@
                 else
                 {
                     @if (CompareDateTime(Model.CurrentAvailability.CurrentStartDateTime.Value, DateTime.Now) == DateTimeRelation.IsEarlier
-                     && CompareDateTime(Model.CurrentAvailability.CurrentEndDateTime.Value, DateTime.Now) == DateTimeRelation.IsLater)
+                 && CompareDateTime(Model.CurrentAvailability.CurrentEndDateTime.Value, DateTime.Now) == DateTimeRelation.IsLater)
                     {
-                        
-                        <text>Status: </text>@Model.CurrentAvailability.Status
+                        @if (!"Available".Equals(Model.CurrentAvailability.Status))
+                        {
+                            <text>Status: On Vacation</text>
+                        }
+                        <br />
                         @if (Model.CurrentAvailability.Hospital != null)
                         {
                             <p class="card-text">
-                                Available in @Model.CurrentAvailability.Hospital.City, at: @Model.CurrentAvailability.Hospital.Name
+                                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                @Model.CurrentAvailability.Hospital.City, at: @Model.CurrentAvailability.Hospital.Name
                             </p>
                         }
                         <p class="card-text">
-                            <text>Contact Preference: </text> @Model.CurrentAvailability.ContactPreference
+                            <text>Contact Preference: </text>
+                            <i class="fa fa-phone" aria-hidden="true" style="color:orange"></i>
+                            @Model.CurrentAvailability.ContactPreference
+                        </p>
+                        <p class="text-muted">
+                            <i class="fa fa-clock-o" aria-hidden="true" style="color:lightgreen"></i>
+                            <text>Durtaion between </text>
                         </p>
                         <p class="card-text">
-                            <text>From </text>
+                            <i class="fa fa-calendar" aria-hidden="true"></i>
                             @Model.CurrentAvailability.CurrentStartDateTime
                         </p>
                         <p class="card-text">
-                            <text>To </text>
+                            <i class="fa fa-calendar" aria-hidden="true"></i>
                             @Model.CurrentAvailability.CurrentEndDateTime
                         </p>
                     }
@@ -136,8 +146,8 @@
 </div>
 <br />
 <div class="card col-md-5">
-    <div class="card-header-tabs">
-        <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+    <div class="card-header-pills">
+        <ul class="nav nav-pills mb-3" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" style="border-top-left-radius:20px" id="hospitals-tab" data-toggle="tab" href="#hospital" role="tab" aria-controls="hospitals" aria-selected="true">Hospital(s)</a>
             </li>

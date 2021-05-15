@@ -82,9 +82,9 @@
                 <h6 class="card-title text-left">Basic Information</h6>
                 <div class="card-body">
                     <div class="form-row">
-                        <input asp-for="ID" hidden disabled id="txtID" />
-                        <input asp-for="OwnerID" disabled hidden />
-                        <input asp-for="DateCreated" disabled hidden />
+                        <input type="hidden" asp-for="ID"  id="txtID" />
+                        <input type="hidden" asp-for="OwnerID" />
+                        <input type="hidden" asp-for="DateCreated" />
                         <div class="form-group col-md-6 input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1">Full Name</span>
@@ -309,7 +309,7 @@
 
             <div id="addCommonAvailability" class="card mb-3">
                 <h6 class="card-title text-left">Mon - Fri Timings</h6>
-                <input asp-for="CommonAvaliabilityID" disabled hidden />
+                <input type="hidden" asp-for="CommonAvaliabilityID" />
                 <div class="common-availability-common card-body">
                     <div class="form-row">
                         <div class="form-group col-md-3" hidden>
@@ -616,7 +616,7 @@
                         <input asp-for="CurrentAvailability.IsCurrentAvailabilityAdded" id="chkAddCurrentAvailability" />
                         Add Current Availability
                     </label>
-                    <input asp-for="CurrentAvaliabilityID" disabled hidden />
+                    <input type="hidden" asp-for="CurrentAvaliabilityID" />
                 </div>
                 <div id="addCurrentAvailability" class="card mb-3 collapse" data-parent="#accordionCurrentAvailability">
 

@@ -98,7 +98,7 @@ namespace DrAvail.Models
             if (availability.AvailabilityType.Contains("Common"))
                 return ValidationResult.Success;
 
-            if (value == null) {
+            if (availability.IsCurrentAvailabilityAdded && value == null) {
 
                 var propertyInfo = validationContext.ObjectType.GetProperty(validationContext.MemberName);
                 return new ValidationResult($"{propertyInfo.Name} is required");

@@ -205,7 +205,7 @@ namespace DrAvail.Models
             if (value is not null)
             {
                 var strValue = (string)value;
-                Data.ApplicationDbContext context = new Data.ApplicationDbContext();
+                Data.ApplicationDbContext context = new();
                 bool IsExists = false;
 
                 if (propertyInfo.Name.Equals("EmailId"))
