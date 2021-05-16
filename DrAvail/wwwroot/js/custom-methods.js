@@ -4,6 +4,7 @@
     var MHours = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14"];
     var Times = ["00", "15", "30", "45"];
     var EHours = ["14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "00"];
+    var count = 0;
 
     //setting value to availabilityType
     $("#availabilityType").val("Common");
@@ -79,70 +80,6 @@
             //console.log("commonMorningStartTime: " + $(target).val());
 
         }
-    }
-
-    function setCommonMorningStartTime() {
-        var commonMorningStartHour = $("#commonMorningStartHour").find(":selected").val();
-        var commonMorningStartMinute = $("#commonMorningStartMinute").find(":selected").val();
-        //var commonMorningStartTime = new Date(year, month, day, commonMorningStartHour, commonMorningStartMinute);
-        $("#commonMorningStartTime").val(commonMorningStartHour + ":" + commonMorningStartMinute);
-        //console.log("commonMorningStartTime: " + $("#commonMorningStartTime").val());
-    }
-
-    function setCommonMorningEndTime() {
-        var commonMorningEndHour = $("#commonMorningEndHour").find(":selected").val();
-        var commonMorningEndMinute = $("#commonMorningEndMinute").find(":selected").val();
-        //var commonMorningEndTime = new Date(year, month, day, commonMorningEndHour, commonMorningEndMinute);
-        $("#commonMorningEndTime").val(commonMorningEndHour + ":" + commonMorningEndMinute);
-        //console.log("commonMorningEndTime: " + $("#commonMorningEndTime").val());
-    }
-
-    function setCommonEveningStartTime() {
-        var commonEveningStartHour = $("#commonEveningStartHour").find(":selected").val();
-        var commonEveningStartMinute = $("#commonEveningStartMinute").find(":selected").val();
-        //var commonEveningStartTime = new Date(year, month, day, commonEveningStartHour, commonEveningStartMinute);
-        $("#commonEveningStartTime").val(commonEveningStartHour + ":" + commonEveningStartMinute);
-        //console.log("commonEveningStartTime: " + $("#commonEveningStartTime").val());
-    }
-
-    function setCommonEveningEndTime() {
-        var commonEveningEndHour = $("#commonEveningEndHour").find(":selected").val();
-        var commonEveningEndMinute = $("#commonEveningEndMinute").find(":selected").val();
-        //var commonEveningEndTime = new Date(year, month, day, commonEveningEndHour, commonEveningEndMinute);
-        $("#commonEveningEndTime").val(commonEveningEndHour + ":" + commonEveningEndMinute);
-        //console.log("commonEveningEndTime: " + $("#commonEveningEndTime").val());
-    }
-
-    function setWeekendMorningStartTime() {
-        var weekendMorningStartHour = $("#weekendMorningStartHour").find(":selected").val();
-        var weekendMorningStartMinute = $("#weekendMorningStartMinute").find(":selected").val();
-        //var weekendMorningStartTime = new Date(year, month, day, weekendMorningStartHour, weekendMorningStartMinute);
-        $("#weekendMorningStartTime").val(weekendMorningStartHour + ":" + weekendMorningStartMinute);
-        //console.log("weekendMorningStartTime: " + $("#weekendMorningStartTime").val());
-    }
-
-    function setWeekendMorningEndTime() {
-        var weekendMorningEndHour = $("#weekendMorningEndHour").find(":selected").val();
-        var weekendMorningEndMinute = $("#weekendMorningEndMinute").find(":selected").val();
-        //var weekendMorningEndTime = new Date(year, month, day, weekendMorningEndHour, weekendMorningEndMinute);
-        $("#weekendMorningEndTime").val(weekendMorningEndHour + ":" + weekendMorningEndMinute);
-        //console.log("weekendMorningEndTime: " + $("#weekendMorningEndTime").val());
-    }
-
-    function setWeekendEveningStartTime() {
-        var weekendEveningStartHour = $("#weekendEveningStartHour").find(":selected").val();
-        var weekendEveningStartMinute = $("#weekendEveningStartMinute").find(":selected").val();
-        //var weekendEveningStartTime = new Date(year, month, day, weekendEveningStartHour, weekendEveningStartMinute);
-        $("#weekendEveningStartTime").val(weekendEveningStartHour + ":" + weekendEveningStartMinute);
-        //console.log("weekendEveningStartTime: " + $("#weekendEveningStartTime").val());
-    }
-
-    function setWeekendEveningEndTime() {
-        var weekendEveningEndHour = $("#weekendEveningEndHour").find(":selected").val();
-        var weekendEveningEndMinute = $("#weekendEveningEndMinute").find(":selected").val();
-        //var weekendEveningEndTime = new Date(year, month, day, weekendEveningEndHour, weekendEveningEndMinute);
-        $("#weekendEveningEndTime").val(weekendEveningEndHour + ":" + weekendEveningEndMinute);
-        //console.log("weekendEveningEndTime: " + $("#weekendEveningEndTime").val());
     }
 
     function setDefaultWeekendTiming(timing = "00:00") {
@@ -918,5 +855,40 @@
     $('#btnRemoveCurrentAvailability').on('click', function () {
         //$("#addCurrentAvailability").toggle();
         $('#chkAddCurrentAvailability').each(function () { this.checked = !this.checked; });
+    });
+
+    $(".education").on('change', function (event) {
+        console.log("trigged change for: " + event.currentTarget.id);
+        var value = $("#txtDegree").val();
+        if (value != null) {
+            value = "";
+        }
+        $("#txtDegree").val(value + ", " + $("#" + event.currentTarget.id).val());
+    });
+
+    $("#btnAddDegree").on('click', function () {
+        count++;
+        console.log("Counter: " + count);
+        if (count == 1) {
+            $("#divDegree1").toggle();
+        }
+        else if (count <5) {
+            //$("#txtDegree").val($("#txtDegree").val() + $("#txtDegree" + count).val());
+            var item = $("#divDegree1").html().replaceAll("Degree1", "Degree" + count);
+            $("#divCardDegree").append(item);
+        }
+        else {
+            alert("You can only add 5 Degree's!");
+        }
+        
+    });
+
+    $(".removebutton").on('click',function (event) {
+        console.log("trigged remove click for: " + event.currentTarget.id);
+        var source = "#" + event.currentTarget.id.replace("btnRemove", "txt");
+        var sourceValue = $(source).val();
+        var value = $("#txtDegree").val().replace(sourceValue, "");
+        $("#txtDegree").val($.trim(value));
+        $("#" + event.currentTarget.id).remove();
     });
 });

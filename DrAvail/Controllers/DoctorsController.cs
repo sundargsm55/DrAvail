@@ -560,6 +560,11 @@ namespace DrAvail.Controllers
 
         }
 
+        private void SelectListDegree()
+        {
+            ViewBag.Degree = new SelectList(Utilities.lstDegree);
+        }
+
         private void SelectListHospitalCity()
         {
 
@@ -611,6 +616,7 @@ namespace DrAvail.Controllers
             #region selectList
             ViewData["CommonAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
             ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
+            SelectListDegree();
             SelectListHospital();
             SelectListSpeciality();
             SelectListCity();

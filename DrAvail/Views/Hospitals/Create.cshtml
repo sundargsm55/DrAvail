@@ -1,67 +1,134 @@
 ﻿@model DrAvail.Models.Hospital
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Hospital";
 }
+<style>
+    .card {
+        padding: 20px;
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
 
-<h1>Create</h1>
+    select {
+        z-index: 0;
+    }
 
+    .selectOpen {
+        position: absolute;
+        z-index: 9;
+    }
+</style>
 <h4>Hospital</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Type" class="control-label"></label>
-                <select asp-for="Type" class="form-control" asp-items="ViewBag.HospitalType">
-                    <option value="">--Select--</option>
-                </select>
-                <span asp-validation-for="Type" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="District" class="control-label"></label>
-                <select asp-for="District" class="form-control" asp-items="ViewBag.Districts">
-                    <option value="">--Select--</option>
-                </select>
-                <span asp-validation-for="District" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EmailId" class="control-label">Email Address</label>
-                <input asp-for="EmailId" class="form-control" />
-                <span asp-validation-for="EmailId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PhoneNo" class="control-label">Phone Number</label>
-                <input asp-for="PhoneNo" class="form-control" />
-                <span asp-validation-for="PhoneNo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
+<hr />
+<div class="">
+    @*<div class="col-md-4">*@
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row align-items-center">
+            <div class="col-md-5 float-left">
+                <div class="card mb-3">
+                    <h6 class="card-title">Basic Information</h6>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Type" class="control-label"></label>
+                        <select asp-for="Type" class="form-control" asp-items="ViewBag.HospitalType">
+                            <option value="">--Select--</option>
+                        </select>
+                        <span asp-validation-for="Type" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 float-right">
+                <div class="card mb-3">
+                    <h6 class="card-title">Contact</h6>
+                    <div class="form-group">
+                        <label asp-for="EmailId" class="control-label">Email Address</label>
+                        <input asp-for="EmailId" class="form-control" />
+                        <span asp-validation-for="EmailId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PhoneNo" class="control-label">Phone Number</label>
+                        <input asp-for="PhoneNo" class="form-control" />
+                        <span asp-validation-for="PhoneNo" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                <div class="card mb-3" id="divAddressContactInforamtion">
+                    <h6 class="card-title text-left">Location</h6>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label asp-for="City" class="control-label"></label>
+                                @*<input asp-for="City" class="form-control" />*@
+                                <select asp-for="City" class="form-control" id="City" asp-items="@ViewBag.City">
+                                    @*<option value="">Please enter Pincode</option>*@
+                                </select>
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label asp-for="District" class="control-label"></label>
+
+                                <input asp-for="District" class="form-control" id="txtDistrict" readonly placeholder="Please enter valid Pincode" />
+                                <span asp-validation-for="District" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="Pincode" class="control-label"></label>
+                                <input asp-for="Pincode" class="form-control" id="txtPincode" type="text" pattern="^[1-9][0-9]{5}" maxlength="6" minlength="6" title="Enter 6 digit Pincode" />
+                                <span asp-validation-for="Pincode" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Register" class="btn btn-primary" />
+        </div>
+    </form>
+    @*</div>*@
+    <br />
+</div>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $("#txtPincode").on('keyup', function () {
+            //debugger;
+            //var source = "#txtPincode";
+            //console.log("Pincode: " + $("#txtPincode").val());
+            if ($("#txtPincode").val().length == 6) {
+                var url = window.location.origin + "/Doctors/GetLocations";
+                $.getJSON(url, { Pincode: $("#txtPincode").val() }, function (data) {
+                    if (data.length == 0) {
+                        console.log("No location found!!!");
+                        return false;
+                    }
+                    var items = "";
+                    //console.log($("#City").find(":selected").val());
+                    //$("#City").empty();
+                    $("#txtDistrict").val(data[0].district);
+                    //$("txtDistrict").text = data[0].dis;
+                    //console.log(data[0].dis);
+                    $.each(data, function (i, location) {
+                        items += "<option value='" + location.city + "'>" + location.city + "</option>";
+                    });
+                    $("#City").html(items);
+                });
+            }
+        });
+    </script>
 }

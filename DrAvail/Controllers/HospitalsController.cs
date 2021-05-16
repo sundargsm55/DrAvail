@@ -153,14 +153,9 @@ namespace DrAvail.Controllers
             }
 
             #region selectList
-            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
-                         select new { ID = (int)H, Name = H.ToString() };
-            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
+            SelectListHospitalType();
+            SelectListCity();
 
-            var district = from District d in Enum.GetValues(typeof(District))
-                           select new { ID = (int)d, Name = d.ToString() };
-
-            ViewBag.Districts = new SelectList(district, "ID", "Name");
             #endregion
             return View();
         }
@@ -189,13 +184,8 @@ namespace DrAvail.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
-                         select new { ID = (int)H, Name = H.ToString() };
-            var district = from District d in Enum.GetValues(typeof(District))
-                           select new { ID = (int)d, Name = d.ToString() };
-
-            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
-            ViewBag.Districts = new SelectList(district, "ID", "Name");
+            SelectListHospitalType();
+            SelectListCity();
 
             return View(Hospital);
         }
@@ -221,6 +211,9 @@ namespace DrAvail.Controllers
             {
                 return Forbid();
             }
+            SelectListHospitalType();
+            SelectListCity();
+
             return View(hospital);
         }
 
@@ -279,6 +272,9 @@ namespace DrAvail.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            
+            SelectListHospitalType();
+            SelectListCity();
             return View(Hospital);
         }
 
@@ -331,6 +327,31 @@ namespace DrAvail.Controllers
             return Context.Hospitals.Any(e => e.ID == id);
         }
 
+        private void SelectListCity()
+        {
+
+            if (Hospital is not null && Hospital.Pincode > 100000)
+            {
+                var options = from location in Context.Locations
+                              where location.Pincode == Hospital.Pincode
+                              select new { city = location.Locality };
+                ViewBag.City = new SelectList(options, "city", "city");
+            }
+            else
+            {
+
+                ViewBag.City = new SelectList(new List<string> { "Please enter Pincode" });
+            }
+
+        }
+
+        private void SelectListHospitalType()
+        {
+            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
+                         select new { ID = (int)H, Name = H.ToString() };
+
+            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
+        }
         [AllowAnonymous]
         public async Task<JsonResult> FetchHospitalDetails(int? id)
         {
@@ -344,17 +365,6 @@ namespace DrAvail.Controllers
             {
                 return Json(false);
             }
-
-            /*var isAuthorized = User.IsInRole(Constants.AdministratorsRole);
-
-            var currentUserId = UserManager.GetUserId(User);
-
-            if (!isAuthorized
-                && currentUserId != hospital.OwnerID
-                && !hospital.IsVerified)
-            {
-                return Forbid();
-            }*/
 
             return Json(new
             {

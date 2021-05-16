@@ -34,7 +34,7 @@
     {
         <div class="card text-dark bg-light mb-3" style="border-radius:20px;width:75%">
             <div class="row">
-                <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px;object-fit:cover" src="/Images/logo.png" alt="...">
+                <img class="img-fluid col-sm-3 p-0" style="border-bottom-left-radius:20px;border-top-left-radius:20px;object-fit:cover" src="/Images/admin-settings-male.png" alt="...">
                     <div class="card-body">
                         <div class="col-md-7 float-left">
                             <h5 class="card-title">
@@ -47,11 +47,6 @@
                             <p class="card-text">
                                 @Html.DisplayFor(modelItem => item.City), @Html.DisplayFor(modelItem => item.District)
                             </p>
-                            <br />
-                            @if (item.Doctors.Any())
-                            {
-                                <p> Doctors(@item.Doctors.Count)</p>
-                            }
                         </div>
                         <div class="col-md-2 d-flex flex-column btn-toolbar align-items-center">
                             <div class="btn-group-vertical" role="group" aria-label="action button group">

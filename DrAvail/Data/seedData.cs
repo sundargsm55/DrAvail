@@ -57,6 +57,7 @@ namespace DrAvail.Data
                 user = new ApplicationUser
                 {
                     UserName = userName,
+                    Email = userName,
                     EmailConfirmed = true
                 };
                 await userManager.CreateAsync(user, testUserPw);

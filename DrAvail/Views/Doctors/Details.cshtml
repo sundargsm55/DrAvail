@@ -93,7 +93,7 @@
                 else
                 {
                     @if (CompareDateTime(Model.CurrentAvailability.CurrentStartDateTime.Value, DateTime.Now) == DateTimeRelation.IsEarlier
-                 && CompareDateTime(Model.CurrentAvailability.CurrentEndDateTime.Value, DateTime.Now) == DateTimeRelation.IsLater)
+                && CompareDateTime(Model.CurrentAvailability.CurrentEndDateTime.Value, DateTime.Now) == DateTimeRelation.IsLater)
                     {
                         @if (!"Available".Equals(Model.CurrentAvailability.Status))
                         {
@@ -103,12 +103,12 @@
                         @if (Model.CurrentAvailability.Hospital != null)
                         {
                             <p class="card-text">
-                                <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                @Model.CurrentAvailability.Hospital.City, at: @Model.CurrentAvailability.Hospital.Name
+                                <i class="fa fa-map-marker" aria-hidden="true" style="color:red"></i>
+                                @Model.CurrentAvailability.Hospital.Name, @Model.CurrentAvailability.Hospital.City
                             </p>
                         }
                         <p class="card-text">
-                            <text>Contact Preference: </text>
+                            @*<text>Contact Preference: </text>*@
                             <i class="fa fa-phone" aria-hidden="true" style="color:orange"></i>
                             @Model.CurrentAvailability.ContactPreference
                         </p>
@@ -117,11 +117,11 @@
                             <text>Durtaion between </text>
                         </p>
                         <p class="card-text">
-                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                            <i class="fa fa-calendar" aria-hidden="true"> </i>
                             @Model.CurrentAvailability.CurrentStartDateTime
                         </p>
                         <p class="card-text">
-                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                            <i class="fa fa-calendar" aria-hidden="true"> </i>
                             @Model.CurrentAvailability.CurrentEndDateTime
                         </p>
                     }

@@ -27,5 +27,8 @@ namespace DrAvail.Services
             IsSame,
             IsLater
         }
+
+        public static readonly List<string> lstDegree = new() { "MBBS", "BHMS", "B.Med", "B.S", "MD", "MS", "DS", "MD(Ayurveda)", "M.S. (Ayurveda)", "Ph.D. (Ayurveda)", "DO", "DPM", "MD(Res)", "MCM", "MMSc", "M.D. (HOM)" };
+
     }
 }
