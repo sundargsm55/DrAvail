@@ -5,9 +5,11 @@
     var Times = ["00", "15", "30", "45"];
     var EHours = ["14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "00"];
     var count = 0;
+    var Degree = ["", "", "", "", "", ""];
 
     //setting value to availabilityType
     $("#availabilityType").val("Common");
+    SetSelectFromDegreeOnReload();
     OnReload();
 
     var today = new Date();
@@ -20,7 +22,7 @@
         setDate: new Date(year - 25, month, day)
     });
 
-    $("#dob").on('change',function (event) {
+    $("#dob").on('change', function (event) {
         var dob = event.currentTarget.value.split("/")[2];
         $("#age").val(year - parseInt(dob));
     });
@@ -28,7 +30,7 @@
     function CheckRegistrationNumberExists(registrationNumber) {
         if (registrationNumber != null && registrationNumber.length > 5) {
             var url = window.location.origin + "/Doctors/DoctorExistsByRegistrationNumber";
-            $.getJSON(url, { registrationNumber: registrationNumber, id:$('#txtID').val() }, function (data) {
+            $.getJSON(url, { registrationNumber: registrationNumber, id: $('#txtID').val() }, function (data) {
                 if (data == true) {
                     //console.log("Doctor already exists for Registration Number: " + registrationNumber);
                     alert("Doctor already exists for Registration Number: " + registrationNumber + ". \nPlease enter valid Registration Number");
@@ -40,7 +42,7 @@
         }
         return false;
     }
-    $("#txtRegistrationNumber").on('change',function (event) {
+    $("#txtRegistrationNumber").on('change', function (event) {
         var registrationNumber = event.currentTarget.value;
         CheckRegistrationNumberExists(registrationNumber);
     });
@@ -55,7 +57,7 @@
             $("#selHospitalId").trigger('change');
         }
 
-        
+
         var n = parseInt($("#chkAvailableOnWeekend:checked").length);
         if (n != 0) {
             $("#commonWeekendInput").collapse('show');
@@ -65,11 +67,12 @@
             }
         }
 
-        if ($('#chkAddCurrentAvailability:checked').length !=0) {
+        if ($('#chkAddCurrentAvailability:checked').length != 0) {
             $("#addCurrentAvailability").toggle();
             $('#showCurrentAvailability').toggle();
         }
         $("#status").trigger('click');
+
     }
 
     function SetTimeFromHourMinute(target) {
@@ -97,7 +100,7 @@
         //console.log("weekendEveningEndTime: " + $("#weekendEveningEndTime").val());
     }
 
-    $('#btnSave').on('click',function (event) {
+    $('#btnSave').on('click', function (event) {
         var IsExist = CheckRegistrationNumberExists($("#txtRegistrationNumber").val());
         if (!IsExist) {
             //for common days
@@ -121,11 +124,11 @@
                 SetTimeFromHourMinute("#weekendMorningEndTime");
                 SetTimeFromHourMinute("#weekendEveningStartTime");
                 SetTimeFromHourMinute("#weekendEveningEndTime");
-/*
-                setWeekendMorningStartTime();
-                setWeekendMorningEndTime();
-                setWeekendEveningStartTime();
-                setWeekendEveningEndTime();*/
+                /*
+                                setWeekendMorningStartTime();
+                                setWeekendMorningEndTime();
+                                setWeekendEveningStartTime();
+                                setWeekendEveningEndTime();*/
             }
             else {
                 setDefaultWeekendTiming();
@@ -808,7 +811,7 @@
         $(source).attr("size", '1');
     });
 
-    $('#selHospitalId').one('change click',function () {
+    $('#selHospitalId').one('change click', function () {
         var choice = parseInt($("#selHospitalId").find(":selected").val());
         if (choice != 0) {
             var url = window.location.origin + "/Hospitals/FetchHospitalDetails";
@@ -834,7 +837,7 @@
         }
     });
 
-    $("#status").on('click',function () {
+    $("#status").on('click', function () {
         console.log($("#status").find(":selected").val());
         if ($("#status").find(":selected").val() == "Available") {
             $("#currentHospital").show();
@@ -857,22 +860,57 @@
         $('#chkAddCurrentAvailability').each(function () { this.checked = !this.checked; });
     });
 
-    $(".education").on('change', function (event) {
-        console.log("trigged change for: " + event.currentTarget.id);
-        var value = $("#txtDegree").val();
-        if (value != null) {
-            value = "";
+    function SetDegree() {
+        var value = "";
+        $.each(Degree, function(i, v){
+            if (v != "") {
+                if (i == 0) {
+                    value = v;
+                }
+                else {
+                    value = value + ", "+ v;
+                }
+            }
+            else {
+                return false;
+            }
+        });
+        //$("#txtDegree").removeAttr('value');
+        //$("#txtDegree").val(value);
+        $("#txtDegree").prop("value",value);
+    }
+
+    $(".divDegree").on('change', "select.education", function (event) {
+        //console.log("trigged change for: " + event.target.id);
+        //var value = $("#txtDegree").val();
+        var lastChar = event.target.id.charAt(event.target.id.length - 1);
+        if (lastChar == "t") {
+            Degree[0] = $("#" + event.target.id).val();
         }
-        $("#txtDegree").val(value + ", " + $("#" + event.currentTarget.id).val());
+        else {
+            Degree[parseInt(lastChar)] = $("#" + event.target.id).val();
+        }
+
+        SetDegree();
+        //if (value == null || value == "") {
+        //    //console.log("value is empty or null");
+        //    value = $("#" + event.target.id).val();
+        //    $("#txtDegree").val(value);
+
+        //}
+        //else {
+        //    SetDegree();
+        //    //value = value + ", " + $("#" + event.target.id).val();
+        //}
     });
 
     $("#btnAddDegree").on('click', function () {
         count++;
-        console.log("Counter: " + count);
+        //console.log("Counter: " + count);
         if (count == 1) {
             $("#divDegree1").toggle();
         }
-        else if (count <5) {
+        else if (count < 5) {
             //$("#txtDegree").val($("#txtDegree").val() + $("#txtDegree" + count).val());
             var item = $("#divDegree1").html().replaceAll("Degree1", "Degree" + count);
             $("#divCardDegree").append(item);
@@ -880,15 +918,53 @@
         else {
             alert("You can only add 5 Degree's!");
         }
-        
+
     });
 
-    $(".removebutton").on('click',function (event) {
-        console.log("trigged remove click for: " + event.currentTarget.id);
-        var source = "#" + event.currentTarget.id.replace("btnRemove", "txt");
-        var sourceValue = $(source).val();
-        var value = $("#txtDegree").val().replace(sourceValue, "");
-        $("#txtDegree").val($.trim(value));
-        $("#" + event.currentTarget.id).remove();
+    $(".divDegree").on('click', "a.removebutton", function (event) {
+        //console.log("trigged remove click for: " + event.target.id);
+        //var source = "#" + event.target.id.replace("btnRemove", "txt");
+        //var sourceValue = $(source).val();
+        //var value = $("#txtDegree").val().replace(", " + sourceValue, "");
+        //$("#txtDegree").val($.trim(value));
+
+        var lastChar = event.target.id.charAt(event.target.id.length - 1);
+        Degree[parseInt(lastChar)] = "";
+
+        //if (lastChar == "t") {
+        //    Degree[0] = $(source).val();
+        //}
+        //else {
+        //    Degree[parseInt(lastChar)] = $(source).val();
+        //}
+
+        SetDegree();
+
+        //$("#" + event.target.id.replace("btnRemove", "div")).remove();
+        console.log("Remove Counter: " + count);
+
+        if (count == 1) {
+            $("#divDegree1").toggle();
+        } else {
+            $(this).parent().remove();
+        }
+        count--;
+
     });
+
+    function SetSelectFromDegreeOnReload() {
+        console.log("inside SetSelectFromDegreeOnReload");
+        var degreeArray = $("#txtDegree").val().split(", ");
+        console.log("degreeArray: " + degreeArray);
+        $.each(degreeArray, function (i, degree) {
+            if (i == 0) {
+                $("#txtDegreeDefault").val(degree);
+            }
+            else {
+                $("#btnAddDegree").trigger('click'); //to add another degree
+                $("#txtDegree" + i).val(degree);
+            }
+            Degree[i] = degree;
+        });
+    }
 });

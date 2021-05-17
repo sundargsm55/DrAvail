@@ -368,6 +368,7 @@ namespace DrAvail.Controllers
             SelectListSpeciality();
             SelectListCity();
             SelectListHospitalCity();
+            SelectListDegree();
 
             return View(doctor);
         }
@@ -456,6 +457,8 @@ namespace DrAvail.Controllers
             SelectListSpeciality();
             SelectListCity();
             SelectListHospitalCity();
+            SelectListDegree();
+
             return View(Doctor);
         }
 

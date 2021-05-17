@@ -104,7 +104,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card bg-warning" id="divDegree">
+            <div class="card bg-warning divDegree" id="divDegree">
                     <h6 class="card-title">
                         Degree
                         <a href="#btnAddDegree" class="btn-sm float-right" id="btnAddDegree"><i class="fa fa-plus" aria-hidden="true"></i> Degree</a>
@@ -140,16 +140,11 @@
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label asp-for="Degree" class="control-label"></label>
-                            <input asp-for="Degree" class="form-control" id="txtDegree"/>
+                            <input asp-for="Degree" class="form-control" id="txtDegree" disabled/>
                             <span asp-validation-for="Degree" class="text-danger"></span>
                         </div>
                         
                         <div class="form-group col-md-4">
-                            @*
-            <div class="form-group input-group col-md-4">
-                    <div class="input-group-prepend">
-                <label asp-for="Speciality" class="input-group-text"></label>
-             </div>*@
                             <label asp-for="Speciality" class="control-label"></label>
                             <select id="Speciality" asp-for="Speciality" class="form-control custom-select" asp-items="ViewBag.Speciality">
                                 <option style="text-align:center" value="">--Select--</option>
