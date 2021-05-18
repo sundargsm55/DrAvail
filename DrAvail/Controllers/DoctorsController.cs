@@ -387,6 +387,7 @@ namespace DrAvail.Controllers
 
             if (ModelState.IsValid)
             {
+                
                 try
                 {
                     var isAuthorized = await AuthorizationService.AuthorizeAsync(

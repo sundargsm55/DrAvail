@@ -876,8 +876,10 @@
             }
         });
         //$("#txtDegree").removeAttr('value');
+        $("#txtDegree").val(value).trigger('keyup');
         //$("#txtDegree").val(value);
-        $("#txtDegree").prop("value",value);
+
+        $("#txtDegree").attr("value", value).trigger('keyup');
     }
 
     $(".divDegree").on('change', "select.education", function (event) {

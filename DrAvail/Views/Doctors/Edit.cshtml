@@ -141,7 +141,9 @@
                     </div>
                     <div class="form-row" id="divDegree1" style="display:none">
                         <div class="form-group col-md-4">
-                            <select name="txtDegree1" class="form-control custom-select education" asp-items="ViewBag.Degree" id="txtDegree1"></select>
+                            <select name="txtDegree1" class="form-control custom-select education" asp-items="ViewBag.Degree" id="txtDegree1">
+                                <option value="">--Select--</option>
+                            </select>
                             <a href="#btnRemoveDegree1" class="btn-sm removebutton" id="btnRemoveDegree1"><i class="fa fa-minus" aria-hidden="true"></i> Remove</a>
                         </div>
                     </div>
@@ -162,7 +164,7 @@
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label asp-for="Degree" class="control-label"></label>
-                            <input asp-for="Degree" class="form-control" id="txtDegree" disabled value=""/>
+                            <input asp-for="Degree" class="form-control" id="txtDegree"/>
                             <span asp-validation-for="Degree" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-4">
@@ -173,13 +175,13 @@
                         </div>
                         <span asp-validation-for="Speciality" class="text-danger"></span>
                     </div>
-                    <div class="form-row" hidden>
+                    @*<div class="form-row">
                         <div class="form-group col-md-4">
                             <label asp-for="Degree" class="control-label"></label>
-                            <input asp-for="Degree" class="form-control" />
+                            <input asp-for="Degree" class="form-control" id="txtDegree"/>
                             <span asp-validation-for="Degree" class="text-danger"></span>
                         </div>
-                    </div>
+                    </div>*@
                     <div class="form-row">
                         <div class="form-group col-md-3">
                             <label asp-for="Practice" class="control-label"></label>
