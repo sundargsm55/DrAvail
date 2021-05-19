@@ -758,7 +758,10 @@
     //on mousedown event
     $("select").on('mousedown', function (event) {
         var source = event.currentTarget;
-        if (source.id == "Speciality") return;
+        //if (source.id == "Speciality") return;
+        if (!source.id.includes("common")) return;
+        if (!source.id.includes("weekend")) return;
+
         //console.log("Option lenght: " + $(source).find("option").length);
         if ($(source).attr("size") == '1' && $(source).find("option").length > 5) {
             event.preventDefault();
@@ -767,7 +770,9 @@
     //on click event
     $("select").on('click', function (event) {
         var source = event.currentTarget;
-        if (source.id == "Speciality") return;
+        if (!source.id.includes("common")) return;
+        if (!source.id.includes("weekend")) return;
+
         //console.log($(source).attr("size"));
         if ($(source).attr("size") == '1') {
             if ($(source).find("option").length > 5) {
@@ -789,7 +794,10 @@
     //restting when loses focus
     $("select").on('focusout', function (event) {
         var source = event.currentTarget;
-        if (source.id == "Speciality") return;
+        //if (source.id == "Speciality") return;
+        if (!source.id.includes("common")) return;
+        if (!source.id.includes("weekend")) return;
+
         //Should be simplied to update the field on which change occurs
         //example: if CommonMorningEndHour is changed, then change weekendMorningEndHour only
         if (CheckWeekendSameAsCommonDays()) {
@@ -804,7 +812,9 @@
 
     $("select").on('mouseleave', function (event) {
         var source = event.currentTarget;
-        if (source.id == "Speciality") return;
+        //if (source.id == "Speciality") return;
+        if (!source.id.includes("common")) return;
+        if (!source.id.includes("weekend")) return;
 
 
         $(source).removeClass("selectOpen");
