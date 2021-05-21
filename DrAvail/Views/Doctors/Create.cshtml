@@ -176,14 +176,16 @@
                 </div>
             </div>
             <div class="form-row card">
-                <div class="form-group input-group">
-                    @*<label asp-for="Summary" class="control-label"></label>*@
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Add a bio</span>
+                <div class="card-body">
+                    <div class="form-group input-group">
+                        @*<label asp-for="Summary" class="control-label"></label>*@
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Add a bio</span>
+                        </div>
+                        <textarea asp-for="Summary" class="form-control"></textarea>
                     </div>
-                    <textarea asp-for="Summary" class="form-control"></textarea>
+                    <span asp-validation-for="Summary" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="Summary" class="text-danger"></span>
             </div>
             <div class="card mb-3" id="divAddressContactInforamtion">
                 <h6 class="card-title text-left"> Location &amp; Contact Information</h6>
