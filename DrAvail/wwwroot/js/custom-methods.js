@@ -88,47 +88,34 @@
     function setDefaultWeekendTiming(timing = "00:00") {
         //Morning start time
         $("#weekendMorningStartTime").val(timing);
-        //console.log("weekendMorningStartTime: " + $("#weekendMorningStartTime").val());
         //morning end time
         $("#weekendMorningEndTime").val(timing);
-        //console.log("weekendMorningEndTime: " + $("#weekendMorningEndTime").val());
         //evening start time
         $("#weekendEveningStartTime").val(timing);
-        //console.log("weekendEveningStartTime: " + $("#weekendEveningStartTime").val());
         //evening end time
         $("#weekendEveningEndTime").val(timing);
-        //console.log("weekendEveningEndTime: " + $("#weekendEveningEndTime").val());
     }
 
     $('#btnSave').on('click', function (event) {
         var IsExist = CheckRegistrationNumberExists($("#txtRegistrationNumber").val());
-        if (!IsExist) {
+
+        if (!IsExist && ValidateExperience()) {
             //for common days
             //setCommonMorningStartTime();
-            console.log("CheckRegistrationNumberExists: " + !(IsExist));
+            //console.log("CheckRegistrationNumberExists: " + !(IsExist));
             console.log("Inside if part CheckRegistrationNumberExists");
             SetTimeFromHourMinute("#commonMorningStartTime");
             SetTimeFromHourMinute("#commonMorningEndTime");
             SetTimeFromHourMinute("#commonEveningStartTime");
             SetTimeFromHourMinute("#commonEveningEndTime");
 
-            /*setCommonMorningEndTime();
-            setCommonEveningStartTime();
-            setCommonEveningEndTime();*/
             //for weekends
             var availableOnWeekend = $('#chkAvailableOnWeekend:checked').length
-            //console.log("availableOnWeekend: " + availableOnWeekend);
             if (availableOnWeekend != 0) {
-
                 SetTimeFromHourMinute("#weekendMorningStartTime");
                 SetTimeFromHourMinute("#weekendMorningEndTime");
                 SetTimeFromHourMinute("#weekendEveningStartTime");
                 SetTimeFromHourMinute("#weekendEveningEndTime");
-                /*
-                                setWeekendMorningStartTime();
-                                setWeekendMorningEndTime();
-                                setWeekendEveningStartTime();
-                                setWeekendEveningEndTime();*/
             }
             else {
                 setDefaultWeekendTiming();
@@ -138,45 +125,142 @@
         else {
             //now it will submit regardless
             //but need to prevent from submit if above check fails
-            console.log("else CheckRegistrationNumberExists");
+            //console.log("else CheckRegistrationNumberExists");
 
             event.preventDefault();
             return;
         }
 
-
     });
 
-    //commonMorningStartHour
-    $("#commonMorningStartHour").change(function () {
-        //debugger;
-        var startHour = $("#commonMorningStartHour").find(":selected").val();
-        var startminute = $("#commonMorningStartMinute").find(":selected").val();
-        if (jQuery.inArray(startHour, MHours) != -1) {
-            var Hindex = MHours.indexOf(startHour);
-            //console.log("Index: " + index);
-            var items = "";
-            //console.log("Timing array length: " + MHours.length);
-            $.each(MHours, function (i, value) {
-                //console.log("i: " + i)
+    function getHours(id) {
+        if (id.includes("Morning")) {
+            return MHours;
+        } else {
+            return EHours;
+        }
+    }
+
+    function getFirstTiming() {
+        return "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
+    }
+    function getTimings(Tindex) {
+        let timings = "";
+
+        $.each(Times, function (i, value) {
+            if (i > Tindex) {
+                timings += "<option value='" + value + "'>" + value + "</option>";
+            }
+        });
+        return timings;
+    }
+
+    function StartHour(event) {
+        let Hours = getHours(event.currentTarget.id);
+
+        let prefix = "#" + event.currentTarget.id.replace("StartHour", "");
+
+        let startHour = $(event.currentTarget).find(":selected").val();
+        let startminute = $(prefix + "StartMinute").find(":selected").val();
+
+        if (jQuery.inArray(startHour, Hours) != -1) {
+            let Hindex = Hours.indexOf(startHour);
+            let items = "";
+            $.each(Hours, function (i, value) {
                 if (i >= Hindex) {
                     items += "<option value='" + value + "'>" + value + "</option>";
                 }
             });
-            var Tindex = Times.indexOf(startminute);
-            var timings = "";
-            $.each(Times, function (i, value) {
-                if (i > Tindex) {
-                    timings += "<option value='" + value + "'>" + value + "</option>";
-                }
-            })
-            $("#commonMorningEndHour").html(items);
-            $("#commonMorningEndMinute").html(timings);
+            $(prefix + "EndHour").html(items);
+            $(prefix + "EndMinute").html(getTimings(Times.indexOf(startminute)));
         }
+    }
+
+    function EndHour(event) {
+        let Hours = getHours(event.currentTarget.id);
+
+        // current event - EndHour
+        let prefix = "#" + event.currentTarget.id.replace("EndHour", "");
+
+        let endHour = $(event.currentTarget).find(":selected").val(); // to get end hour value
+        let startHour = $(prefix + "StartHour").find(":selected").val(); // to get start hour value
+
+        let startHourIndex = Hours.indexOf(startHour);
+        let endHourIndex = Hours.indexOf(endHour);
+
+        if (endHourIndex == (Hours.length - 1)) {
+            $(prefix + "EndMinute").html(getFirstTiming());
+        }
+        else if (endHourIndex > startHourIndex) {
+            $(prefix + "EndMinute").html(getTimings(-1)); // to get & set all timings
+
+        }
+        else {
+            //var startminute = $(prefix+ "StartMinute").find(":selected").val();
+            //var Tindex = Times.indexOf($(prefix + "StartMinute").find(":selected").val());
+            // to get timings after startMinute
+            $(prefix + "EndMinute").html(getTimings(Times.indexOf($(prefix + "StartMinute").find(":selected").val())));
+        }
+
+    }
+
+    function StartMinute(event) {
+
+        let Hours = getHours(event.currentTarget.id);
+
+        // current event - EndHour
+        let prefix = "#" + event.currentTarget.id.replace("StartMinute", "");
+
+        var startMinute = $(event.currentTarget).find(":selected").val();
+        var startHour = $(prefix + "StartHour").find(":selected").val();
+        var endHour = $(prefix + "EndHour").find(":selected").val();
+        var startHourIndex = Hours.indexOf(startHour);
+        var endHourIndex = Hours.indexOf(endHour);
+        var Tindex = Times.indexOf(startMinute);
+        var items = "";
+
+        if (Tindex != Times.length - 1) {
+            //if user previously selected 45, it should have incremented the endhour so if user changes minute back
+            //end hour should match with starthour
+            if (endHourIndex > startHourIndex) {
+                //var Hindex = MHours.indexOf(startHour);
+                //var items = "";
+                $.each(Hours, function (i, value) {
+                    if (i >= startHourIndex) {
+                        items += "<option value='" + value + "'>" + value + "</option>";
+                    }
+                });
+                $(prefix + "EndHour").html(items);
+            }
+            $(prefix + "EndMinute").html(getTimings(Tindex));
+        }
+        else {
+            //var timings = "";
+            if (startHourIndex == Hours.length - 2) {
+                $(prefix + "EndMinute").html(getFirstTiming());
+            }
+            else {
+                $(prefix + "EndMinute").html(getTimings(-1));
+            }
+
+            if (jQuery.inArray(startHour, Hours) != -1) {
+                $.each(Hours, function (i, value) {
+                    if (i > startHourIndex) {
+                        items += "<option value='" + value + "'>" + value + "</option>";
+                    }
+                });
+                $(prefix + "EndHour").html(items);
+            }
+        }
+    }
+    //commonMorningStartHour
+    $("#commonMorningStartHour").on("change", function (event) {
+        //debugger;
+        StartHour(event);
     });
 
     //commonMorningStartMinute
-    $("#commonMorningStartMinute").change(function () {
+    $("#commonMorningStartMinute").change(function (event) {
         var startMinute = $("#commonMorningStartMinute").find(":selected").val();
         var startHour = $("#commonMorningStartHour").find(":selected").val();
         var endHour = $("#commonMorningEndHour").find(":selected").val();
@@ -231,67 +315,17 @@
     });
 
     //commonMorningEndHour
-    $("#commonMorningEndHour").change(function () {
-        var startHour = $("#commonMorningStartHour").find(":selected").val();
-        var endHour = $("#commonMorningEndHour").find(":selected").val();
-        var startHourIndex = MHours.indexOf(startHour);
-        var endHourIndex = MHours.indexOf(endHour);
-        var timings = "";
-
-        if (endHourIndex == (MHours.length - 1)) {
-            timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
-            //console.log("timings::: " + timings);
-            $("#commonMorningEndMinute").html(timings);
-        }
-        else if (endHourIndex > startHourIndex) {
-            //var timings = "";
-            $.each(Times, function (i, value) {
-                timings += "<option value='" + value + "'>" + value + "</option>";
-            });
-            $("#commonMorningEndMinute").html(timings);
-        }
-        else {
-            var startminute = $("#commonMorningStartMinute").find(":selected").val();
-            var Tindex = Times.indexOf(startminute);
-            $.each(Times, function (i, value) {
-                if (i > Tindex) {
-                    timings += "<option value='" + value + "'>" + value + "</option>";
-                }
-            });
-            $("#commonMorningEndMinute").html(timings);
-        }
+    $("#commonMorningEndHour").on("change", function (event) {
+        EndHour(event);
     });
 
     $("#commonMorningEndMinute").on('focus', function () {
-        console.log('trigged commonMorningEndMinute focus event');
         $("#commonMorningEndHour").trigger('change');
     });
     //commonEveningStartHour
-    $("#commonEveningStartHour").change(function () {
+    $("#commonEveningStartHour").on("change", function (event) {
         //debugger;
-        var startHour = $("#commonEveningStartHour").find(":selected").val();
-        var startminute = $("#commonEveningStartMinute").find(":selected").val();
-        if (jQuery.inArray(startHour, EHours) != -1) {
-            var Hindex = EHours.indexOf(startHour);
-            //console.log("Index: " + index);
-            var items = "";
-            //console.log("Timing array length: " + Hours.length);
-            $.each(EHours, function (i, value) {
-                //console.log("i: " + i)
-                if (i >= Hindex) {
-                    items += "<option value='" + value + "'>" + value + "</option>";
-                }
-            });
-            var Tindex = Times.indexOf(startminute);
-            var timings = "";
-            $.each(Times, function (i, value) {
-                if (i > Tindex) {
-                    timings += "<option value='" + value + "'>" + value + "</option>";
-                }
-            })
-            $("#commonEveningEndHour").html(items);
-            $("#commonEveningEndMinute").html(timings);
-        }
+        StartHour(event);
     });
 
     //commonEveningStartMinute
@@ -333,7 +367,7 @@
             $.each(Times, function (i, value) {
                 timings += "<option value='" + value + "'>" + value + "</option>";
             });
-            if (jQuery.inArray(startHour, MHours) != -1) {
+            if (jQuery.inArray(startHour, EHours) != -1) {
                 //var items = "";
                 $.each(EHours, function (i, value) {
                     if (i > Hindex) {
@@ -347,66 +381,15 @@
     });
 
     //commonEveningEndHour
-    $("#commonEveningEndHour").change(function () {
-        var startHour = $("#commonEveningStartHour").find(":selected").val();
-        var endHour = $("#commonEveningEndHour").find(":selected").val();
-        var endHourIndex = EHours.indexOf(endHour);
-        var startHourindex = EHours.indexOf(startHour);
-        var timings = "";
-        var items = "";
-
-        if (endHourIndex == EHours.length - 1) {
-            timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
-            //items += "<option value='" + EHours[EHours.length - 1] + "'>" + EHours[EHours.length - 1] + "</option>";
-            //$("#commonEveningEndHour").html(items);
-            $("#commonEveningEndMinute").html(timings);
-        }
-        else if (endHourIndex > startHourindex) {
-            $.each(Times, function (i, value) {
-                timings += "<option value='" + value + "'>" + value + "</option>";
-            });
-            $("#commonEveningEndMinute").html(timings);
-        }
-        else {
-            var startminute = $("#commonEveningStartMinute").find(":selected").val();
-            var Tindex = Times.indexOf(startminute);
-            var timings = "";
-            $.each(Times, function (i, value) {
-                if (i > Tindex) {
-                    timings += "<option value='" + value + "'>" + value + "</option>";
-                }
-            });
-            $("#commonEveningEndMinute").html(timings);
-        }
+    $("#commonEveningEndHour").on("change", function (event) {
+        EndHour(event);
     });
 
     //weekends
     //weekendMorningStartHour
-    $("#weekendMorningStartHour").change(function () {
+    $("#weekendMorningStartHour").on("change", function (event) {
         //debugger;
-        var startHour = $("#weekendMorningStartHour").find(":selected").val();
-        var startminute = $("#weekendMorningStartMinute").find(":selected").val();
-        if (jQuery.inArray(startHour, MHours) != -1) {
-            var Hindex = MHours.indexOf(startHour);
-            //console.log("Index: " + index);
-            var items = "";
-            //console.log("Timing array length: " + MHours.length);
-            $.each(MHours, function (i, value) {
-                //console.log("i: " + i)
-                if (i >= Hindex) {
-                    items += "<option value='" + value + "'>" + value + "</option>";
-                }
-            });
-            var Tindex = Times.indexOf(startminute);
-            var timings = "";
-            $.each(Times, function (i, value) {
-                if (i > Tindex) {
-                    timings += "<option value='" + value + "'>" + value + "</option>";
-                }
-            })
-            $("#weekendMorningEndHour").html(items);
-            $("#weekendMorningEndMinute").html(timings);
-        }
+        StartHour(event);
     });
 
     //weekendMorningStartMinute
@@ -463,65 +446,14 @@
     });
 
     //weekendMorningEndHour
-    $("#weekendMorningEndHour").change(function () {
-        var startHour = $("#weekendMorningStartHour").find(":selected").val();
-        var endHour = $("#weekendMorningEndHour").find(":selected").val();
-        var startHourIndex = MHours.indexOf(startHour);
-        var endHourIndex = MHours.indexOf(endHour);
-        var timings = "";
-
-        if (endHourIndex == MHours.length - 1) {
-            //console.log("endHourIndex == MHours.length - 1::: true");
-            $("#weekendMorningEndMinute").empty();
-            timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
-            $("#weekendMorningEndMinute").html(timings);
-        }
-        else if (endHourIndex > startHourIndex) {
-            // console.log("endHourIndex > startHourIndex::: true");
-
-            $.each(Times, function (i, value) {
-                timings += "<option value='" + value + "'>" + value + "</option>";
-            });
-            $("#weekendMorningEndMinute").html(timings);
-        }
-        else {
-            var startminute = $("#weekendMorningStartMinute").find(":selected").val();
-            var Tindex = Times.indexOf(startminute);
-            $.each(Times, function (i, value) {
-                if (i > Tindex) {
-                    timings += "<option value='" + value + "'>" + value + "</option>";
-                }
-            });
-            $("#weekendMorningEndMinute").html(timings);
-        }
+    $("#weekendMorningEndHour").on("change", function (event) {
+        EndHour(event);
     });
 
     //weekendEveningStartHour
-    $("#weekendEveningStartHour").change(function () {
+    $("#weekendEveningStartHour").on("change", function (event) {
         //debugger;
-        var startHour = $("#weekendEveningStartHour").find(":selected").val();
-        var startminute = $("#weekendEveningStartMinute").find(":selected").val();
-        if (jQuery.inArray(startHour, EHours) != -1) {
-            var Hindex = EHours.indexOf(startHour);
-            //console.log("Index: " + index);
-            var items = "";
-            //console.log("Timing array length: " + Hours.length);
-            $.each(EHours, function (i, value) {
-                //console.log("i: " + i)
-                if (i >= Hindex) {
-                    items += "<option value='" + value + "'>" + value + "</option>";
-                }
-            });
-            var Tindex = Times.indexOf(startminute);
-            var timings = "";
-            $.each(Times, function (i, value) {
-                if (i > Tindex) {
-                    timings += "<option value='" + value + "'>" + value + "</option>";
-                }
-            })
-            $("#weekendEveningEndHour").html(items);
-            $("#weekendEveningEndMinute").html(timings);
-        }
+        StartHour(event);
     });
 
     //weekendEveningStartMinute
@@ -577,36 +509,8 @@
     });
 
     //weekendEveningEndHour
-    $("#weekendEveningEndHour").change(function () {
-        var startHour = $("#weekendEveningStartHour").find(":selected").val();
-        var endHour = $("#weekendEveningEndHour").find(":selected").val();
-        var endHourIndex = EHours.indexOf(endHour);
-        var startHourIndex = EHours.indexOf(startHour);
-        var timings = "";
-        var items = "";
-
-        if (endHourIndex == EHours.length - 1) {
-            timings += "<option value='" + Times[0] + "'>" + Times[0] + "</option>";
-            $("#weekendEveningEndMinute").html(timings);
-        }
-        else if (endHourIndex > startHourIndex) {
-            //var timings = "";
-            $.each(Times, function (i, value) {
-                timings += "<option value='" + value + "'>" + value + "</option>";
-            });
-            $("#weekendEveningEndMinute").html(timings);
-        }
-        else {
-            var startminute = $("#weekendEveningStartMinute").find(":selected").val();
-            var Tindex = Times.indexOf(startminute);
-            //var timings = "";
-            $.each(Times, function (i, value) {
-                if (i > Tindex) {
-                    timings += "<option value='" + value + "'>" + value + "</option>";
-                }
-            });
-            $("#weekendEveningEndMinute").html(timings);
-        }
+    $("#weekendEveningEndHour").on("change", function (event) {
+        EndHour(event);
     });
 
     function CheckWeekendSameAsCommonDays() {
@@ -617,19 +521,8 @@
     }
 
     function CopyToWeekend(source) {
-        //console.log("CopyToWeekend source: " + source);
         var target = source.replace("common", "weekend");
-        //console.log("source: " + source);
-        //console.log("destination: " + destination);
-
-        /*$(destination).find("option").filter(function () {
-            return $(source).find(":selected").val() === $(this).text();
-        }).attr("selected", true).trigger('change');*/
-
         $(target).val($(source).find(":selected").val()).trigger('change');
-
-        //console.log("source value: " + $(source).find(":selected").val());
-        //console.log("destination value: " + $(destination).find(":selected").val());
     }
 
     function CopyCommonToWeekend() {
@@ -653,7 +546,6 @@
         else {
             toggleWeekendTiming(false);
         }
-
     });
 
     function disableAttribute(source, status) {
@@ -673,23 +565,17 @@
         disableAttribute("#weekendEveningEndMinute", status);
     }
 
-    $("#txtExperience").on('change', function () {
-        //debugger;
-        var exp = $("#txtExperience").val();
-        //console.log("\nexp: " + exp);
-
-        var dob = $("#dob").val();
-        //console.log("\ndob: " + dob);
+    function ValidateExperience() {
+        let exp = $("#txtExperience").val();
+        let dob = $("#dob").val();
         if (dob !== "") {
-            var age = new Date().getFullYear() - new Date(dob).getFullYear();
-            //console.log("Today date: " + new Date().toString());
-            //console.log("\nDOB: " + new Date(dob).toString());
+            let age = new Date().getFullYear() - new Date(dob).getFullYear();
             console.log("\nAge: " + age);
             if (age > 24) {
-                var diff = age - 25;
-                //console.log("\ndiff: " + diff);
+                let diff = age - 25;
                 if (exp >= 0 && exp <= diff) {
                     //alert('ok');
+                    return true;
                 }
                 else {
                     alert("You can't have " + exp + " of experience when you are " + age + " year old");
@@ -702,6 +588,12 @@
         else {
             alert("Enter Date of Birth");
         }
+        return false;
+    }
+
+    $("#txtExperience").on('change', function () {
+        //debugger;
+        ValidateExperience();
     });
 
     //for doctor
@@ -770,8 +662,11 @@
     //on click event
     $("select").on('click', function (event) {
         var source = event.currentTarget;
-        if (!source.id.includes("common")) return;
-        if (!source.id.includes("weekend")) return;
+        if (!source.id.includes("common") && !source.id.includes("weekend")) {
+            console.log("Click event of not common or weekend")
+            return;
+        }
+        console.log("Click event of common or weekend field")
 
         //console.log($(source).attr("size"));
         if ($(source).attr("size") == '1') {
@@ -872,13 +767,13 @@
 
     function SetDegree() {
         var value = "";
-        $.each(Degree, function(i, v){
+        $.each(Degree, function (i, v) {
             if (v != "") {
                 if (i == 0) {
                     value = v;
                 }
                 else {
-                    value = value + ", "+ v;
+                    value = value + ", " + v;
                 }
             }
             else {
@@ -904,16 +799,7 @@
         }
 
         SetDegree();
-        //if (value == null || value == "") {
-        //    //console.log("value is empty or null");
-        //    value = $("#" + event.target.id).val();
-        //    $("#txtDegree").val(value);
 
-        //}
-        //else {
-        //    SetDegree();
-        //    //value = value + ", " + $("#" + event.target.id).val();
-        //}
     });
 
     $("#btnAddDegree").on('click', function () {
@@ -934,25 +820,12 @@
     });
 
     $(".divDegree").on('click', "a.removebutton", function (event) {
-        //console.log("trigged remove click for: " + event.target.id);
-        //var source = "#" + event.target.id.replace("btnRemove", "txt");
-        //var sourceValue = $(source).val();
-        //var value = $("#txtDegree").val().replace(", " + sourceValue, "");
-        //$("#txtDegree").val($.trim(value));
 
         var lastChar = event.target.id.charAt(event.target.id.length - 1);
         Degree[parseInt(lastChar)] = "";
 
-        //if (lastChar == "t") {
-        //    Degree[0] = $(source).val();
-        //}
-        //else {
-        //    Degree[parseInt(lastChar)] = $(source).val();
-        //}
-
         SetDegree();
 
-        //$("#" + event.target.id.replace("btnRemove", "div")).remove();
         console.log("Remove Counter: " + count);
 
         if (count == 1) {
