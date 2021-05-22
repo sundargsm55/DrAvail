@@ -16,11 +16,32 @@
     var year = today.getFullYear();
     var month = today.getMonth();
     var day = today.getDay();
+
     $('#dob').datepicker({
         minDate: new Date(year - 120, 0, 1),
         maxDate: new Date(year - 26, 11, 31),
-        setDate: new Date(year - 26, month-1, day)
+        setDate: new Date(year - 26, month - 1, day)
     });
+
+    $(".experience-date").datepicker({
+        yearRange: $("#dob").val().slice(-4) + 25 + ":" + year,
+        maxDate: '-1M',
+        changeMonth: true,
+        changeYear: true,
+        setDate: today,
+        showButtonPanel: false,
+        dateFormat: 'MM yy',
+        beforeShow: function (el, dp) {
+            $('#ui-datepicker-div').addClass('hide-calendar');
+        },
+        onClose: function (dateText, inst) {
+            $('#ui-datepicker-div').removeClass('hide-calendar');
+            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year, month, 14));
+        }
+    });
+
 
     $("#dob").on('change', function (event) {
         var dob = event.currentTarget.value.split("/")[2];
@@ -197,7 +218,7 @@
         }
 
         $(prefix + "EndHour").val(endHour);
-        $(prefix + "EndMinute").val(Times[startMinuteIndex +1]);
+        $(prefix + "EndMinute").val(Times[startMinuteIndex + 1]);
 
     }
 
@@ -258,7 +279,7 @@
                     }
                 });
                 $(prefix + "EndHour").html(items);
-                $(prefix + "EndMinute").html(getTimings(-1)); 
+                $(prefix + "EndMinute").html(getTimings(-1));
             }
             else {
                 $(prefix + "EndMinute").html(getTimings(startMinuteIndex));
@@ -315,7 +336,7 @@
     });
 
     //commonEveningStartMinute
-    $("#commonEveningStartMinute").on("change",function (event) {
+    $("#commonEveningStartMinute").on("change", function (event) {
         StartMinute(event);
     });
 
@@ -354,7 +375,7 @@
     });
 
     //weekendEveningStartMinute
-    $("#weekendEveningStartMinute").on("change",function (event) {
+    $("#weekendEveningStartMinute").on("change", function (event) {
         StartMinute(event);
     });
 

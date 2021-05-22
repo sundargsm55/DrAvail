@@ -20,6 +20,14 @@
         position: absolute;
         z-index: 9;
     }
+
+    .hide-calendar .ui-datepicker-calendar {
+        display: none;
+    }
+
+    .hide-calendar .ui-widget {
+        font-size: .7em;
+    }
 </style>
 <h4>Register</h4>
 
@@ -83,7 +91,7 @@
                                 Date of Birth
                                 <i class="fa fa-info-circle" style="color:skyblue;" aria-hidden="true" data-toggle="tooltip" title="Date of Birth is only for calculating your Age and won't be visible to public or other users."></i>
                             </label>
-                            <input type="text" asp-for="DateOfBirth" class="form-control" id="dob" placeholder="MM/DD/YYYY" readonly/>
+                            <input type="text" asp-for="DateOfBirth" class="form-control" id="dob" placeholder="MM/DD/YYYY" readonly />
                             <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-4">
@@ -99,25 +107,25 @@
                 </div>
             </div>
             <div class="card bg-warning divDegree" id="divDegree">
-                    <h6 class="card-title">
-                        Degree
-                        <a href="#btnAddDegree" class="btn-sm float-right" id="btnAddDegree"><i class="fa fa-plus" aria-hidden="true"></i> Degree</a>
-                    </h6>
-                    <div class="card-body" id="divCardDegree">
-                        <div class="form-row" id="divDegreeDefault">
-                            <div class="form-group col-md-4">
-                                <select name="txtDegreeDefault" class="form-control custom-select education" asp-items="ViewBag.Degree" id="txtDegreeDefault">
-                                    <option value="">--Select--</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row" id="divDegree1" style="display:none">
-                            <div class="form-group col-md-4">
-                                <select name="txtDegree1" class="form-control custom-select education" asp-items="ViewBag.Degree" id="txtDegree1"></select>
-                                <a href="#btnRemoveDegree1" class="btn-sm removebutton" id="btnRemoveDegree1"><i class="fa fa-minus" aria-hidden="true"></i> Remove</a>
-                            </div>
+                <h6 class="card-title">
+                    Degree
+                    <a href="#btnAddDegree" class="btn-sm float-right" id="btnAddDegree"><i class="fa fa-plus" aria-hidden="true"></i> Degree</a>
+                </h6>
+                <div class="card-body" id="divCardDegree">
+                    <div class="form-row" id="divDegreeDefault">
+                        <div class="form-group col-md-4">
+                            <select name="txtDegreeDefault" class="form-control custom-select education" asp-items="ViewBag.Degree" id="txtDegreeDefault">
+                                <option value="">--Select--</option>
+                            </select>
                         </div>
                     </div>
+                    <div class="form-row" id="divDegree1" style="display:none">
+                        <div class="form-group col-md-4">
+                            <select name="txtDegree1" class="form-control custom-select education" asp-items="ViewBag.Degree" id="txtDegree1"></select>
+                            <a href="#btnRemoveDegree1" class="btn-sm removebutton" id="btnRemoveDegree1"><i class="fa fa-minus" aria-hidden="true"></i> Remove</a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="card" id="divProfession">
                 <h6 class="card-title text-left"> Education &amp; Profession</h6>
@@ -130,6 +138,8 @@
                             <input asp-for="RegNumber" class="form-control" id="txtRegistrationNumber" />
                             <span asp-validation-for="RegNumber" class="text-danger"></span>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label asp-for="RegistredMedicalCouncil" class="control-label"></label>
                             <select id="txtRegistredMedicalCouncil" asp-for="RegistredMedicalCouncil" class="form-control custom-select" asp-items="@Html.GetEnumSelectList<MedicalCouncil>()">
@@ -137,23 +147,20 @@
                             </select>
                             <span asp-validation-for="Speciality" class="text-danger"></span>
                         </div>
-                </div>
-                    <div class="form-row">
                         <div class="form-group col-md-4" hidden>
                             <label asp-for="Degree" class="control-label"></label>
-                            <input asp-for="Degree" class="form-control" id="txtDegree"/>
+                            <input asp-for="Degree" class="form-control" id="txtDegree" />
                             <span asp-validation-for="Degree" class="text-danger"></span>
                         </div>
-                        
+                    </div>
+                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label asp-for="Speciality" class="control-label"></label>
                             <select id="Speciality" asp-for="Speciality" class="form-control custom-select" asp-items="@Html.GetEnumSelectList<Speciality>()">
                                 <option style="text-align:center" value="">--Select--</option>
                             </select>
+                            <span asp-validation-for="Speciality" class="text-danger"></span>
                         </div>
-                        <span asp-validation-for="Speciality" class="text-danger"></span>
-                    </div>
-                    <div class="form-row">
                         <div class="form-group col-md-3">
                             <label asp-for="Practice" class="control-label"></label>
                             <select asp-for="Practice" class="form-control" size="1">
@@ -176,6 +183,93 @@
                     </div>
                 </div>
             </div>
+            @*start of Experience Section*@
+            <br />
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#divExperienceModal">
+                Add Experience
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="divExperienceModal" tabindex="-1" role="dialog" aria-labelledby="ExperienceModalTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Add Experience</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-row">
+                                <label for="Title" class="control-label" id="lblTitle">Title *</label>
+                                <input name="Title" class="form-control" id="txtTitle" required />
+                            </div>
+                            <div class="form-row">
+                                <label for="EmploymentType" class="control-label" id="lblEmploymentType">Employment type</label>
+                                <select name="EmploymentType" class="form-control" id="txtEmploymentType" required>
+                                    <option></option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <label for="Hospital" class="control-label" id="lblHospital">Hospital/Clinic Name *</label>
+                                <input name="Hospital" class="form-control" id="txtHospital" required />
+                            </div>
+                            <div class="form-row">
+                                <label for="Location" class="control-label" id="lblLocation">Location</label>
+                                <input name="Location" class="form-control" id="txtLocation" />
+                            </div>
+                            <div class="form-row">
+                                <div class="form-inline form-group">
+                                    <label class="control-label" id="lblStartDate">Start Date *</label>
+                                    <select name="StartMonth" class="form-control" id="sltStartMonth" hidden>
+                                        <option value="">-Select--</option>
+                                        <option>January</option>
+                                        <option>February</option>
+                                        <option>March</option>
+                                        <option>April</option>
+                                        <option>May</option>
+                                        <option>June</option>
+                                        <option>July</option>
+                                        <option>August</option>
+                                        <option>September</option>
+                                        <option>October</option>
+                                        <option>November</option>
+                                        <option>December</option>
+                                    </select>
+
+                                    <input name="StartDate" class="form-control experience-date" id="txtStartDate" required />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" id="lblEndDate">End Date *</label>
+                                    <select name="EndMonth" class="form-control" id="sltEndMonth" hidden>
+                                        <option value="">-Select--</option>
+                                        <option>January</option>
+                                        <option>February</option>
+                                        <option>March</option>
+                                        <option>April</option>
+                                        <option>May</option>
+                                        <option>June</option>
+                                        <option>July</option>
+                                        <option>August</option>
+                                        <option>September</option>
+                                        <option>October</option>
+                                        <option>November</option>
+                                        <option>December</option>
+                                    </select>
+
+                                    <input name="EndYear" class="form-control experience-date" id="txtEndYear" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary rounded" id="btnAddExperience">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*end of Experience Section*@
             <div class="form-row card">
                 <div class="card-body">
                     <div class="form-group input-group">

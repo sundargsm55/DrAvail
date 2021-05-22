@@ -365,7 +365,7 @@ namespace DrAvail.Controllers
             }
 
             SelectListHospital();
-            SelectListSpeciality();
+            //SelectListSpeciality();
             SelectListCity();
             SelectListHospitalCity();
             SelectListDegree();
@@ -401,9 +401,10 @@ namespace DrAvail.Controllers
                     if (!ValidateTimings())
                     {
                         SelectListHospital();
-                        SelectListSpeciality();
+                        //SelectListSpeciality();
                         SelectListCity();
                         SelectListHospitalCity();
+                        SelectListDegree();
 
                         return View(Doctor);
                     }
@@ -455,7 +456,7 @@ namespace DrAvail.Controllers
             }
 
             SelectListHospital();
-            SelectListSpeciality();
+            //SelectListSpeciality();
             SelectListCity();
             SelectListHospitalCity();
             SelectListDegree();
@@ -599,9 +600,9 @@ namespace DrAvail.Controllers
         {
             ViewData["HospitalID"] = new SelectList(Context.Hospitals, "ID", "Name");
 
-            var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
-                         select new { ID = (int)H, Name = H.ToString() };
-            ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
+            //var values = from HospitalType H in Enum.GetValues(typeof(HospitalType))
+            //             select new { ID = (int)H, Name = H.ToString() };
+            //ViewBag.HospitalType = new SelectList(values, "ID", "Name"); ;
 
             /*var district = from District d in Enum.GetValues(typeof(District))
                            select new { ID = (int)d, Name = d.ToString() };
@@ -622,7 +623,7 @@ namespace DrAvail.Controllers
             ViewData["CurrentAvaliabilityID"] = new SelectList(Context.Availabilities, "ID", "ID");
             SelectListDegree();
             SelectListHospital();
-            SelectListSpeciality();
+            //SelectListSpeciality();
             SelectListCity();
             SelectListHospitalCity();
             #endregion
