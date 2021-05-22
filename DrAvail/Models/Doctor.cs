@@ -17,30 +17,35 @@ namespace DrAvail.Models
 
         [Required]
         [MinLength(3), MaxLength(60)]
-        [Display(Name ="Full Name")]
+        [Display(Name = "Full Name")]
         [RegularExpression("^[a-zA-Z]+(\\s[a-zA-Z]+)?$", ErrorMessage = "Only Alphabets, space allowed.")]
         public string Name { get; set; }
 
         //Need to be unique
         [Required]
-        [MinLength(6),MaxLength(20)]
+        [MinLength(6), MaxLength(20)]
         [Unique]
-        [Display(Name ="Registration Number")]
+        [Display(Name = "Registration Number")]
         public string RegNumber { get; set; }
 
+        [NotMapped]
+        [Display(Name = "Registred Medical Council")]
+        public MedicalCouncil RegistredMedicalCouncil { get; set; }
+
         [Required]
+        [Display(Name = "Specialization")]
         public Speciality Speciality { get; set; }
 
         [Required]
         public string Degree { get; set; }
 
         [Required]
-        [Range(25,100)]
+        [Range(25, 100)]
         public int Age { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
-        [Display(Name="Date of Birth")]
+        [Display(Name = "Date of Birth")]
         public DateTime DateOfBirth { get; set; }
 
         [Required]
@@ -59,7 +64,7 @@ namespace DrAvail.Models
         public string Summary { get; set; }
 
         [Required]
-        [Display(Name ="Locality")]
+        [Display(Name = "Locality")]
         public string City { get; set; }
 
         [Required]
@@ -71,7 +76,7 @@ namespace DrAvail.Models
 
         [Required]
         [EmailAddress]
-        [Display(Name="Email Address")]
+        [Display(Name = "Email Address")]
         [Unique]
         public string EmailId { get; set; }
 
@@ -107,7 +112,7 @@ namespace DrAvail.Models
     {
         Male = 0,
         Female,
-        
+
     }
 
     public enum Practice
@@ -192,6 +197,129 @@ namespace DrAvail.Models
         Always,
         EmergencyOnly,
         Never
+    }
+
+    public enum MedicalCouncil
+    {
+        [Display(Name = "Andhra Pradesh Medical Council")]
+        AndhraPradeshMedicalCouncil,
+
+        [Display(Name = "Arunachal Pradesh Medical Council")]
+        ArunachalPradeshMedicalCouncil,
+
+        [Display(Name = "Assam Medical Council")]
+        AssamMedicalCouncil,
+
+        [Display(Name = "Bhopal Medical Council")]
+        BhopalMedicalCouncil,
+
+        [Display(Name = "Bihar Medical Council")]
+        BiharMedicalCouncil,
+
+        [Display(Name = "Bombay Medical Council")]
+        BombayMedicalCouncil,
+
+        [Display(Name = "Chandigarh Medical Council")]
+        ChandigarhMedicalCouncil,
+
+        [Display(Name = "Chattisgarh Medical Council")]
+        ChattisgarhMedicalCouncil,
+
+        [Display(Name = "Delhi Medical Council")]
+        DelhiMedicalCouncil,
+
+        [Display(Name = "Goa Medical Council")]
+        GoaMedicalCouncil,
+
+        [Display(Name = "Gujarat Medical Council")]
+        GujaratMedicalCouncil,
+
+        [Display(Name = "Haryana Medical Council")]
+        HaryanaMedicalCouncil,
+
+        [Display(Name = "Himachal Pradesh Medical Council")]
+        HimachalPradeshMedicalCouncil,
+
+        [Display(Name = "Hyderabad Medical Council")]
+        HyderabadMedicalCouncil,
+
+        [Display(Name = "Jammu & Kashmir Medical Council")]
+        JammuKashmirMedicalCouncil,
+
+        [Display(Name = "Jharkhand Medical Council")]
+        JharkhandMedicalCouncil,
+
+        [Display(Name = "Karnataka Medical Council")]
+        KarnatakaMedicalCouncil,
+
+        [Display(Name = "Madhya Pradesh Medical Council")]
+        MadhyaPradeshMedicalCouncil,
+
+        [Display(Name = "Madras Medical Council")]
+        MadrasMedicalCouncil,
+
+        [Display(Name = "Mahakoshal Medical Council")]
+        MahakoshalMedicalCouncil,
+
+        [Display(Name = "Maharashtra Medical Council")]
+        MaharashtraMedicalCouncil,
+
+        [Display(Name = "Manipur Medical Council")]
+        ManipurMedicalCouncil,
+
+        [Display(Name = "Medical Council of India")]
+        MedicalCouncilofIndia,
+
+        [Display(Name = "Medical Council of Tanganyika")]
+        MedicalCouncilofTanganyika,
+
+        [Display(Name = "Mizoram Medical Council")]
+        MizoramMedicalCouncil,
+
+        [Display(Name = "Mysore Medical Council")]
+        MysoreMedicalCouncil,
+
+        [Display(Name = "Nagaland Medical Council")]
+        NagalandMedicalCouncil,
+
+        [Display(Name = "Orissa Council of Medical Registration")]
+        OrissaCouncilofMedicalRegistration,
+
+        [Display(Name = "Pondicherry Medical Council")]
+        PondicherryMedicalCouncil,
+
+        [Display(Name = "Punjab Medical Council")]
+        PunjabMedicalCouncil,
+
+        [Display(Name = "Rajasthan Medical Council")]
+        RajasthanMedicalCouncil,
+
+        [Display(Name = "Sikkim Medical Council")]
+        SikkimMedicalCouncil,
+
+        [Display(Name = "Tamil Nadu Medical Council")]
+        TamilNaduMedicalCouncil,
+
+        [Display(Name = "Telangana State Medical Council")]
+        TelanganaStateMedicalCouncil,
+
+        [Display(Name = "Travancore Cochin Medical Council, Trivandrum")]
+        TravancoreCochinMedicalCouncil, Trivandrum,
+
+        [Display(Name = "Tripura State Medical Council")]
+        TripuraStateMedicalCouncil,
+
+        [Display(Name = "Uttar Pradesh Medical Council")]
+        UttarPradeshMedicalCouncil,
+
+        [Display(Name = "Uttarakhand Medical Council")]
+        UttarakhandMedicalCouncil,
+
+        [Display(Name = "Vidharba Medical Council")]
+        VidharbaMedicalCouncil,
+
+        [Display(Name = "West Bengal Medical Council")]
+        WestBengalMedicalCouncil
     }
     #endregion
 

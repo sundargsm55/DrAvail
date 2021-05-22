@@ -17,9 +17,9 @@
     var month = today.getMonth();
     var day = today.getDay();
     $('#dob').datepicker({
-        minDate: new Date(year - 125, month, day),
-        maxDate: new Date(year - 25, month, day),
-        setDate: new Date(year - 25, month, day)
+        minDate: new Date(year - 120, 0, 1),
+        maxDate: new Date(year - 26, 11, 31),
+        setDate: new Date(year - 26, month-1, day)
     });
 
     $("#dob").on('change', function (event) {

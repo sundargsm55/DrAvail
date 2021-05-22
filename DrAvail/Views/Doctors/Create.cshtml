@@ -83,7 +83,7 @@
                                 Date of Birth
                                 <i class="fa fa-info-circle" style="color:skyblue;" aria-hidden="true" data-toggle="tooltip" title="Date of Birth is only for calculating your Age and won't be visible to public or other users."></i>
                             </label>
-                            <input type="text" asp-for="DateOfBirth" class="form-control" id="dob" placeholder="MM/DD/YYYY" />
+                            <input type="text" asp-for="DateOfBirth" class="form-control" id="dob" placeholder="MM/DD/YYYY" readonly/>
                             <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-4">
@@ -93,12 +93,6 @@
                                 <option value=0>Male</option>
                                 <option value=1>Female</option>
                             </select>
-                            <span asp-validation-for="Gender" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-4 form-inline" hidden>
-                            <label asp-for="Gender" class="control-label"></label>&nbsp;&nbsp;
-                            <input type="radio" asp-for="Gender" value="Male" />Male<br />&nbsp;&nbsp;
-                            <input type="radio" asp-for="Gender" value="Female" />Female<br />
                             <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
                     </div>
@@ -134,11 +128,18 @@
                                 <span asp-for="RegNumber" class="input-group-text">Registration Number</span>
                             </div>
                             <input asp-for="RegNumber" class="form-control" id="txtRegistrationNumber" />
+                            <span asp-validation-for="RegNumber" class="text-danger"></span>
                         </div>
-                        <span asp-validation-for="RegNumber" class="text-danger"></span>
-                    </div>
-                    <div class="form-row">
                         <div class="form-group col-md-4">
+                            <label asp-for="RegistredMedicalCouncil" class="control-label"></label>
+                            <select id="txtRegistredMedicalCouncil" asp-for="RegistredMedicalCouncil" class="form-control custom-select" asp-items="@Html.GetEnumSelectList<MedicalCouncil>()">
+                                <option style="text-align:center" value="">--Select--</option>
+                            </select>
+                            <span asp-validation-for="Speciality" class="text-danger"></span>
+                        </div>
+                </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4" hidden>
                             <label asp-for="Degree" class="control-label"></label>
                             <input asp-for="Degree" class="form-control" id="txtDegree"/>
                             <span asp-validation-for="Degree" class="text-danger"></span>
@@ -146,7 +147,7 @@
                         
                         <div class="form-group col-md-4">
                             <label asp-for="Speciality" class="control-label"></label>
-                            <select id="Speciality" asp-for="Speciality" class="form-control custom-select" asp-items="ViewBag.Speciality">
+                            <select id="Speciality" asp-for="Speciality" class="form-control custom-select" asp-items="@Html.GetEnumSelectList<Speciality>()">
                                 <option style="text-align:center" value="">--Select--</option>
                             </select>
                         </div>
@@ -250,7 +251,7 @@
                         </div>
                         <div class="form-group col-md-4">
                             <label asp-for="Hospital.Type" class="control-label"></label>
-                            <select asp-for="Hospital.Type" class="form-control" id="txtHospitalType" asp-items="ViewBag.HospitalType">
+                            <select asp-for="Hospital.Type" class="form-control" id="txtHospitalType" asp-items="@Html.GetEnumSelectList<HospitalType>()">
                                 <option value="">--Select--</option>
                             </select>
                             <span asp-validation-for="Hospital.Type" class="text-danger"></span>
