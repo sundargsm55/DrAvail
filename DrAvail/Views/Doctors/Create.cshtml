@@ -186,10 +186,14 @@
             @*start of Experience Section*@
             <br />
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#divExperienceModal">
-                Add Experience
-            </button>
-
+            <a href="#!" class="btn-sm" data-toggle="modal" data-target="#divExperienceModal">
+                <i class="fa fa-plus" aria-hidden="true"></i> Add Experience
+            </a>
+            <div class="card" id="divExperienceCard" style="display:none">
+                <h6 class="card-title">Experience</h6>
+                <div class="card-body" id="divExperienceCardBody">
+                </div>
+            </div>
             <!-- Modal -->
             <div class="modal fade" id="divExperienceModal" tabindex="-1" role="dialog" aria-labelledby="ExperienceModalTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="form">
@@ -203,12 +207,16 @@
                         <div class="modal-body">
                             <div class="form-row">
                                 <label for="Title" class="control-label" id="lblTitle">Title *</label>
-                                <input name="Title" class="form-control" id="txtTitle" required />
+                                <input name="Title" class="form-control" id="txtTitle" required data-val="true" />
                             </div>
                             <div class="form-row">
                                 <label for="EmploymentType" class="control-label" id="lblEmploymentType">Employment type</label>
-                                <select name="EmploymentType" class="form-control" id="txtEmploymentType" required>
-                                    <option></option>
+                                <select name="EmploymentType" class="form-control" id="txtEmploymentType" required >
+                                    <option value="">--Select--</option>
+                                    <option>Full-Time</option>
+                                    <option>Part-Time</option>
+                                    <option>Trainee</option>
+                                    <option>Internship</option>
                                 </select>
                             </div>
                             <div class="form-row">
@@ -240,7 +248,7 @@
 
                                     <input name="StartDate" class="form-control experience-date" id="txtStartDate" required />
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group form-inline">
                                     <label class="control-label" id="lblEndDate">End Date *</label>
                                     <select name="EndMonth" class="form-control" id="sltEndMonth" hidden>
                                         <option value="">-Select--</option>
@@ -258,7 +266,7 @@
                                         <option>December</option>
                                     </select>
 
-                                    <input name="EndYear" class="form-control experience-date" id="txtEndYear" required />
+                                    <input name="EndDate" class="form-control experience-date" id="txtEndDate" required />
                                 </div>
                             </div>
                         </div>

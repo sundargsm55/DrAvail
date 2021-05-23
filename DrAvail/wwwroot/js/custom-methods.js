@@ -42,6 +42,44 @@
         }
     });
 
+    $("#btnAddExperience").on('click', function () {
+
+        if ($("#txtTitle")[0].reportValidity()) {
+            if ($("#txtEmploymentType")[0].reportValidity()) {
+                if ($("#txtHospital")[0].reportValidity()) {
+                    if ($("#txtStartDate")[0].reportValidity()) {
+                        if ($("#txtEndDate")[0].reportValidity()) {
+                            //okay to proceed
+                            let title = $("#txtTitle").val();
+                            let employmentType = $("#txtEmploymentType").val();
+                            let hospital = $("#txtHospital").val();
+                            let location = $("#txtLocation").val();
+                            let startDate = $("#txtStartDate").val();
+                            let endDate = $("#txtEndDate").val();
+                            $("#divExperienceCardBody").append("<dl><dt class=\"font-weight-bold\">" + hospital + "</dt>"
+                                + "<div style=\"border-left: 1px solid #CCC;padding: 0 16px;\"><dd class=\"col-sm-9 text-muted\">" + location + "</dd>"
+                                + "<dd class=\"col-sm-9\">" + startDate + " - " + endDate + "</dd>"
+                                + "<dd class=\"col-sm-9\">" + title + "</dd>"
+                                + "<dd class=\"col-sm-9\">" + employmentType + "</dd></div></dl>");
+
+                            $("#divExperienceModal").modal('hide');
+                            $("#divExperienceCard").show();
+
+                            //clear field values
+                            $("#txtTitle").val("");
+                            $("#txtEmploymentType").val("");
+                            $("#txtHospital").val("");
+                            $("#txtLocation").val("");
+                            $("#txtStartDate").val("");
+                            $("#txtEndDate").val("");
+                        }
+                        
+                    }
+                }
+            }
+        }
+
+    });
 
     $("#dob").on('change', function (event) {
         var dob = event.currentTarget.value.split("/")[2];
