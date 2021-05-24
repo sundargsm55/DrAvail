@@ -740,4 +740,30 @@
             Degree[i] = degree;
         });
     }
+
+    var currentDiv = $("#divBasicInformaiton")[0];
+
+    $("#btnNext").click(function () {
+        debugger;
+        if (currentDiv.id == "divBasicInformaiton") {
+            $("#btnPrevious").toggle();
+        }
+        $(currentDiv).toggle(); //hide current
+        currentDiv = $(currentDiv).next("div")[0]; // set current to point next div
+        $(currentDiv).toggle(); // show next div
+
+        if (currentDiv.id == "addCommonAvailability") {
+            $("#btnSave").toggle();
+        }
+    });
+
+    $("#btnPrevious").on('click', function () {
+        debugger;
+        $(currentDiv).toggle(); //hide current
+        currentDiv = $(currentDiv).prev("div")[0];
+        $(currentDiv).toggle();
+        if (currentDiv.id == "divBasicInformaiton") {
+            $("#btnPrevious").toggle();
+        }
+    });
 });
