@@ -744,26 +744,47 @@
     var currentDiv = $("#divBasicInformaiton")[0];
 
     $("#btnNext").click(function () {
-        debugger;
-        if (currentDiv.id == "divBasicInformaiton") {
-            $("#btnPrevious").toggle();
-        }
-        $(currentDiv).toggle(); //hide current
-        currentDiv = $(currentDiv).next("div")[0]; // set current to point next div
-        $(currentDiv).toggle(); // show next div
+        let isValid = $("#" + currentDiv.id + " :input").valid();
+        if (isValid) {
+            if (currentDiv.id == "divBasicInformaiton") {
+                $("#btnPrevious").toggle();
+            }
+            $("#" + currentDiv.id.replace("div", "li")).addClass("valid");
+            $("#" + currentDiv.id.replace("div", "li")).removeClass("active"); 
 
-        if (currentDiv.id == "addCommonAvailability") {
-            $("#btnSave").toggle();
+            $(currentDiv).slideToggle("fast"); //hide current
+            currentDiv = $(currentDiv).next("div")[0]; // set current to point next div
+            $("#" + currentDiv.id.replace("div", "li")).addClass("active");
+            $(currentDiv).slideToggle("slow"); // show next div
+
+            if (currentDiv.id == "divAddCommonAvailability") {
+                $("#btnSave").toggle();
+                $("#btnNext").toggle();
+            }
         }
+        
     });
 
     $("#btnPrevious").on('click', function () {
-        debugger;
         $(currentDiv).toggle(); //hide current
+        $("#" + currentDiv.id.replace("div", "li")).removeClass("active"); 
+
+        if (currentDiv.id == "divAddCommonAvailability") {
+            $("#btnNext").toggle();
+        }
         currentDiv = $(currentDiv).prev("div")[0];
-        $(currentDiv).toggle();
+        $("#" + currentDiv.id.replace("div", "li")).addClass("active"); 
+
+        $(currentDiv).slideToggle("slow"); // show next div
+
         if (currentDiv.id == "divBasicInformaiton") {
             $("#btnPrevious").toggle();
         }
+         
     });
+
+    //to scroll to bottom of the page after loading
+    //$(window).load(function () {
+    //$("html, body").animate({ scrollTop: $(document).height() - $(window).height() }, 1000);
+    //});
 });

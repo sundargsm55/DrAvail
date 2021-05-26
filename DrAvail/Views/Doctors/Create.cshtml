@@ -34,7 +34,7 @@
     }
 
     .progressbar {
-        width:100%;
+        width: 100%;
         counter-reset: step;
     }
 
@@ -67,7 +67,7 @@
                 content: '';
                 position: absolute;
                 width: 100%;
-                height: 2px;
+                height: 6px;
                 background-color: #ddd;
                 top: 15px;
                 left: -50%;
@@ -79,16 +79,29 @@
             }
 
             .progressbar li.active {
-                color: #27ae60;
+                color: black;
             }
 
                 .progressbar li.active:before {
-                    border-color: #27ae60;
+                    border-color: #ffc107!important;
                 }
 
-                /*.progressbar li.active + li:after {
-                    background-color: red;
-                }*/
+                .progressbar li.active:after {
+                    background-color: #28a745;
+                }
+
+            .progressbar li.valid:after {
+                background-color: #28a745;
+            }
+
+            .progressbar li.valid + li:after {
+                background-color: #28a745;
+            }
+            .progressbar li.valid:before {
+                border: 2px solid #28a745;
+                /*background-color: #28a745;*/
+            }
+            
 </style>
 <h6>Register</h6>
 
@@ -123,13 +136,13 @@
 </div>
 <div class="row stepper" id="divStepper">
     <ul class="progressbar">
-        <li href="#divBasicInformaiton">Personal Inforamtion</li>
-        <li class="active" href="#divAddressContactInforamtion">Location &amp; Contact</li>
-        <li href="#divDegree">Education</li>
-        <li href="#divProfession">Work</li>
-        <li href="#divExperienceCard">Experience</li>
-        <li href="#accordionExample">Hospital</li>
-        <li href="#addCommonAvailability">Timing</li>
+        <li class="active" id="liBasicInformaiton" href="#divBasicInformaiton">Personal Inforamtion</li>
+        <li id="liDegree" href="#divDegree">Education</li>
+        <li id="liProfession" href="#divProfession">Work</li>
+        <li id="liExperience" href="#divExperience">Experience</li>
+        <li id="liAddressContactInforamtion" href="#divAddressContactInforamtion">Location &amp; Contact</li>
+        <li id="liAccordionExample" href="#divAccordionExample">Hospital</li>
+        <li id="liAddCommonAvailability" href="#divAddCommonAvailability">Timing</li>
     </ul>
 </div>
 
@@ -139,7 +152,7 @@
     </div>
     <div class="col-md-6 text-right float-right">
         <a class="btn-md" href="#!" id="btnNext">
-            Next 
+            Next
             <i class="fa fa-chevron-circle-right" aria-hidden="true"> </i>
         </a>
     </div>
@@ -186,6 +199,14 @@
                             </select>
                             <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
+                        <div class="form-group input-group">
+                            @*<label asp-for="Summary" class="control-label"></label>*@
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Add a bio</span>
+                            </div>
+                            <textarea asp-for="Summary" class="form-control"></textarea>
+                        </div>
+                        <span asp-validation-for="Summary" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -219,8 +240,8 @@
                                 <span asp-for="RegNumber" class="input-group-text">Registration Number</span>
                             </div>
                             <input asp-for="RegNumber" class="form-control" id="txtRegistrationNumber" />
-                            <span asp-validation-for="RegNumber" class="text-danger"></span>
                         </div>
+                        <span asp-validation-for="RegNumber" class="text-danger"></span>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-4">
@@ -363,19 +384,19 @@
                 </div>
                 @*end of Experience Section*@
             </div>
-            <div class="form-row card" style="display:none" id="divSummary">
+            <!--<div class="form-row card" style="display:none" id="divSummary">
                 <h6 class="card-title">Bio</h6>
                 <div class="card-body">
-                    <div class="form-group input-group">
+                    <div class="form-group input-group">-->
                         @*<label asp-for="Summary" class="control-label"></label>*@
-                        <div class="input-group-prepend">
+                        <!--<div class="input-group-prepend">
                             <span class="input-group-text">Add a bio</span>
                         </div>
                         <textarea asp-for="Summary" class="form-control"></textarea>
                     </div>
                     <span asp-validation-for="Summary" class="text-danger"></span>
                 </div>
-            </div>
+            </div>-->
             <div class="card mb-3" id="divAddressContactInforamtion" style="display:none">
                 <h6 class="card-title text-left"> Location &amp; Contact Information</h6>
                 <div class="card-body">
@@ -414,8 +435,8 @@
                     </div>
                 </div>
             </div>
-            <div id="accordionExample" class="accordion card mb-3" style="display:none">
-                <div class="collapse show" id="hospitalName" data-parent="#accordionExample" aria-labelledby="hospital">
+            <div id="divAccordionExample" class="accordion card mb-3" style="display:none">
+                <div class="collapse show" id="hospitalName" data-parent="#divAccordionExample" aria-labelledby="hospital">
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label asp-for="HospitalID" class="control-label">Hospital Name</label> &nbsp;&nbsp;
@@ -427,7 +448,7 @@
                     </div>
                 </div>
                 @* To add hospital details if not present already *@
-                <div id="addHospital" class="collapse" data-parent="#accordionExample" aria-labelledby="addHospital">
+                <div id="addHospital" class="collapse" data-parent="#divAccordionExample" aria-labelledby="addHospital">
                     <h5>Hospital</h5>
                     <a href="#hospitalName" data-toggle="collapse">Select from Available</a>
                     @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
@@ -486,7 +507,7 @@
                 </div>
             </div>
 
-            <div id="addCommonAvailability" class="card mb-3" style="display:none">
+            <div id="divAddCommonAvailability" class="card mb-3" style="display:none">
                 <h6 class="card-title text-left">Mon - Fri Timings</h6>
                 <div class="common-availability-common card-body">
                     <div class="form-row">
@@ -829,11 +850,11 @@
 
                 </div>
             </div>
-            
-            
+
+
             <br />
             <div class="form-group">
-                <input type="button" id="btnSave" value="Register/Save" class="btn btn-primary" style="display:none"/>
+                <input type="button" id="btnSave" value="Register/Save" class="btn btn-primary" style="display:none" />
             </div>
         </form>
     </div>
