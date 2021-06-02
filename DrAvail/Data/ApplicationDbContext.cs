@@ -36,5 +36,8 @@ namespace DrAvail.Data
 
         public DbSet<Comment> Comments { get; set; }
 
+        public DbSet<Experience> Experiences { get; set; }
+
+
     }
 }

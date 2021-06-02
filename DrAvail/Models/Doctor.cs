@@ -83,7 +83,7 @@ namespace DrAvail.Models
         [Required]
         [Phone]
         [RegularExpression("^[9][0-9]{9}$", ErrorMessage = "Enter a valid Phone number")]
-        [Display(Name = "Phone Number")]
+        [Display(Name = "Contact Number")]
         public string PhoneNumber { get; set; }
 
         public int HospitalID { get; set; }
@@ -103,6 +103,8 @@ namespace DrAvail.Models
         public DateTime DateCreated { get; set; }
 
         public DateTime? LastModified { get; set; }
+
+        public ICollection<Experience> Experiences { get; set; }
     }
 
 

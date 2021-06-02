@@ -51,16 +51,23 @@
                         if ($("#txtEndDate")[0].reportValidity()) {
                             //okay to proceed
                             let title = $("#txtTitle").val();
-                            let employmentType = $("#txtEmploymentType").val();
+                            let employementType = $("#txtEmploymentType").val();
                             let hospital = $("#txtHospital").val();
                             let location = $("#txtLocation").val();
                             let startDate = $("#txtStartDate").val();
                             let endDate = $("#txtEndDate").val();
+
                             $("#divExperienceCardBody").append("<dl><dt class=\"font-weight-bold\">" + hospital + "</dt>"
                                 + "<div style=\"border-left: 1px solid #CCC;padding: 0 16px;\"><dd class=\"col-sm-9 text-muted\">" + location + "</dd>"
                                 + "<dd class=\"col-sm-9\">" + startDate + " - " + endDate + "</dd>"
                                 + "<dd class=\"col-sm-9\">" + title + "</dd>"
-                                + "<dd class=\"col-sm-9\">" + employmentType + "</dd></div></dl>");
+                                + "<dd class=\"col-sm-9\">" + employementType + "</dd></div></dl>");
+
+                            let url = window.location.origin + "/Experiences/AddExperience";
+                            let result = $.post(url,
+                                { Title: title, EmployementType: employementType, HospitalClinicName: hospital, Location: location, StartDate: startDate, EndDate: endDate, DoctorID: $("#txtID").val() },
+                                function (response) { alert(response); console.log(response); }, "json");
+                            console.log(result);
 
                             $("#divExperienceModal").modal('hide');
                             $("#divExperienceCard").show();
@@ -91,12 +98,9 @@
             var url = window.location.origin + "/Doctors/DoctorExistsByRegistrationNumber";
             $.getJSON(url, { registrationNumber: registrationNumber, id: $('#txtID').val() }, function (data) {
                 if (data == true) {
-                    //console.log("Doctor already exists for Registration Number: " + registrationNumber);
                     alert("Doctor already exists for Registration Number: " + registrationNumber + ". \nPlease enter valid Registration Number");
                     return true;
                 }
-                //console.log("Reg Num func: ");
-                //console.log(data);
             });
         }
         return false;
@@ -223,7 +227,6 @@
         let startminute = $(prefix + "StartMinute").find(":selected").val();
         let startMinuteIndex = Times.indexOf(startminute);
         let startHourIndex = Hours.indexOf(startHour);
-        debugger;
         let endHour = $(prefix + "EndHour").find(":selected").val(); // to get end hour value
         let endHourIndex = Hours.indexOf(endHour);
 
@@ -361,7 +364,7 @@
     });
 
     //commonMorningEndHour
-    $("#commonMorningEndHour").on("change", function (event) {
+    $("#commonMorningEndHour").on("change focus", function (event) {
         EndHour(event);
     });
 
@@ -379,7 +382,7 @@
     });
 
     //commonEveningEndHour
-    $("#commonEveningEndHour").on("change", function (event) {
+    $("#commonEveningEndHour").on("change focus", function (event) {
         EndHour(event);
     });
 
@@ -399,7 +402,7 @@
     });
 
     //weekendMorningEndHour
-    $("#weekendMorningEndHour").on("change", function (event) {
+    $("#weekendMorningEndHour").on("change focus", function (event) {
         EndHour(event);
     });
 
@@ -418,7 +421,7 @@
     });
 
     //weekendEveningEndHour
-    $("#weekendEveningEndHour").on("change", function (event) {
+    $("#weekendEveningEndHour").on("change focus", function (event) {
         EndHour(event);
     });
 
@@ -726,9 +729,7 @@
     });
 
     function SetSelectFromDegreeOnReload() {
-        console.log("inside SetSelectFromDegreeOnReload");
         var degreeArray = $("#txtDegree").val().split(", ");
-        console.log("degreeArray: " + degreeArray);
         $.each(degreeArray, function (i, degree) {
             if (i == 0) {
                 $("#txtDegreeDefault").val(degree);
@@ -741,6 +742,10 @@
         });
     }
 
+    function IsDegreeEmpty() {
+        return $("#txtDegree").val() == "";
+    }
+
     var currentDiv = $("#divBasicInformaiton")[0];
 
     $("#btnNext").click(function () {
@@ -749,6 +754,26 @@
             if (currentDiv.id == "divBasicInformaiton") {
                 $("#btnPrevious").toggle();
             }
+
+            if(currentDiv.id == "divDegree"){
+                if (IsDegreeEmpty()) {
+                    $("#txtDegreeError").text("The Degree field is required");
+                    return false;
+                } else {
+                    $("#txtDegreeError").text("");
+                }
+            }
+
+            if (currentDiv.id == "divAccordionExample") {
+                if ($("#HospitalId").val() == "0") {
+                    $("#HospitalIdError").text("Please select/add a Hospital");
+                    return false;
+                }
+                else {
+                    $("#HospitalIdError").text("");
+                }
+            }
+
             $("#" + currentDiv.id.replace("div", "li")).addClass("valid");
             $("#" + currentDiv.id.replace("div", "li")).removeClass("active"); 
 

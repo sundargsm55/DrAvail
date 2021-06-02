@@ -189,8 +189,10 @@ namespace DrAvail.Controllers
             return RedirectToAction(nameof(Index));
 
         }
+
         // GET: Doctors/Create
         [HttpGet]
+        [Authorize(Roles = "Administrators")]
         public async Task<IActionResult> Create()
         {
             //if user is not logged in
@@ -251,13 +253,14 @@ namespace DrAvail.Controllers
             #endregion
 
             SelectListAll();
-            return View();
+            return View(Doctor);
         }
 
         // POST: Doctors/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("Create")]
+        [Authorize(Roles = "Administrators")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateOnPost()
         {
@@ -324,44 +327,66 @@ namespace DrAvail.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
 
-            if (id == null)
+            var ownerID = UserManager.GetUserId(User);
+            
+            if( id is not null)
             {
-                return NotFound();
-            }
-
-            var doctor = await Context.Doctors
+                Doctor = await Context.Doctors
                 .Include(d => d.CommonAvailability)
                 .Include(d => d.CurrentAvailability)
                 .Include(d => d.CurrentAvailability.Hospital)
                 .Include(d => d.Hospital)
                 .FirstOrDefaultAsync(d => d.ID == id);
+            }
+            else if (ownerID is not null)
+            {
+                Doctor = await Context.Doctors
+                .Include(d => d.CommonAvailability)
+                .Include(d => d.CurrentAvailability)
+                .Include(d => d.CurrentAvailability.Hospital)
+                .Include(d => d.Hospital)
+                .FirstOrDefaultAsync(d => d.OwnerID == ownerID);
+            }
+            else
+            {
+                return NotFound();
+            }
 
-            if (doctor == null)
+            
+
+            if (Doctor == null)
             {
                 return NotFound();
             }
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(
-                                                  User, doctor,
+                                                  User, Doctor,
                                                   Operations.Update);
             if (!isAuthorized.Succeeded)
             {
                 return Forbid();
             }
-
-            Doctor = doctor;
-
-            
-            SetHourMinuteFromTime(doctor.CommonAvailability.CommonDays);
-
-            if (doctor.CommonAvailability.IsAvailableOnWeekend)
+            if(Doctor.LastModified is null)
             {
-                SetHourMinuteFromTime(doctor.CommonAvailability.Weekends);
+                Doctor = new Doctor
+                {
+                    ID = Doctor.ID,
+                    OwnerID = Doctor.OwnerID
+                };
             }
-
-            if(doctor.CurrentAvailability.CurrentStartDateTime is not null)
+            else
             {
-                doctor.CurrentAvailability.IsCurrentAvailabilityAdded = true;
+                SetHourMinuteFromTime(Doctor.CommonAvailability.CommonDays);
+
+                if (Doctor.CommonAvailability.IsAvailableOnWeekend)
+                {
+                    SetHourMinuteFromTime(Doctor.CommonAvailability.Weekends);
+                }
+
+                if (Doctor.CurrentAvailability.CurrentStartDateTime is not null)
+                {
+                    Doctor.CurrentAvailability.IsCurrentAvailabilityAdded = true;
+                }
             }
 
             SelectListHospital();
@@ -370,7 +395,7 @@ namespace DrAvail.Controllers
             SelectListHospitalCity();
             SelectListDegree();
 
-            return View(doctor);
+            return View(Doctor);
         }
 
         // POST: Doctors/Edit/5

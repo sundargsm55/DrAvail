@@ -273,5 +273,34 @@ namespace DrAvail.Services
             return false;
         }
 
+        public async Task AddNewDoctor(string OwnerId, string email)
+        {
+            Doctor doctor = new()
+            {
+                OwnerID = OwnerId,
+                Name = "Please enter your Full Name",
+                RegNumber = "Please enter your Medical Registration Number",
+                Speciality = Speciality.GeneralPhysician,
+                Degree = " ",
+                Age = 26,
+                DateOfBirth = DateTime.Now.AddYears(-26),
+                Gender = Gender.Male,
+                Practice = Practice.Government,
+                Experience = 0,
+                IsVerified = false,
+                City = "Please select City",
+                District = District.Virudhunagar,
+                Pincode = 123456,
+                EmailId = email,
+                PhoneNumber = "9000000000",
+                DateCreated = DateTime.Now,
+                HospitalID = _context.Hospitals.LastOrDefault().ID,
+                CommonAvaliabilityID = new()
+            };
+
+            _context.Doctors.Add(doctor);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
