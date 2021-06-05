@@ -35,7 +35,6 @@ namespace DrAvail.Controllers
             }
 
             var experience = await _context.Experiences
-                .Include(e => e.Doctor)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (experience == null)
             {
@@ -182,6 +181,13 @@ namespace DrAvail.Controllers
                 return Json(false);
             }
 
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetExperiences(int doctorID)
+        {
+            var experiences = await _context.Experiences.Where(e => e.DoctorID == doctorID).ToListAsync(); ;
+            return Json(experiences);
         }
     }
 }

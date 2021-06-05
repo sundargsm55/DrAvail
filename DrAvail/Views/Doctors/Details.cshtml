@@ -44,13 +44,13 @@
                             if ("Male".Equals(Model.Gender.ToString()))
                             {
                                 @*<div class="col-md-3">*@
-                                <img class="img-fluid card-img" style="border-bottom-left-radius:20px;border-top-left-radius:20px;object-fit:cover" src="/Images/user.png" alt="...">
+                                <img class="img-fluid card-img" style="border-bottom-left-radius:20px;border-top-left-radius:20px;object-fit:cover" src="/Images/user.png" asp-append-version="true" alt="...">
                                 @*</div>*@
                             }
                             else
                             {
                                 @*<div class="col-md-3">*@
-                                <img class="img-fluid card-img" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/user-female.png" alt="...">
+                                <img class="img-fluid card-img" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px" src="/Images/user-female.png" asp-append-version="true" alt="...">
                                 @*</div>*@
                             }
                         }
@@ -62,6 +62,7 @@
                         <h5 class="card-title">
                             @Html.DisplayFor(modelItem => Model.Name)
                         </h5>
+                        <input type="hidden" asp-for="ID" id="txtDoctorID" />
                         <p class="card-text">@Html.DisplayFor(modelItem => Model.Degree)</p>
                         <p class="card-text">@Html.DisplayFor(modelItem => Model.Speciality)</p>
                         @*<p class="card-text">@Html.DisplayFor(modelItem => Model.Age) years old</p>*@
@@ -114,7 +115,7 @@
                 else
                 {
                     @if (CompareDateTime(Model.CurrentAvailability.CurrentStartDateTime.Value, DateTime.Now) == DateTimeRelation.IsEarlier
-            && CompareDateTime(Model.CurrentAvailability.CurrentEndDateTime.Value, DateTime.Now) == DateTimeRelation.IsLater)
+           && CompareDateTime(Model.CurrentAvailability.CurrentEndDateTime.Value, DateTime.Now) == DateTimeRelation.IsLater)
                     {
                         @if (!"Available".Equals(Model.CurrentAvailability.Status))
                         {
@@ -222,6 +223,14 @@
             </div>
         </div>
     </div>
+    <div id="showExperience" class="col-md-4" style="display:none">
+        <div class="card bg-light">
+            <div class="card-header"><h6 class="card-title">Experience(s)</h6></div>
+            <div class="card-body" id="divExperienceCard">
+                
+            </div>
+        </div>
+    </div>
 </div>
 <br />
 @if (!Model.IsVerified)
@@ -299,3 +308,25 @@ User, Model, Operations.Reject)).Succeeded)
     <a asp-action="Index">Back to List</a>
 </div>
 
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $.getJSON(window.location.origin + "/Experiences/GetExperiences",
+                { doctorID: $("#txtDoctorID").val() },
+                function (response) {
+                    if (response.length == 0) return false;
+                    $("#showExperience").toggle('show');
+                    $.each(response, function (i, v) {
+                        $("#divExperienceCard").append("<dl><dt class=\"font-weight-bold\">" + v.hospitalClinicName + "</dt>"
+                            + "<div style=\"border-left: 1px solid #CCC;padding: 0 16px;\"><dd class=\"col-sm-9 text-muted\">" + v.location + "</dd>"
+                            + "<dd class=\"col-sm-9\">" + new Date(v.startDate).toLocaleString('default', { month: 'short', year: "numeric" })
+                            + " - "
+                            + new Date(v.endDate).toLocaleString('default', { month: 'short', year: "numeric" })+ "</dd>" 
+                            + "<dd class=\"col-sm-9\">" + v.title + "</dd>"
+                            + "<dd class=\"col-sm-9\">" + v.employementType + "</dd></div></dl>");
+                    });
+                });
+        });
+    </script>
+}

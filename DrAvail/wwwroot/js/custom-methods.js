@@ -11,6 +11,7 @@
     $("#availabilityType").val("Common");
     SetSelectFromDegreeOnReload();
     OnReload();
+    GetExperience();
 
     var today = new Date();
     var year = today.getFullYear();
@@ -43,7 +44,6 @@
     });
 
     $("#btnAddExperience").on('click', function () {
-
         if ($("#txtTitle")[0].reportValidity()) {
             if ($("#txtEmploymentType")[0].reportValidity()) {
                 if ($("#txtHospital")[0].reportValidity()) {
@@ -659,6 +659,8 @@
 
     $('#btnRemoveCurrentAvailability').on('click', function () {
         $('#chkAddCurrentAvailability').each(function () { this.checked = !this.checked; });
+        $("#addCurrentAvailability").toggle();
+        $('#showCurrentAvailability').toggle("show");
     });
 
     function SetDegree() {
@@ -764,7 +766,7 @@
                 }
             }
 
-            if (currentDiv.id == "divAccordionExample") {
+            if (currentDiv.id == "divHospitalAccordion") {
                 if ($("#HospitalId").val() == "0") {
                     $("#HospitalIdError").text("Please select/add a Hospital");
                     return false;
@@ -812,4 +814,21 @@
     //$(window).load(function () {
     //$("html, body").animate({ scrollTop: $(document).height() - $(window).height() }, 1000);
     //});
+    function GetExperience() {
+        $.getJSON(window.location.origin + "/Experiences/GetExperiences",
+            { doctorID: $("#txtID").val() },
+            function (response) {
+                if (response.length == 0) return false;
+                $("#divExperienceCard").show();
+                $.each(response, function (i, v) {
+                    $("#divExperienceCardBody").append("<dl><dt class=\"font-weight-bold\">" + v.hospitalClinicName + "</dt>"
+                        + "<div style=\"border-left: 1px solid #CCC;padding: 0 16px;\"><dd class=\"col-sm-9 text-muted\">" + v.location + "</dd>"
+                        + "<dd class=\"col-sm-9\">" + new Date(v.startDate).toLocaleString('default', { month: 'short', year: "numeric" })
+                        + " - "
+                        + new Date(v.endDate).toLocaleString('default', { month: 'short', year: "numeric" }) + "</dd>"
+                        + "<dd class=\"col-sm-9\">" + v.title + "</dd>"
+                        + "<dd class=\"col-sm-9\">" + v.employementType + "</dd></div></dl>");
+                });
+            });
+    }
 });

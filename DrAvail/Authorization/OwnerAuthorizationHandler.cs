@@ -48,7 +48,7 @@ namespace DrAvail.Authorization
                 return Task.CompletedTask;
             }
 
-            Console.WriteLine("Type of Resource: " + resource.GetType().ToString()); 
+            //Console.WriteLine("Type of Resource: " + resource.GetType().ToString()); 
             dynamic doc = Convert.ChangeType(resource, resource.GetType());
             
             if (doc.OwnerID == _userManager.GetUserId(context.User))

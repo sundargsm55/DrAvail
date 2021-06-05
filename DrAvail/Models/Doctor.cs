@@ -37,6 +37,7 @@ namespace DrAvail.Models
         public Speciality Speciality { get; set; }
 
         [Required]
+        [Display(Name = "Degree(s)")]
         public string Degree { get; set; }
 
         [Required]
@@ -49,9 +50,11 @@ namespace DrAvail.Models
         public DateTime DateOfBirth { get; set; }
 
         [Required]
+        [Display(Name = "Gender")]
         public Gender Gender { get; set; }
 
         [Required]
+        [Display(Name = "Practice")]
         public Practice Practice { get; set; }
 
         [Required]
@@ -61,6 +64,7 @@ namespace DrAvail.Models
         [Required]
         public bool IsVerified { get; set; }
 
+        [Display(Name = "Bio")]
         public string Summary { get; set; }
 
         [Required]
@@ -68,10 +72,12 @@ namespace DrAvail.Models
         public string City { get; set; }
 
         [Required]
+        [Display(Name = "District")]
         public District District { get; set; }
 
         [Required]
         [DataType(DataType.PostalCode)]
+        [Display(Name = "Pincode")]
         public int Pincode { get; set; }
 
         [Required]
@@ -100,8 +106,10 @@ namespace DrAvail.Models
 
         public Availability CurrentAvailability { get; set; }
 
+        [Display(Name = "Account Registered Date")]
         public DateTime DateCreated { get; set; }
 
+        [Display(Name = "Last Modified Date")]
         public DateTime? LastModified { get; set; }
 
         public ICollection<Experience> Experiences { get; set; }

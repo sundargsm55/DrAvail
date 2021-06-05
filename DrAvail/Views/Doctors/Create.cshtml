@@ -141,7 +141,7 @@
         <li id="liProfession" href="#divProfession">Work</li>
         <li id="liExperience" href="#divExperience">Experience</li>
         <li id="liAddressContactInforamtion" href="#divAddressContactInforamtion">Location &amp; Contact</li>
-        <li id="liAccordionExample" href="#divAccordionExample">Hospital</li>
+        <li id="liHospitalAccordion" href="#divHospitalAccordion">Hospital</li>
         <li id="liAddCommonAvailability" href="#divAddCommonAvailability">Timing</li>
     </ul>
 </div>
@@ -439,8 +439,8 @@
                     </div>
                 </div>
             </div>
-            <div id="divAccordionExample" class="accordion card mb-3" style="display:none">
-                <div class="collapse show" id="hospitalName" data-parent="#divAccordionExample" aria-labelledby="hospital">
+            <div id="divHospitalAccordion" class="accordion card mb-3" style="display:none">
+                <div class="collapse show" id="hospitalName" data-parent="#divHospitalAccordion" aria-labelledby="hospital">
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label asp-for="HospitalID" class="control-label">Hospital Name</label> &nbsp;&nbsp;
@@ -453,7 +453,7 @@
                     </div>
                 </div>
                 @* To add hospital details if not present already *@
-                <div id="addHospital" class="collapse" data-parent="#divAccordionExample" aria-labelledby="addHospital">
+                <div id="addHospital" class="collapse" data-parent="#divHospitalAccordion" aria-labelledby="addHospital">
                     <h5>Hospital</h5>
                     <a href="#hospitalName" data-toggle="collapse">Select from Available</a>
                     @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@

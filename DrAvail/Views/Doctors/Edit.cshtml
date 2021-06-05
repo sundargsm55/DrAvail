@@ -41,6 +41,19 @@
     #myBtn:hover {
             background-color: lightblue;
     }
+
+    .nav-item{
+        margin: 3px;
+    }
+
+    a, a:hover, a:focus, a:active {
+        text-decoration: none;
+        color: #0366d6;
+    }
+
+    .tab-pane:not(.active) {
+        display: none;
+    }
 </style>
 <h4>Edit</h4>
 
@@ -69,22 +82,49 @@
         </div>
     </div>
 }
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6 text-left">
+        <a asp-action="Index">Back to List</a>
+    </div>
+    <div class="form-group col-md-6 text-right">
+        <input type="button" id="btnSave" form="myForm" value="Save Changes" class="btn btn-danger" />
+    </div>
+</div>
+<hr style="margin-top:0px" />
+<div class="row">
+    <div class="col-md-3">
+        <ul class="nav nav-pills flex-column" role="tablist" aria-orientation="vertical">
+            <li class="nav-item">
+                <a class="nav-link active" id="liBasicInformaiton" href="#divBasicInformaiton" data-toggle="pill" role="tab" aria-controls="v-pills-basic" aria-selected="true">Basic Information</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="liDegree" href="#divDegree" data-toggle="pill" role="tab" aria-controls="v-pills-degree" aria-selected="false">Degree</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="liProfession" href="#divProfession" data-toggle="pill" role="tab" aria-controls="v-pills-work" aria-selected="false">Profession</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="liExperience" href="#divExperience" data-toggle="pill" role="tab" aria-controls="v-pills-exp" aria-selected="false">Experience</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="liAddressContactInforamtion" href="#divAddressContactInforamtion" data-toggle="pill" role="tab" aria-controls="v-pills-comtact" aria-selected="false">Location &amp; Contact</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="liHospitalAccordion" href="#divHospitalAccordion" data-toggle="pill" role="tab" aria-controls="v-pills-hospital" aria-selected="false">Hospital</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="liTimings" href="#divTimings" data-toggle="pill" role="tab" aria-controls="v-pills-timing" aria-selected="false">Timings</a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-9 tab-content">
         <form asp-action="Edit" method="post" id="myForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="card mb-3" id="divBasicInformaiton">
+            <div class="card mb-3 tab-pane fade show active"  id="divBasicInformaiton">
                 <h6 class="card-title text-left">Basic Information</h6>
                 <div class="card-body">
                     <div class="form-row">
-                        <input type="hidden" asp-for="ID"  id="txtID" />
-                        <input type="hidden" asp-for="OwnerID" />
-                        <input type="hidden" asp-for="DateCreated" />
+                        <input type="hidden" asp-for="ID" id="txtID" />
                         <div class="form-group col-md-6 input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1">Full Name</span>
@@ -105,7 +145,7 @@
                                 Date of Birth
                                 <i class="fa fa-info-circle" style="color:skyblue;" aria-hidden="true" data-toggle="tooltip" title="Date of Birth is only for calculating your Age and won't be visible to public or other users."></i>
                             </label>
-                            <input type="text" asp-for="DateOfBirth" class="form-control" id="dob" placeholder="MM/DD/YYYY" />
+                            <input type="text" asp-for="DateOfBirth" class="form-control" id="dob" placeholder="MM/DD/YYYY" readonly />
                             <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-4">
@@ -117,16 +157,18 @@
                             </select>
                             <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
-                        <div class="form-group col-md-4 form-inline" hidden>
-                            <label asp-for="Gender" class="control-label"></label>&nbsp;&nbsp;
-                            <input type="radio" asp-for="Gender" value="Male" />Male<br />&nbsp;&nbsp;
-                            <input type="radio" asp-for="Gender" value="Female" />Female<br />
-                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        <div class="form-group input-group">
+                            @*<label asp-for="Summary" class="control-label"></label>*@
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Add a bio</span>
+                            </div>
+                            <textarea asp-for="Summary" class="form-control"></textarea>
                         </div>
+                        <span asp-validation-for="Summary" class="text-danger"></span>
                     </div>
                 </div>
             </div>
-            <div class="card bg-warning divDegree" id="divDegree">
+            <div class="card bg-light divDegree tab-pane fade" id="divDegree" >
                 <h6 class="card-title">
                     Degree
                     <a href="#btnAddDegree" class="btn-sm float-right" id="btnAddDegree"><i class="fa fa-plus" aria-hidden="true"></i> Degree</a>
@@ -141,15 +183,19 @@
                     </div>
                     <div class="form-row" id="divDegree1" style="display:none">
                         <div class="form-group col-md-4">
-                            <select name="txtDegree1" class="form-control custom-select education" asp-items="ViewBag.Degree" id="txtDegree1">
-                                <option value="">--Select--</option>
-                            </select>
+                            <select name="txtDegree1" class="form-control custom-select education" asp-items="ViewBag.Degree" id="txtDegree1"></select>
                             <a href="#btnRemoveDegree1" class="btn-sm removebutton" id="btnRemoveDegree1"><i class="fa fa-minus" aria-hidden="true"></i> Remove</a>
                         </div>
                     </div>
                 </div>
+                <div class="form-group col-md-4" hidden>
+                    <label asp-for="Degree" class="control-label"></label>
+                    <input asp-for="Degree" class="form-control" id="txtDegree" required />
+                    <span asp-validation-for="Degree" class="text-danger"></span>
+                </div>
+                <span id="txtDegreeError" class="text-danger"></span>
             </div>
-            <div class="card" id="divProfession">
+            <div class="card tab-pane fade" id="divProfession">
                 <h6 class="card-title text-left"> Education &amp; Profession</h6>
                 <div class="card-body">
                     <div class="form-row">
@@ -163,26 +209,22 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-4">
-                            <label asp-for="Degree" class="control-label"></label>
-                            <input asp-for="Degree" class="form-control" id="txtDegree"/>
-                            <span asp-validation-for="Degree" class="text-danger"></span>
+                            <label asp-for="RegistredMedicalCouncil" class="control-label"></label>
+                            <select id="txtRegistredMedicalCouncil" asp-for="RegistredMedicalCouncil" class="form-control custom-select" asp-items="@Html.GetEnumSelectList<MedicalCouncil>()">
+                                <option style="text-align:center" value="">--Select--</option>
+                            </select>
+                            <span asp-validation-for="Speciality" class="text-danger"></span>
                         </div>
+
+                    </div>
+                    <div class="form-row">
                         <div class="form-group col-md-4">
                             <label asp-for="Speciality" class="control-label"></label>
                             <select id="Speciality" asp-for="Speciality" class="form-control custom-select" asp-items="@Html.GetEnumSelectList<Speciality>()">
                                 <option style="text-align:center" value="">--Select--</option>
                             </select>
+                            <span asp-validation-for="Speciality" class="text-danger"></span>
                         </div>
-                        <span asp-validation-for="Speciality" class="text-danger"></span>
-                    </div>
-                    @*<div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label asp-for="Degree" class="control-label"></label>
-                            <input asp-for="Degree" class="form-control" id="txtDegree"/>
-                            <span asp-validation-for="Degree" class="text-danger"></span>
-                        </div>
-                    </div>*@
-                    <div class="form-row">
                         <div class="form-group col-md-3">
                             <label asp-for="Practice" class="control-label"></label>
                             <select asp-for="Practice" class="form-control" size="1">
@@ -205,17 +247,106 @@
                     </div>
                 </div>
             </div>
-            <div class="form-row card">
-                <div class="form-group input-group">
-                    @*<label asp-for="Summary" class="control-label"></label>*@
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Add a bio</span>
+            <div id="divExperience" class="tab-pane fade">
+                @*start of Experience Section*@
+                <br />
+                <!-- Button trigger modal -->
+                <a href="#!" class="btn-sm" data-toggle="modal" data-target="#divExperienceModal">
+                    <i class="fa fa-plus" aria-hidden="true"></i> Add Experience
+                </a>
+
+
+                <div class="card" id="divExperienceCard" style="display:none">
+                    <h6 class="card-title">Experience</h6>
+                    <div class="card-body" id="divExperienceCardBody">
                     </div>
-                    <textarea asp-for="Summary" class="form-control"></textarea>
                 </div>
-                <span asp-validation-for="Summary" class="text-danger"></span>
+                <!-- Modal -->
+                <div class="modal fade" id="divExperienceModal" tabindex="-1" role="dialog" aria-labelledby="ExperienceModalTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="form">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Add Experience</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-row">
+                                    <label for="Title" class="control-label" id="lblTitle">Title *</label>
+                                    <input name="Title" class="form-control" id="txtTitle" required data-val="true" />
+                                </div>
+                                <div class="form-row">
+                                    <label for="EmploymentType" class="control-label" id="lblEmploymentType">Employment type</label>
+                                    <select name="EmploymentType" class="form-control" id="txtEmploymentType" required>
+                                        <option value="">--Select--</option>
+                                        <option>Full-Time</option>
+                                        <option>Part-Time</option>
+                                        <option>Trainee</option>
+                                        <option>Internship</option>
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <label for="Hospital" class="control-label" id="lblHospital">Hospital/Clinic Name *</label>
+                                    <input name="Hospital" class="form-control" id="txtHospital" required />
+                                </div>
+                                <div class="form-row">
+                                    <label for="Location" class="control-label" id="lblLocation">Location</label>
+                                    <input name="Location" class="form-control" id="txtLocation" />
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-inline form-group">
+                                        <label class="control-label" id="lblStartDate">Start Date *</label>
+                                        <select name="StartMonth" class="form-control" id="sltStartMonth" hidden>
+                                            <option value="">-Select--</option>
+                                            <option>January</option>
+                                            <option>February</option>
+                                            <option>March</option>
+                                            <option>April</option>
+                                            <option>May</option>
+                                            <option>June</option>
+                                            <option>July</option>
+                                            <option>August</option>
+                                            <option>September</option>
+                                            <option>October</option>
+                                            <option>November</option>
+                                            <option>December</option>
+                                        </select>
+
+                                        <input name="StartDate" class="form-control experience-date" id="txtStartDate" required />
+                                    </div>
+                                    <div class="form-group form-inline">
+                                        <label class="control-label" id="lblEndDate">End Date *</label>
+                                        <select name="EndMonth" class="form-control" id="sltEndMonth" hidden>
+                                            <option value="">-Select--</option>
+                                            <option>January</option>
+                                            <option>February</option>
+                                            <option>March</option>
+                                            <option>April</option>
+                                            <option>May</option>
+                                            <option>June</option>
+                                            <option>July</option>
+                                            <option>August</option>
+                                            <option>September</option>
+                                            <option>October</option>
+                                            <option>November</option>
+                                            <option>December</option>
+                                        </select>
+
+                                        <input name="EndDate" class="form-control experience-date" id="txtEndDate" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary rounded" id="btnAddExperience">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*end of Experience Section*@
             </div>
-            <div class="card mb-3" id="divAddressContactInforamtion">
+            <div class="card mb-3 tab-pane fade" id="divAddressContactInforamtion">
                 <h6 class="card-title text-left"> Location &amp; Contact Information</h6>
                 <div class="card-body">
                     <div class="form-row">
@@ -253,20 +384,21 @@
                     </div>
                 </div>
             </div>
-            <div id="accordionExample" class="accordion card mb-3">
-                <div class="collapse show" id="hospitalName" data-parent="#accordionExample" aria-labelledby="hospital">
+            <div id="divHospitalAccordion" class="accordion card mb-3 tab-pane fade">
+                <div class="collapse show" id="hospitalName" data-parent="#divHospitalAccordion" aria-labelledby="hospital">
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label asp-for="HospitalID" class="control-label">Hospital Name</label> &nbsp;&nbsp;
                             <a href="#addHospital" data-toggle="collapse">Add Hospital</a>
-                            <select size="1" asp-for="HospitalID" class="form-control" id="selHospitalId" asp-items="ViewBag.HospitalID">
-                                <option value="">--Select--</option>
+                            <select size="1" asp-for="HospitalID" class="form-control" id="HospitalId" asp-items="ViewBag.HospitalID">
+                                <option value="0">--Select--</option>
                             </select>
+                            <span id="HospitalIdError" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
                 @* To add hospital details if not present already *@
-                <div id="addHospital" class="collapse" data-parent="#accordionExample" aria-labelledby="addHospital">
+                <div id="addHospital" class="collapse" data-parent="#divHospitalAccordion" aria-labelledby="addHospital">
                     <h5>Hospital</h5>
                     <a href="#hospitalName" data-toggle="collapse">Select from Available</a>
                     @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
@@ -324,405 +456,376 @@
                     @* Add hospital section ends here *@
                 </div>
             </div>
-
-            <div id="addCommonAvailability" class="card mb-3">
-                <h6 class="card-title text-left">Mon - Fri Timings</h6>
-                <input type="hidden" asp-for="CommonAvaliabilityID" />
-                <div class="common-availability-common card-body">
-                    <div class="form-row">
-                        <div class="form-group col-md-3" hidden>
-                            <label asp-for="CommonAvailability.CommonDays.MorningStartTime" class="control-label">Morning Start Time</label>
-                            <input asp-for="CommonAvailability.CommonDays.MorningStartTime" class="form-control" id="commonMorningStartTime" />
-                            <span asp-validation-for="CommonAvailability.CommonDays.MorningStartTime" class="text-danger"></span>
+            <div class="tab-pane fade" id="divTimings">
+                <div id="divAddCommonAvailability" class="card mb-3">
+                    <h6 class="card-title text-left">Mon - Fri Timings</h6>
+                    <div class="common-availability-common card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-3" hidden>
+                                <label asp-for="CommonAvailability.CommonDays.MorningStartTime" class="control-label">Morning Start Time</label>
+                                <input asp-for="CommonAvailability.CommonDays.MorningStartTime" class="form-control" id="commonMorningStartTime" />
+                                <span asp-validation-for="CommonAvailability.CommonDays.MorningStartTime" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3" hidden>
+                                <label asp-for="CommonAvailability.AvailabilityType" class="control-label">Availability Type</label>
+                                <input asp-for="CommonAvailability.AvailabilityType" id="availabilityType" class="form-control" disabled />
+                                <span asp-validation-for="CommonAvailability.AvailabilityType" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.CommonDays.MorningStartHour" class="control-label">Morning Start Hour</label>
+                                <select asp-for="CommonAvailability.CommonDays.MorningStartHour" class="form-control" size="1" id="commonMorningStartHour">
+                                    <option value="00">00</option>
+                                    <option>01</option>
+                                    <option>02</option>
+                                    <option>03</option>
+                                    <option>04</option>
+                                    <option>05</option>
+                                    <option>06</option>
+                                    <option>07</option>
+                                    <option selected="selected">08</option>
+                                    <option>09</option>
+                                    <option>10</option>
+                                    <option>11</option>
+                                    <option>12</option>
+                                    <option value="13">13</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.CommonDays.MorningStartHour" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.CommonDays.MorningStartMinute" class="control-label">Morning Start Minute</label>
+                                <select asp-for="CommonAvailability.CommonDays.MorningStartMinute" class="form-control" size="1" id="commonMorningStartMinute">
+                                    <option>00</option>
+                                    <option>15</option>
+                                    <option>30</option>
+                                    <option>45</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.CommonDays.MorningStartMinute" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3" hidden>
+                                <label asp-for="CommonAvailability.CommonDays.MorningEndTime" class="control-label">Morning End Time</label>
+                                <input asp-for="CommonAvailability.CommonDays.MorningEndTime" class="form-control" id="commonMorningEndTime" />
+                                <span asp-validation-for="CommonAvailability.CommonDays.MorningEndTime" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.CommonDays.MorningEndHour" class="control-label">Morning End Hour</label>
+                                <select asp-for="CommonAvailability.CommonDays.MorningEndHour" class="form-control" size="1" id="commonMorningEndHour">
+                                    <option value="00">00</option>
+                                    <option>01</option>
+                                    <option>02</option>
+                                    <option>03</option>
+                                    <option>04</option>
+                                    <option>05</option>
+                                    <option>06</option>
+                                    <option>07</option>
+                                    <option>08</option>
+                                    <option>09</option>
+                                    <option>10</option>
+                                    <option>11</option>
+                                    <option selected="selected">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.CommonDays.MorningEndHour" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.CommonDays.MorningEndMinute" class="control-label">Morning End Minute</label>
+                                <select asp-for="CommonAvailability.CommonDays.MorningEndMinute" class="form-control" size="1" id="commonMorningEndMinute">
+                                    <option>00</option>
+                                    <option>15</option>
+                                    <option>30</option>
+                                    <option>45</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.CommonDays.MorningEndMinute" class="text-danger"></span>
+                            </div>
                         </div>
-                        <div class="form-group col-md-3" hidden>
-                            <label asp-for="CommonAvailability.AvailabilityType" class="control-label">Availability Type</label>
-                            <input asp-for="CommonAvailability.AvailabilityType" id="availabilityType" class="form-control" disabled />
-                            <span asp-validation-for="CommonAvailability.AvailabilityType" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.CommonDays.MorningStartHour" class="control-label">Morning Start Hour</label>
-                            <select asp-for="CommonAvailability.CommonDays.MorningStartHour" class="form-control" size="1" id="commonMorningStartHour">
-                                <option value="00">00</option>
-                                <option>01</option>
-                                <option>02</option>
-                                <option>03</option>
-                                <option>04</option>
-                                <option>05</option>
-                                <option>06</option>
-                                <option>07</option>
-                                <option>08</option>
-                                <option>09</option>
-                                <option>10</option>
-                                <option>11</option>
-                                <option>12</option>
-                                <option value="13">13</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.CommonDays.MorningStartHour" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.CommonDays.MorningStartMinute" class="control-label">Morning Start Minute</label>
-                            <select asp-for="CommonAvailability.CommonDays.MorningStartMinute" class="form-control" size="1" id="commonMorningStartMinute">
-                                <option>00</option>
-                                <option>15</option>
-                                <option>30</option>
-                                <option>45</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.CommonDays.MorningStartMinute" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3" hidden>
-                            <label asp-for="CommonAvailability.CommonDays.MorningEndTime" class="control-label">Morning End Time</label>
-                            <input asp-for="CommonAvailability.CommonDays.MorningEndTime" class="form-control" id="commonMorningEndTime" />
-                            <span asp-validation-for="CommonAvailability.CommonDays.MorningEndTime" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.CommonDays.MorningEndHour" class="control-label">Morning End Hour</label>
-                            <select asp-for="CommonAvailability.CommonDays.MorningEndHour" class="form-control" size="1" id="commonMorningEndHour">
-                                <option value="00">00</option>
-                                <option>01</option>
-                                <option>02</option>
-                                <option>03</option>
-                                <option>04</option>
-                                <option>05</option>
-                                <option>06</option>
-                                <option>07</option>
-                                <option>08</option>
-                                <option>09</option>
-                                <option>10</option>
-                                <option>11</option>
-                                <option>12</option>
-                                <option value="13">13</option>
-                                <option value="14">14</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.CommonDays.MorningEndHour" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.CommonDays.MorningEndMinute" class="control-label">Morning End Minute</label>
-                            <select asp-for="CommonAvailability.CommonDays.MorningEndMinute" class="form-control" size="1" id="commonMorningEndMinute">
-                                <option>00</option>
-                                <option>15</option>
-                                <option>30</option>
-                                <option>45</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.CommonDays.MorningEndMinute" class="text-danger"></span>
+                        <div class="form-row">
+                            <div class="form-group col-md-3" hidden>
+                                <label asp-for="CommonAvailability.CommonDays.EveningStartTime" class="control-label">Evening Start Time</label>
+                                <input asp-for="CommonAvailability.CommonDays.EveningStartTime" class="form-control" id="commonEveningStartTime" />
+                                <span asp-validation-for="CommonAvailability.CommonDays.EveningStartTime" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.CommonDays.EveningStartHour" class="control-label">Evening Start Hour</label>
+                                <select asp-for="CommonAvailability.CommonDays.EveningStartHour" class="form-control" id="commonEveningStartHour" size="1">
+                                    <option>14</option>
+                                    <option>15</option>
+                                    <option>16</option>
+                                    <option>17</option>
+                                    <option selected="selected">18</option>
+                                    <option>19</option>
+                                    <option>20</option>
+                                    <option>21</option>
+                                    <option>22</option>
+                                    <option>23</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.CommonDays.EveningStartHour" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.CommonDays.EveningStartMinute" class="control-label">Evening Start Minute</label>
+                                <select asp-for="CommonAvailability.CommonDays.EveningStartMinute" class="form-control" size="1" id="commonEveningStartMinute">
+                                    <option>00</option>
+                                    <option>15</option>
+                                    <option>30</option>
+                                    <option>45</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.CommonDays.EveningStartMinute" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3" hidden>
+                                <label asp-for="CommonAvailability.CommonDays.EveningEndTime" class="control-label">Evening End Time</label>
+                                <input asp-for="CommonAvailability.CommonDays.EveningEndTime" class="form-control" id="commonEveningEndTime" />
+                                <span asp-validation-for="CommonAvailability.CommonDays.EveningEndTime" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.CommonDays.EveningEndHour" class="control-label">Evening End Hour</label>
+                                <select asp-for="CommonAvailability.CommonDays.EveningEndHour" class="form-control" size="1" id="commonEveningEndHour">
+                                    <option>14</option>
+                                    <option>15</option>
+                                    <option>16</option>
+                                    <option>17</option>
+                                    <option>18</option>
+                                    <option>19</option>
+                                    <option>20</option>
+                                    <option selected="selected">21</option>
+                                    <option>22</option>
+                                    <option>23</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.CommonDays.EveningEndHour" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.CommonDays.EveningEndMinute" class="control-label">Evening End Minute</label>
+                                <select asp-for="CommonAvailability.CommonDays.EveningEndMinute" class="form-control" size="1" id="commonEveningEndMinute">
+                                    <option>15</option>
+                                    <option>30</option>
+                                    <option>45</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.CommonDays.EveningEndMinute" class="text-danger"></span>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-3" hidden>
-                            <label asp-for="CommonAvailability.CommonDays.EveningStartTime" class="control-label">Evening Start Time</label>
-                            <input asp-for="CommonAvailability.CommonDays.EveningStartTime" class="form-control" id="commonEveningStartTime" />
-                            <span asp-validation-for="CommonAvailability.CommonDays.EveningStartTime" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.CommonDays.EveningStartHour" class="control-label">Evening Start Hour</label>
-                            <select asp-for="CommonAvailability.CommonDays.EveningStartHour" class="form-control" id="commonEveningStartHour" size="1">
-                                <option>14</option>
-                                <option>15</option>
-                                <option>16</option>
-                                <option>17</option>
-                                <option>18</option>
-                                <option>19</option>
-                                <option>20</option>
-                                <option>21</option>
-                                <option>22</option>
-                                <option>23</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.CommonDays.EveningStartHour" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.CommonDays.EveningStartMinute" class="control-label">Evening Start Minute</label>
-                            <select asp-for="CommonAvailability.CommonDays.EveningStartMinute" class="form-control" size="1" id="commonEveningStartMinute">
-                                <option>00</option>
-                                <option>15</option>
-                                <option>30</option>
-                                <option>45</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.CommonDays.EveningStartMinute" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3" hidden>
-                            <label asp-for="CommonAvailability.CommonDays.EveningEndTime" class="control-label">Evening End Time</label>
-                            <input asp-for="CommonAvailability.CommonDays.EveningEndTime" class="form-control" id="commonEveningEndTime" />
-                            <span asp-validation-for="CommonAvailability.CommonDays.EveningEndTime" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.CommonDays.EveningEndHour" class="control-label">Evening End Hour</label>
-                            <select asp-for="CommonAvailability.CommonDays.EveningEndHour" class="form-control" size="1" id="commonEveningEndHour">
-                                <option>14</option>
-                                <option>15</option>
-                                <option>16</option>
-                                <option>17</option>
-                                <option>18</option>
-                                <option>19</option>
-                                <option>20</option>
-                                <option>21</option>
-                                <option>22</option>
-                                <option>23</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.CommonDays.EveningEndHour" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.CommonDays.EveningEndMinute" class="control-label">Evening End Minute</label>
-                            <select asp-for="CommonAvailability.CommonDays.EveningEndMinute" class="form-control" size="1" id="commonEveningEndMinute">
-                                <option>00</option>
-                                <option>15</option>
-                                <option>30</option>
-                                <option>45</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.CommonDays.EveningEndMinute" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" asp-for="CommonAvailability.IsAvailableOnWeekend" data-toggle="collapse" href="#commonWeekendInput" id="chkAvailableOnWeekend" />
-                        Available On Weekends
-                    </label>
-                </div>
-                <div class="collapse" id="commonWeekendInput">
-                    <h6 class="card-title text-left">Weekend Timings</h6>
                     <div class="form-group form-check">
                         <label class="form-check-label">
-                            <input asp-for="CommonAvailability.WeekendSameAsCommon" class="form-check-input" id="sameAsCommonDays" />
-                            same As Common Days
+                            <input class="form-check-input" asp-for="CommonAvailability.IsAvailableOnWeekend" data-toggle="collapse" href="#commonWeekendInput" id="chkAvailableOnWeekend" />
+                            Available On Weekends
                         </label>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-3" hidden>
-                            <label asp-for="CommonAvailability.Weekends.MorningStartTime" class="control-label">Morning Start Time</label>
-                            <input asp-for="CommonAvailability.Weekends.MorningStartTime" class="form-control" id="weekendMorningStartTime" />
-                            <span asp-validation-for="CommonAvailability.Weekends.MorningStartTime" class="text-danger"></span>
+                    <div class="collapse" id="commonWeekendInput">
+                        <h6 class="card-title text-left">Weekend Timings</h6>
+                        <div class="form-group form-check">
+                            <label class="form-check-label">
+                                <input asp-for="CommonAvailability.WeekendSameAsCommon" class="form-check-input" id="sameAsCommonDays" />
+                                same As Common Days
+                            </label>
                         </div>
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.Weekends.MorningStartHour" class="control-label">Morning Start Hour</label>
-                            <select asp-for="CommonAvailability.Weekends.MorningStartHour" class="form-control" size="1" id="weekendMorningStartHour">
-                                <option value="00">00</option>
-                                <option>01</option>
-                                <option>02</option>
-                                <option>03</option>
-                                <option>04</option>
-                                <option>05</option>
-                                <option>06</option>
-                                <option>07</option>
-                                <option>08</option>
-                                <option>09</option>
-                                <option>10</option>
-                                <option>11</option>
-                                <option>12</option>
-                                <option value="13">13</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.Weekends.MorningStartHour" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.Weekends.MorningStartMinute" class="control-label">Morning Start Minute</label>
-                            <select asp-for="CommonAvailability.Weekends.MorningStartMinute" class="form-control" size="1" id="weekendMorningStartMinute">
-                                <option>00</option>
-                                <option>15</option>
-                                <option>30</option>
-                                <option>45</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.Weekends.MorningStartMinute" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.Weekends.MorningEndHour" class="control-label">Morning End Hour</label>
-                            <select asp-for="CommonAvailability.Weekends.MorningEndHour" class="form-control" size="1" id="weekendMorningEndHour">
-                                <option value="00">00</option>
-                                <option>01</option>
-                                <option>02</option>
-                                <option>03</option>
-                                <option>04</option>
-                                <option>05</option>
-                                <option>06</option>
-                                <option>07</option>
-                                <option>08</option>
-                                <option>09</option>
-                                <option>10</option>
-                                <option>11</option>
-                                <option>12</option>
-                                <option value="13">13</option>
-                                <option value="14">14</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.Weekends.MorningEndHour" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.Weekends.MorningEndMinute" class="control-label">Morning End Minute</label>
-                            <select asp-for="CommonAvailability.Weekends.MorningEndMinute" class="form-control" size="1" id="weekendMorningEndMinute">
-                                <option>00</option>
-                                <option>15</option>
-                                <option>30</option>
-                                <option>45</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.Weekends.MorningEndMinute" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3" hidden>
-                            <label asp-for="CommonAvailability.Weekends.MorningEndTime" class="control-label">Morning End Time</label>
-                            <input asp-for="CommonAvailability.Weekends.MorningEndTime" class="form-control" id="weekendMorningEndTime" />
-                            <span asp-validation-for="CommonAvailability.Weekends.MorningEndTime" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-3" hidden>
-                            <label asp-for="CommonAvailability.Weekends.EveningStartTime" class="control-label"> Evening Start Time</label>
-                            <input asp-for="CommonAvailability.Weekends.EveningStartTime" class="form-control" id="weekendEveningStartTime" />
-                            <span asp-validation-for="CommonAvailability.Weekends.EveningStartTime" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.Weekends.EveningStartHour" class="control-label">Evening Start Hour</label>
-                            <select asp-for="CommonAvailability.Weekends.EveningStartHour" class="form-control" id="weekendEveningStartHour" size="1">
-                                <option>14</option>
-                                <option value="15">15</option>
-                                <option>16</option>
-                                <option>17</option>
-                                <option>18</option>
-                                <option>19</option>
-                                <option>20</option>
-                                <option>21</option>
-                                <option>22</option>
-                                <option>23</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.Weekends.EveningStartHour" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.Weekends.EveningStartMinute" class="control-label">Evening Start Minute</label>
-                            <select asp-for="CommonAvailability.Weekends.EveningStartMinute" class="form-control" size="1" id="weekendEveningStartMinute">
-                                <option>00</option>
-                                <option>15</option>
-                                <option>30</option>
-                                <option>45</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.Weekends.EveningStartMinute" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.Weekends.EveningEndHour" class="control-label">Evening End Hour</label>
-                            <select asp-for="CommonAvailability.Weekends.EveningEndHour" class="form-control" size="1" id="weekendEveningEndHour">
-                                <option>14</option>
-                                <option>15</option>
-                                <option>16</option>
-                                <option>17</option>
-                                <option>18</option>
-                                <option>19</option>
-                                <option>20</option>
-                                <option>21</option>
-                                <option>22</option>
-                                <option>23</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.Weekends.EveningEndHour" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label asp-for="CommonAvailability.Weekends.EveningEndMinute" class="control-label">Evening End Minute</label>
-                            <select asp-for="CommonAvailability.Weekends.EveningEndMinute" class="form-control" size="1" id="weekendEveningEndMinute">
-                                <option>00</option>
-                                <option>15</option>
-                                <option>30</option>
-                                <option>45</option>
-                            </select>
-                            <span asp-validation-for="CommonAvailability.Weekends.EveningEndMinute" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-3" hidden>
-                            <label asp-for="CommonAvailability.Weekends.EveningEndTime" class="control-label">Evening End Time</label>
-                            <input asp-for="CommonAvailability.Weekends.EveningEndTime" class="form-control" id="weekendEveningEndTime" />
-                            <span asp-validation-for="CommonAvailability.Weekends.EveningEndTime" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="accordion" id="accordionCurrentAvailability">
-                <div class="collapse show" id="showCurrentAvailability" data-parent="#accordionCurrentAvailability">
-                    <a href="#addCurrentAvailability" data-toggle="collapse" id="btnAddCurrentAvailability"><i class="fa fa-plus" aria-hidden="true"></i> Current Availability</a>
-                    <label>
-                        <input asp-for="CurrentAvailability.IsCurrentAvailabilityAdded" id="chkAddCurrentAvailability" />
-                        Add Current Availability
-                    </label>
-                    <input type="hidden" asp-for="CurrentAvaliabilityID" />
-                </div>
-                <div id="addCurrentAvailability" class="card mb-3 collapse" data-parent="#accordionCurrentAvailability">
-
-                    <h6 class="card-title text-left">
-                        Current Availability
-                        <a class="text-right" href="#showCurrentAvailability" data-toggle="collapse" id="btnRemoveCurrentAvailability">
-                            Delete <i class="fa fa-times" style="color:red" aria-hidden="true"></i>
-                        </a>
-                    </h6>
-                    <div class="card-body">
                         <div class="form-row">
-                            <div class="form-group col-md-4">
-                                <label asp-for="CurrentAvailability.CurrentStartDateTime" class="control-label">Start Date/Time</label>
-                                <input asp-for="CurrentAvailability.CurrentStartDateTime" class="form-control" />
-                                <span asp-validation-for="CurrentAvailability.CurrentStartDateTime" class="text-danger"></span>
+                            <div class="form-group col-md-3" hidden>
+                                <label asp-for="CommonAvailability.Weekends.MorningStartTime" class="control-label">Morning Start Time</label>
+                                <input asp-for="CommonAvailability.Weekends.MorningStartTime" class="form-control" id="weekendMorningStartTime" />
+                                <span asp-validation-for="CommonAvailability.Weekends.MorningStartTime" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-4">
-                                <label asp-for="CurrentAvailability.CurrentEndDateTime" class="control-label">End Date/Time</label>
-                                <input asp-for="CurrentAvailability.CurrentEndDateTime" class="form-control" />
-                                <span asp-validation-for="CurrentAvailability.CurrentEndDateTime" class="text-danger"></span>
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.Weekends.MorningStartHour" class="control-label">Morning Start Hour</label>
+                                <select asp-for="CommonAvailability.Weekends.MorningStartHour" class="form-control" size="1" id="weekendMorningStartHour">
+                                    <option value="00">00</option>
+                                    <option>01</option>
+                                    <option>02</option>
+                                    <option>03</option>
+                                    <option>04</option>
+                                    <option>05</option>
+                                    <option>06</option>
+                                    <option>07</option>
+                                    <option selected="selected">08</option>
+                                    <option>09</option>
+                                    <option>10</option>
+                                    <option>11</option>
+                                    <option>12</option>
+                                    <option value="13">13</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.Weekends.MorningStartHour" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.Weekends.MorningStartMinute" class="control-label">Morning Start Minute</label>
+                                <select asp-for="CommonAvailability.Weekends.MorningStartMinute" class="form-control" size="1" id="weekendMorningStartMinute">
+                                    <option>00</option>
+                                    <option>15</option>
+                                    <option>30</option>
+                                    <option>45</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.Weekends.MorningStartMinute" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.Weekends.MorningEndHour" class="control-label">Morning End Hour</label>
+                                <select asp-for="CommonAvailability.Weekends.MorningEndHour" class="form-control" size="1" id="weekendMorningEndHour">
+                                    <option value="00">00</option>
+                                    <option>01</option>
+                                    <option>02</option>
+                                    <option>03</option>
+                                    <option>04</option>
+                                    <option>05</option>
+                                    <option>06</option>
+                                    <option>07</option>
+                                    <option>08</option>
+                                    <option>09</option>
+                                    <option>10</option>
+                                    <option>11</option>
+                                    <option selected="selected">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.Weekends.MorningEndHour" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.Weekends.MorningEndMinute" class="control-label">Morning End Minute</label>
+                                <select asp-for="CommonAvailability.Weekends.MorningEndMinute" class="form-control" size="1" id="weekendMorningEndMinute">
+                                    <option>15</option>
+                                    <option>30</option>
+                                    <option>45</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.Weekends.MorningEndMinute" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3" hidden>
+                                <label asp-for="CommonAvailability.Weekends.MorningEndTime" class="control-label">Morning End Time</label>
+                                <input asp-for="CommonAvailability.Weekends.MorningEndTime" class="form-control" id="weekendMorningEndTime" />
+                                <span asp-validation-for="CommonAvailability.Weekends.MorningEndTime" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-5">
-                                <label asp-for="CurrentAvailability.ContactPreference" class="control-label">Contact Preference</label>
-                                <select asp-for="CurrentAvailability.ContactPreference" class="form-control">
-                                    <option>Always</option>
-                                    <option>EmergencyOnly</option>
-                                    <option>Never</option>
+                            <div class="form-group col-md-3" hidden>
+                                <label asp-for="CommonAvailability.Weekends.EveningStartTime" class="control-label"> Evening Start Time</label>
+                                <input asp-for="CommonAvailability.Weekends.EveningStartTime" class="form-control" id="weekendEveningStartTime" />
+                                <span asp-validation-for="CommonAvailability.Weekends.EveningStartTime" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.Weekends.EveningStartHour" class="control-label">Evening Start Hour</label>
+                                <select asp-for="CommonAvailability.Weekends.EveningStartHour" class="form-control" id="weekendEveningStartHour" size="1">
+                                    <option>14</option>
+                                    <option value="15">15</option>
+                                    <option>16</option>
+                                    <option>17</option>
+                                    <option selected="selected">18</option>
+                                    <option>19</option>
+                                    <option>20</option>
+                                    <option>21</option>
+                                    <option>22</option>
+                                    <option>23</option>
                                 </select>
-                                <span asp-validation-for="CurrentAvailability.ContactPreference" class="text-danger"></span>
+                                <span asp-validation-for="CommonAvailability.Weekends.EveningStartHour" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.Weekends.EveningStartMinute" class="control-label">Evening Start Minute</label>
+                                <select asp-for="CommonAvailability.Weekends.EveningStartMinute" class="form-control" size="1" id="weekendEveningStartMinute">
+                                    <option>00</option>
+                                    <option>15</option>
+                                    <option>30</option>
+                                    <option>45</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.Weekends.EveningStartMinute" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.Weekends.EveningEndHour" class="control-label">Evening End Hour</label>
+                                <select asp-for="CommonAvailability.Weekends.EveningEndHour" class="form-control" size="1" id="weekendEveningEndHour">
+                                    <option>14</option>
+                                    <option>15</option>
+                                    <option>16</option>
+                                    <option>17</option>
+                                    <option>18</option>
+                                    <option>19</option>
+                                    <option>20</option>
+                                    <option>21</option>
+                                    <option selected="selected">22</option>
+                                    <option>23</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.Weekends.EveningEndHour" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="CommonAvailability.Weekends.EveningEndMinute" class="control-label">Evening End Minute</label>
+                                <select asp-for="CommonAvailability.Weekends.EveningEndMinute" class="form-control" size="1" id="weekendEveningEndMinute">
+                                    <option>15</option>
+                                    <option>30</option>
+                                    <option>45</option>
+                                </select>
+                                <span asp-validation-for="CommonAvailability.Weekends.EveningEndMinute" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3" hidden>
+                                <label asp-for="CommonAvailability.Weekends.EveningEndTime" class="control-label">Evening End Time</label>
+                                <input asp-for="CommonAvailability.Weekends.EveningEndTime" class="form-control" id="weekendEveningEndTime" />
+                                <span asp-validation-for="CommonAvailability.Weekends.EveningEndTime" class="text-danger"></span>
                             </div>
                         </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-md-4">
-                                <label asp-for="CurrentAvailability.Status" class="control-label"></label>
-                                <select asp-for="CurrentAvailability.Status" class="form-control" id="status" size="1">
-                                    <option value="">--Select</option>
-                                    <option value="On Vacation">On Vacation</option>
-                                    <option value="Available">Available</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group col-md-4" id="currentHospital" style="display:none">
-                                <label asp-for="CurrentAvailability.HospitalID" class="control-label">Available at</label>
-                                <select asp-for="CurrentAvailability.HospitalID" class="form-control" asp-items="ViewBag.HospitalID">
-                                </select>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <input type="button" id="btnSave" value="Save Changes" class="btn btn-danger" />
+                <div class="accordion" id="accordionCurrentAvailability">
+                    <div class="collapse show" id="showCurrentAvailability" data-parent="#accordionCurrentAvailability">
+                        <a href="#addCurrentAvailability" data-toggle="collapse" id="btnAddCurrentAvailability"><i class="fa fa-plus" aria-hidden="true"></i> Current Availability</a>
+                        <label>
+                            <input asp-for="CurrentAvailability.IsCurrentAvailabilityAdded" id="chkAddCurrentAvailability" />
+                            Add Current Availability
+                        </label>
+                        <input type="hidden" asp-for="CurrentAvaliabilityID" />
+                    </div>
+                    <div id="addCurrentAvailability" class="card mb-3 collapse" data-parent="#accordionCurrentAvailability">
+
+                        <h6 class="card-title text-left">
+                            Current Availability
+                            <a class="text-right" href="#showCurrentAvailability" data-toggle="collapse" id="btnRemoveCurrentAvailability">
+                                Delete <i class="fa fa-times" style="color:red" aria-hidden="true"></i>
+                            </a>
+                        </h6>
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label asp-for="CurrentAvailability.CurrentStartDateTime" class="control-label">Start Date/Time</label>
+                                    <input asp-for="CurrentAvailability.CurrentStartDateTime" class="form-control" />
+                                    <span asp-validation-for="CurrentAvailability.CurrentStartDateTime" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label asp-for="CurrentAvailability.CurrentEndDateTime" class="control-label">End Date/Time</label>
+                                    <input asp-for="CurrentAvailability.CurrentEndDateTime" class="form-control" />
+                                    <span asp-validation-for="CurrentAvailability.CurrentEndDateTime" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-5">
+                                    <label asp-for="CurrentAvailability.ContactPreference" class="control-label">Contact Preference</label>
+                                    <select asp-for="CurrentAvailability.ContactPreference" class="form-control">
+                                        <option>Always</option>
+                                        <option>EmergencyOnly</option>
+                                        <option>Never</option>
+                                    </select>
+                                    <span asp-validation-for="CurrentAvailability.ContactPreference" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label asp-for="CurrentAvailability.Status" class="control-label"></label>
+                                    <select asp-for="CurrentAvailability.Status" class="form-control" id="status" size="1">
+                                        <option value="">--Select</option>
+                                        <option value="On Vacation">On Vacation</option>
+                                        <option value="Available">Available</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-md-4" id="currentHospital" style="display:none">
+                                    <label asp-for="CurrentAvailability.HospitalID" class="control-label">Available at</label>
+                                    <select asp-for="CurrentAvailability.HospitalID" class="form-control" asp-items="ViewBag.HospitalID">
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
-    <button onclick="topFunction()" id="myBtn" title="Go to top">
-        <i class="fa fa-arrow-up" aria-hidden="true"></i>
-    </button>
 </div>
+
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    @*<script src="https://code.jquery.com/jquery-1.12.4.js"></script>*@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="~/js/custom-methods.js"></script>
-    <script>
-        //Get the button
-        var mybutton = document.getElementById("myBtn");
-
-        // When the user scrolls down 20px from the top of the document, show the button
-        window.onscroll = function () { scrollFunction() };
-
-        function scrollFunction() {
-            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-                mybutton.style.display = "block";
-            } else {
-                mybutton.style.display = "none";
-            }
-        }
-
-        // When the user clicks on the button, scroll to the top of the document
-        function topFunction() {
-            document.body.scrollTop = 0;
-            document.documentElement.scrollTop = 0;
-        }
-    </script>
 }
