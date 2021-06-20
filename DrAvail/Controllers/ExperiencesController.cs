@@ -82,7 +82,7 @@ namespace DrAvail.Controllers
             {
                 return NotFound();
             }
-            ViewData["DoctorID"] = new SelectList(_context.Doctors, "ID", "City", experience.DoctorID);
+            ViewData["DoctorID"] = new SelectList(_context.Doctors, "ID", "Name", experience.DoctorID);
             return View(experience);
         }
 
@@ -91,7 +91,7 @@ namespace DrAvail.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,EmployementType,HospitalClinicName,Location,StartDate,EndDate,DoctorID")] Experience experience)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,EmployementType,HospitalClinicName,Location,StartDate,EndDate,DoctorID,IsEndDatePresent")] Experience experience)
         {
             if (id != experience.ID)
             {
@@ -158,7 +158,7 @@ namespace DrAvail.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> AddExperience(string Title, string EmployementType, string HospitalClinicName, string Location, DateTime StartDate, DateTime EndDate, int DoctorID)
+        public async Task<JsonResult> AddExperience(string Title, string EmployementType, string HospitalClinicName, string Location, DateTime StartDate, DateTime EndDate, int DoctorID, bool IsEndDatePresent)
         {
             try
             {
@@ -170,7 +170,8 @@ namespace DrAvail.Controllers
                     Location = Location,
                     StartDate = StartDate,
                     EndDate = EndDate,
-                    DoctorID = DoctorID
+                    DoctorID = DoctorID,
+                    IsEndDatePresent = IsEndDatePresent
                 };
                 _context.Add(experience);
                 await _context.SaveChangesAsync();
@@ -183,11 +184,66 @@ namespace DrAvail.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<JsonResult> EditExperience(int Id, string Title, string EmployementType, string HospitalClinicName, string Location, DateTime StartDate, DateTime EndDate, int DoctorID, bool IsEndDatePresent)
+        {
+            var experience = await _context.Experiences.FindAsync(Id);
+            if(experience != null)
+            {
+                experience.Title = Title;
+                experience.EmployementType = EmployementType;
+                experience.HospitalClinicName = HospitalClinicName;
+                experience.Location = Location;
+                experience.StartDate = StartDate;
+                experience.EndDate = EndDate;
+                experience.IsEndDatePresent = IsEndDatePresent;
+            }
+            else
+            {
+                return Json(false);
+            }
+
+            try
+                {
+                    _context.Update(experience);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ExperienceExists(experience.ID))
+                    {
+                    return Json(false);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return Json(true);
+            
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> DeleteExperience(int id)
+        {
+            var experience = await _context.Experiences.FindAsync(id);
+            _context.Experiences.Remove(experience);
+            await _context.SaveChangesAsync();
+            return Json(true);
+        }
+
         [HttpGet]
         public async Task<JsonResult> GetExperiences(int doctorID)
         {
-            var experiences = await _context.Experiences.Where(e => e.DoctorID == doctorID).ToListAsync(); ;
+            var experiences = await _context.Experiences.Where(e => e.DoctorID == doctorID).OrderBy(e => e.StartDate).ToListAsync();
             return Json(experiences);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetExperienceById(int ID)
+        {
+            var experience = await _context.Experiences.FindAsync(ID);
+            return Json(experience);
         }
     }
 }

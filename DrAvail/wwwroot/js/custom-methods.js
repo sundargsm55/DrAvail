@@ -25,7 +25,7 @@
     });
 
     $(".experience-date").datepicker({
-        yearRange: $("#dob").val().slice(-4) + 25 + ":" + year,
+        yearRange: parseInt($("#dob").val().slice(-4)) + 24 + ":" + year,
         maxDate: '-1M',
         changeMonth: true,
         changeYear: true,
@@ -45,48 +45,185 @@
 
     $("#btnAddExperience").on('click', function () {
         if ($("#txtTitle")[0].reportValidity()) {
-            if ($("#txtEmploymentType")[0].reportValidity()) {
+            if ($("#txtEmployementType")[0].reportValidity()) {
                 if ($("#txtHospital")[0].reportValidity()) {
                     if ($("#txtStartDate")[0].reportValidity()) {
-                        if ($("#txtEndDate")[0].reportValidity()) {
+                        if ($("#txtEndDate")[0].reportValidity() || $("#chkEndDate")[0].checked) {
                             //okay to proceed
                             let title = $("#txtTitle").val();
-                            let employementType = $("#txtEmploymentType").val();
+                            let employementType = $("#txtEmployementType").val();
                             let hospital = $("#txtHospital").val();
                             let location = $("#txtLocation").val();
                             let startDate = $("#txtStartDate").val();
                             let endDate = $("#txtEndDate").val();
-
-                            $("#divExperienceCardBody").append("<dl><dt class=\"font-weight-bold\">" + hospital + "</dt>"
-                                + "<div style=\"border-left: 1px solid #CCC;padding: 0 16px;\"><dd class=\"col-sm-9 text-muted\">" + location + "</dd>"
-                                + "<dd class=\"col-sm-9\">" + startDate + " - " + endDate + "</dd>"
-                                + "<dd class=\"col-sm-9\">" + title + "</dd>"
-                                + "<dd class=\"col-sm-9\">" + employementType + "</dd></div></dl>");
-
+                            
+                            //$("#divExperienceCardDeck").append("<div class=\"card\" id=\"divExperienceCard\"> <div class=\"card-body\" id = \"divExperienceCardBody\">"
+                            //    + "<dl> <div class=\"Experience\"><span class=\"dot\"></span><text class=\"font-weight-bold\" style=\"padding: 0;\">  "
+                            //    + hospital
+                            //    + "</text> </div>"
+                            //    + "<div style=\"margin:1px;border-left: 2px solid #CCC;padding: 0 16px;\"><dd class=\"col-sm-9 text-muted\">" + location + "</dd>"
+                            //    + "<dd class=\"col-sm-9\">" + startDate + " - " + endDate + "</dd>"
+                            //    + "<dd class=\"col-sm-9\">" + title + "</dd>"
+                            //    + "<dd class=\"col-sm-9\">" + employementType + "</dd></div></dl></div></div >");
                             let url = window.location.origin + "/Experiences/AddExperience";
                             let result = $.post(url,
-                                { Title: title, EmployementType: employementType, HospitalClinicName: hospital, Location: location, StartDate: startDate, EndDate: endDate, DoctorID: $("#txtID").val() },
-                                function (response) { alert(response); console.log(response); }, "json");
-                            console.log(result);
+                                { Title: title, EmployementType: employementType, HospitalClinicName: hospital, Location: location, StartDate: startDate, EndDate: endDate, DoctorID: $("#txtID").val(), IsEndDatePresent: $("#chkEndDate")[0].checked },
+                                function (response) {
+                                    if (response) {
+                                        console.log("Successfully added experience!");
+                                    }
+                                }, "json");
 
                             $("#divExperienceModal").modal('hide');
+                            GetExperience();
                             $("#divExperienceCard").show();
 
                             //clear field values
                             $("#txtTitle").val("");
-                            $("#txtEmploymentType").val("");
+                            $("#txtEmployementType").val("");
                             $("#txtHospital").val("");
                             $("#txtLocation").val("");
                             $("#txtStartDate").val("");
                             $("#txtEndDate").val("");
+
                         }
-                        
+
                     }
                 }
             }
         }
 
     });
+
+    $("#btnEditExperience").on('click', function () {
+        if ($("#txtEditTitle")[0].reportValidity()) {
+            if ($("#txtEditEmployementType")[0].reportValidity()) {
+                if ($("#txtEditHospital")[0].reportValidity()) {
+                    if ($("#txtEditStartDate")[0].reportValidity()) {
+                        if ($("#txtEditEndDate")[0].reportValidity() || $("#chkEditEndDate")[0].checked) {
+                            //okay to proceed
+                            let title = $("#txtEditTitle").val();
+                            let employementType = $("#txtEditEmployementType").val();
+                            let hospital = $("#txtEditHospital").val();
+                            let location = $("#txtEditLocation").val();
+                            let startDate = $("#txtEditStartDate").val();
+                            let endDate = $("#txtEditEndDate").val();
+                            let id = parseInt($("#txtEditExperienceId").val());
+
+                            let url = window.location.origin + "/Experiences/EditExperience";
+                            let result = $.post(url,
+                                { Id: id, Title: title, EmployementType: employementType, HospitalClinicName: hospital, Location: location, StartDate: startDate, EndDate: endDate, DoctorID: $("#txtID").val(), IsEndDatePresent: $("#chkEditEndDate")[0].checked },
+                                function (response) {
+                                    if (response) {
+                                        console.log("Successfully updated experience!");
+                                    }
+                                }, "json");
+
+                            $("#divExperienceModalEdit").modal('hide');
+                            //$("#divExperienceCard").show();
+                            GetExperience();
+                            //clear field values
+                            $("#txtEditTitle").val("");
+                            $("#txtEditEmployementType").val("");
+                            $("#txtEditHospital").val("");
+                            $("#txtEditLocation").val("");
+                            $("#txtEditStartDate").val("");
+                            $("#txtEditEndDate").val("");
+                            $("#chkEditEndDate")[0].checked = false;
+                        }
+
+                    }
+                }
+            }
+        }
+
+    });
+
+    $("#btnDeleteExperience").on('click', function () {
+        let id = parseInt($("#txtDeleteExperienceId").val());
+        let url = window.location.origin + "/Experiences/DeleteExperience";
+        let result = $.post(url,
+            { id: id },
+            function (response) {
+                if (response) {
+                    console.log("Successfully deleted experience!");
+                }
+            }, "json");
+
+        $("#divExperienceModalDelete").modal('hide');
+        GetExperience();
+    });
+    $(document).on('click', ".card-columns a.edit-experience", function (event) {
+        let id = parseInt(event.currentTarget.id);
+        $("#txtEditExperienceId").val(event.currentTarget.id);
+
+        $.getJSON(window.location.origin + "/Experiences/GetExperienceById",
+            { ID: id },
+            function (response) {
+                if (response.length == 0) return false;
+                $("#txtEditTitle").val(response.title);
+                $("#txtEditEmployementType").val(response.employementType);
+                $("#txtEditHospital").val(response.hospitalClinicName);
+                $("#txtEditLocation").val(response.location);
+                $("#txtEditStartDate").val(new Date(response.startDate).toLocaleString('default', { month: 'short', year: "numeric" }));
+                $("#txtEditEndDate").val(new Date(response.endDate).toLocaleString('default', { month: 'short', year: "numeric" }));
+                $("#chkEditEndDate")[0].checked = response.isEndDatePresent;
+            });
+        $("#divExperienceModalEdit").modal('show');
+    });
+
+    $(document).on('click', ".card-columns a.delete-experience", function (event) {
+        let id = parseInt(event.currentTarget.id);
+        $("#txtDeleteExperienceId").val(event.currentTarget.id);
+
+        $.getJSON(window.location.origin + "/Experiences/GetExperienceById",
+            { ID: id },
+            function (response) {
+                if (response.length == 0) return false;
+                $("#dtTxtTitle").text(response.title);
+                $("#dtTxtEmployementType").text(response.employementType);
+                $("#dtTxtHospitalName").text(response.hospitalClinicName);
+                $("#dtTxtLocation").text(response.location);
+                $("#dtTxtStartDate").text(new Date(response.startDate).toLocaleString('default', { month: 'short', year: "numeric" }));
+                if (response.isEndDatePresent) {
+                    $("#dtTxtEndDate").text("Present");
+                } else {
+                    $("#dtTxtEndDate").text(new Date(response.endDate).toLocaleString('default', { month: 'short', year: "numeric" }));
+                }
+            });
+        $("#divExperienceModalDelete").modal('show');
+    });
+
+    function GetExperience() {
+        $.getJSON(window.location.origin + "/Experiences/GetExperiences",
+            { doctorID: $("#txtID").val() },
+            function (response) {
+                if (response.length == 0) return false;
+                $("#divExperienceCardDeck").html("");
+                $("#divExperienceCardDeck").show();
+                $.each(response, function (i, v) {
+                    let endDate;
+                    if (v.isEndDatePresent) {
+                        endDate = "Present"
+                    }
+                    else {
+                        endDate = new Date(v.endDate).toLocaleString('default', { month: 'short', year: "numeric" });
+                    }
+
+                    $("#divExperienceCardDeck").append("<div class=\"card\" id=\"divExperienceCard" + v.id + "\"> <div class=\"card-body\" id = \"divExperienceCardBody" + v.id +"\">"
+                        + "<dl> <div class=\"Experience\"> <span class=\"dot\"></span><text class=\"font-weight-bold\" style=\"padding: 0;\"> "
+                        + v.hospitalClinicName
+                        + "</text> <a href=\"#!\" class=\"edit-experience\" title=\"Edit\" id=" + v.id +"> <i class=\"fa fa-pencil-square-o\" style=\"margin-left:2%;\" aria-hidden=\"true\"></i> </a>" +
+                        "<a href=\"#!\" class=\"delete-experience\" title=\"Delete\" id=" + v.id +"> <i class=\"fa fa-trash\" style=\"margin-left: 2%;\" aria-hidden=\"true\"></i></a> </div>"
+                        + "<div style=\"margin:1px;border-left: 2px solid #CCC;padding: 0 16px;\"><dd class=\"col-sm-9 text-muted\">" + v.location + "</dd>"
+                        + "<dd class=\"col-sm-9\">" + new Date(v.startDate).toLocaleString('default', { month: 'short', year: "numeric" })
+                        + " - "
+                        + endDate + "</dd>"
+                        + "<dd class=\"col-sm-9\">" + v.title + "</dd>"
+                        + "<dd class=\"col-sm-9\">" + v.employementType + "</dd></div></dl></div></div>");
+                });
+            });
+    }
 
     $("#dob").on('change', function (event) {
         var dob = event.currentTarget.value.split("/")[2];
@@ -352,78 +489,94 @@
 
     }
 
-    //commonMorningStartHour
-    $("#commonMorningStartHour").on("change", function (event) {
+    //StartHour
+    $("select .start-hour").on("change", function (event) {
         //debugger;
         StartHour(event);
     });
 
-    //commonMorningStartMinute
-    $("#commonMorningStartMinute").on("change", function (event) {
+    //StartMinute
+    $("select .start-minute").on("change", function (event) {
         StartMinute(event);
     });
 
-    //commonMorningEndHour
-    $("#commonMorningEndHour").on("change focus", function (event) {
+    //EndHour
+    $("select .end-hour").on("change focus", function (event) {
         EndHour(event);
     });
+
+    ////commonMorningStartHour
+    //$("#commonMorningStartHour").on("change", function (event) {
+    //    //debugger;
+    //    StartHour(event);
+    //});
+
+    ////commonMorningStartMinute
+    //$("#commonMorningStartMinute").on("change", function (event) {
+    //    StartMinute(event);
+    //});
+
+    ////commonMorningEndHour
+    //$("#commonMorningEndHour").on("change focus", function (event) {
+    //    EndHour(event);
+    //});
 
     $("#commonMorningEndMinute").on('focus', function () {
         $("#commonMorningEndHour").trigger('change');
     });
-    //commonEveningStartHour
-    $("#commonEveningStartHour").on("change", function (event) {
-        StartHour(event);
-    });
+    ////commonEveningStartHour
+    //$("#commonEveningStartHour").on("change", function (event) {
+    //    StartHour(event);
+    //});
 
-    //commonEveningStartMinute
-    $("#commonEveningStartMinute").on("change", function (event) {
-        StartMinute(event);
-    });
+    ////commonEveningStartMinute
+    //$("#commonEveningStartMinute").on("change", function (event) {
+    //    StartMinute(event);
+    //});
 
-    //commonEveningEndHour
-    $("#commonEveningEndHour").on("change focus", function (event) {
-        EndHour(event);
-    });
+    ////commonEveningEndHour
+    //$("#commonEveningEndHour").on("change focus", function (event) {
+    //    EndHour(event);
+    //});
 
     $("#commonEveningEndMinute").on('focus', function () {
         $("#commonEveningEndHour").trigger('change');
     });
     //weekends
-    //weekendMorningStartHour
-    $("#weekendMorningStartHour").on("change", function (event) {
-        //debugger;
-        StartHour(event);
-    });
+    ////weekendMorningStartHour
+    //$("#weekendMorningStartHour").on("change", function (event) {
+    //    //debugger;
+    //    StartHour(event);
+    //});
 
-    //weekendMorningStartMinute
-    $("#weekendMorningStartMinute").on("change", function (event) {
-        StartMinute(event);
-    });
+    ////weekendMorningStartMinute
+    //$("#weekendMorningStartMinute").on("change", function (event) {
+    //    StartMinute(event);
+    //});
 
-    //weekendMorningEndHour
-    $("#weekendMorningEndHour").on("change focus", function (event) {
-        EndHour(event);
-    });
+    ////weekendMorningEndHour
+    //$("#weekendMorningEndHour").on("change focus", function (event) {
+    //    EndHour(event);
+    //});
 
     $("#weekendMorningEndMinute").on('focus', function () {
         $("#weekendMorningEndHour").trigger('change');
     });
 
-    //weekendEveningStartHour
-    $("#weekendEveningStartHour").on("change", function (event) {
-        StartHour(event);
-    });
+    ////weekendEveningStartHour
+    //$("#weekendEveningStartHour").on("change", function (event) {
+    //    StartHour(event);
+    //});
 
-    //weekendEveningStartMinute
-    $("#weekendEveningStartMinute").on("change", function (event) {
-        StartMinute(event);
-    });
+    ////weekendEveningStartMinute
+    //$("#weekendEveningStartMinute").on("change", function (event) {
+    //    StartMinute(event);
+    //});
 
-    //weekendEveningEndHour
-    $("#weekendEveningEndHour").on("change focus", function (event) {
-        EndHour(event);
-    });
+    ////weekendEveningEndHour
+    //$("#weekendEveningEndHour").on("change focus", function (event) {
+    //    EndHour(event);
+    //});
 
     $("#weekendEveningEndMinute").on('focus', function () {
         $("#weekendEveningEndHour").trigger('change');
@@ -814,21 +967,5 @@
     //$(window).load(function () {
     //$("html, body").animate({ scrollTop: $(document).height() - $(window).height() }, 1000);
     //});
-    function GetExperience() {
-        $.getJSON(window.location.origin + "/Experiences/GetExperiences",
-            { doctorID: $("#txtID").val() },
-            function (response) {
-                if (response.length == 0) return false;
-                $("#divExperienceCard").show();
-                $.each(response, function (i, v) {
-                    $("#divExperienceCardBody").append("<dl><dt class=\"font-weight-bold\">" + v.hospitalClinicName + "</dt>"
-                        + "<div style=\"border-left: 1px solid #CCC;padding: 0 16px;\"><dd class=\"col-sm-9 text-muted\">" + v.location + "</dd>"
-                        + "<dd class=\"col-sm-9\">" + new Date(v.startDate).toLocaleString('default', { month: 'short', year: "numeric" })
-                        + " - "
-                        + new Date(v.endDate).toLocaleString('default', { month: 'short', year: "numeric" }) + "</dd>"
-                        + "<dd class=\"col-sm-9\">" + v.title + "</dd>"
-                        + "<dd class=\"col-sm-9\">" + v.employementType + "</dd></div></dl>");
-                });
-            });
-    }
+    
 });

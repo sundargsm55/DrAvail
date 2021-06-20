@@ -318,11 +318,13 @@ User, Model, Operations.Reject)).Succeeded)
                     if (response.length == 0) return false;
                     $("#showExperience").toggle('show');
                     $.each(response, function (i, v) {
-                        $("#divExperienceCard").append("<dl><dt class=\"font-weight-bold\">" + v.hospitalClinicName + "</dt>"
-                            + "<div style=\"border-left: 1px solid #CCC;padding: 0 16px;\"><dd class=\"col-sm-9 text-muted\">" + v.location + "</dd>"
+                        $("#divExperienceCard").append("<dl> <div class=\"Experience\"><span class=\"dot\"></span><text class=\"font-weight-bold\" style=\"padding: 0;\">  "
+                            + v.hospitalClinicName
+                            + "</text></div>"
+                            + "<div style=\"margin:1px;border-left: 2px solid #CCC;padding: 0 16px;\"><dd class=\"col-sm-9 text-muted\">" + v.location + "</dd>"
                             + "<dd class=\"col-sm-9\">" + new Date(v.startDate).toLocaleString('default', { month: 'short', year: "numeric" })
                             + " - "
-                            + new Date(v.endDate).toLocaleString('default', { month: 'short', year: "numeric" })+ "</dd>" 
+                            + new Date(v.endDate).toLocaleString('default', { month: 'short', year: "numeric" }) + "</dd>"
                             + "<dd class=\"col-sm-9\">" + v.title + "</dd>"
                             + "<dd class=\"col-sm-9\">" + v.employementType + "</dd></div></dl>");
                     });

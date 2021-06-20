@@ -42,10 +42,6 @@
             background-color: lightblue;
     }
 
-    .nav-item{
-        margin: 3px;
-    }
-
     a, a:hover, a:focus, a:active {
         text-decoration: none;
         color: #0366d6;
@@ -54,6 +50,18 @@
     .tab-pane:not(.active) {
         display: none;
     }
+    .hide-calendar .ui-datepicker-calendar {
+        display: none;
+    }
+
+    .hide-calendar .ui-widget {
+        font-size: .7em;
+    }
+
+    .card-columns {
+    column-count: 2;
+  }
+
 </style>
 <h4>Edit</h4>
 
@@ -92,8 +100,8 @@
 </div>
 <hr style="margin-top:0px" />
 <div class="row">
-    <div class="col-md-3">
-        <ul class="nav nav-pills flex-column" role="tablist" aria-orientation="vertical">
+    <div class="col-md-3 side-nav">
+        <ul class="nav nav-pills flex-column" role="list" aria-orientation="vertical">
             <li class="nav-item">
                 <a class="nav-link active" id="liBasicInformaiton" href="#divBasicInformaiton" data-toggle="pill" role="tab" aria-controls="v-pills-basic" aria-selected="true">Basic Information</a>
             </li>
@@ -255,11 +263,7 @@
                     <i class="fa fa-plus" aria-hidden="true"></i> Add Experience
                 </a>
 
-
-                <div class="card" id="divExperienceCard" style="display:none">
-                    <h6 class="card-title">Experience</h6>
-                    <div class="card-body" id="divExperienceCardBody">
-                    </div>
+                <div class="card-columns" id="divExperienceCardDeck" style="display:none;width:50rem;">
                 </div>
                 <!-- Modal -->
                 <div class="modal fade" id="divExperienceModal" tabindex="-1" role="dialog" aria-labelledby="ExperienceModalTitle" aria-hidden="true">
@@ -277,8 +281,8 @@
                                     <input name="Title" class="form-control" id="txtTitle" required data-val="true" />
                                 </div>
                                 <div class="form-row">
-                                    <label for="EmploymentType" class="control-label" id="lblEmploymentType">Employment type</label>
-                                    <select name="EmploymentType" class="form-control" id="txtEmploymentType" required>
+                                    <label for="EmployementType" class="control-label" id="lblEmployementType">Employement type</label>
+                                    <select name="EmployementType" class="form-control" id="txtEmployementType" required>
                                         <option value="">--Select--</option>
                                         <option>Full-Time</option>
                                         <option>Part-Time</option>
@@ -295,7 +299,7 @@
                                     <input name="Location" class="form-control" id="txtLocation" />
                                 </div>
                                 <div class="form-row">
-                                    <div class="form-inline form-group">
+                                    <div class="form-group">
                                         <label class="control-label" id="lblStartDate">Start Date *</label>
                                         <select name="StartMonth" class="form-control" id="sltStartMonth" hidden>
                                             <option value="">-Select--</option>
@@ -315,7 +319,9 @@
 
                                         <input name="StartDate" class="form-control experience-date" id="txtStartDate" required />
                                     </div>
-                                    <div class="form-group form-inline">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
                                         <label class="control-label" id="lblEndDate">End Date *</label>
                                         <select name="EndMonth" class="form-control" id="sltEndMonth" hidden>
                                             <option value="">-Select--</option>
@@ -332,14 +338,126 @@
                                             <option>November</option>
                                             <option>December</option>
                                         </select>
-
+                                        <input type="checkbox" id="chkEndDate" name="present" value="Till Present" />
+                                        <label for="present">Till Present</label>
                                         <input name="EndDate" class="form-control experience-date" id="txtEndDate" required />
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary rounded" id="btnAddExperience">Save</button>
+                                <button type="button" class="btn btn-primary rounded experience-button" id="btnAddExperience">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Edit Modal -->
+                <div class="modal fade" id="divExperienceModalEdit" tabindex="-1" role="dialog" aria-labelledby="ExperienceModalEditTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="form">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongEditTitle">Edit Experience</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input id="txtEditExperienceId" hidden />
+                                <div class="form-row">
+                                    <label for="Title" class="control-label" id="lblEditTitle">Title *</label>
+                                    <input name="Title" class="form-control" id="txtEditTitle" required data-val="true" />
+                                </div>
+                                <div class="form-row">
+                                    <label for="EmployementType" class="control-label" id="lblEditEmployementType">Employement type</label>
+                                    <select name="EmployementType" class="form-control" id="txtEditEmployementType" required>
+                                        <option value="">--Select--</option>
+                                        <option>Full-Time</option>
+                                        <option>Part-Time</option>
+                                        <option>Trainee</option>
+                                        <option>Internship</option>
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <label for="Hospital" class="control-label" id="lblEditHospital">Hospital/Clinic Name *</label>
+                                    <input name="Hospital" class="form-control" id="txtEditHospital" required />
+                                </div>
+                                <div class="form-row">
+                                    <label for="Location" class="control-label" id="lblEditLocation">Location</label>
+                                    <input name="Location" class="form-control" id="txtEditLocation" />
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="control-label" id="lblEditStartDate">Start Date *</label>
+                                        <input name="StartDate" class="form-control experience-date" id="txtEditStartDate" required />
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="control-label" id="lblEditEndDate">End Date *</label>
+                                        <input type="checkbox" id="chkEditEndDate" name="present" value="Till Present" />
+                                        <label for="present">Till Present</label>
+                                        <input name="EndDate" class="form-control experience-date" id="txtEditEndDate" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-danger rounded experience-button" id="btnEditExperience">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Delete Modal-->
+                <div class="modal fade" id="divExperienceModalDelete" tabindex="-1" role="dialog" aria-labelledby="ExperienceModalDeleteTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="form">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongDeleteTitle">Delete Experience</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input id="txtDeleteExperienceId" hidden />
+                                <h3>Are you sure you want to delete this?</h3>
+                                <div>
+                                    <dl class="row">
+                                        <dt class="col-sm-2" id="dtLabelTitle">
+                                            Title
+                                        </dt>
+                                        <dd class="col-sm-10" id="dtTxtTitle">
+                                        </dd>
+                                        <dt class="col-sm-2" id="dtLabelEmployementType">
+                                            Employement Type
+                                        </dt>
+                                        <dd class="col-sm-10"  id="dtTxtEmployementType">
+                                        </dd>
+                                        <dt class="col-sm-2" id="dtLabelHospitalName">
+                                            Hospital/Clinic Name
+                                        </dt>
+                                        <dd class="col-sm-10" id="dtTxtHospitalName">
+                                        </dd>
+                                        <dt class="col-sm-2" id="dtLabelLocation">
+                                            Location
+                                        </dt>
+                                        <dd class="col-sm-10" id="dtTxtLocation">
+                                        </dd>
+                                        <dt class="col-sm-2" id="dtLabelStartDate">
+                                            Start Date
+                                        </dt>
+                                        <dd class="col-sm-10" id="dtTxtStartDate">
+                                        </dd>
+                                        <dt class="col-sm-2" id="dtLabelEndDate">
+                                            End Date
+                                        </dt>
+                                        <dd class="col-sm-10" id="dtTxtEndDate">
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-danger rounded experience-button" title="Delete" id="btnDeleteExperience">Delete</button>
                             </div>
                         </div>
                     </div>
@@ -473,7 +591,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label asp-for="CommonAvailability.CommonDays.MorningStartHour" class="control-label">Morning Start Hour</label>
-                                <select asp-for="CommonAvailability.CommonDays.MorningStartHour" class="form-control" size="1" id="commonMorningStartHour">
+                                <select asp-for="CommonAvailability.CommonDays.MorningStartHour" class="form-control start-hour" size="1" id="commonMorningStartHour">
                                     <option value="00">00</option>
                                     <option>01</option>
                                     <option>02</option>
@@ -493,7 +611,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label asp-for="CommonAvailability.CommonDays.MorningStartMinute" class="control-label">Morning Start Minute</label>
-                                <select asp-for="CommonAvailability.CommonDays.MorningStartMinute" class="form-control" size="1" id="commonMorningStartMinute">
+                                <select asp-for="CommonAvailability.CommonDays.MorningStartMinute" class="form-control start-minute" size="1" id="commonMorningStartMinute">
                                     <option>00</option>
                                     <option>15</option>
                                     <option>30</option>
@@ -508,7 +626,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label asp-for="CommonAvailability.CommonDays.MorningEndHour" class="control-label">Morning End Hour</label>
-                                <select asp-for="CommonAvailability.CommonDays.MorningEndHour" class="form-control" size="1" id="commonMorningEndHour">
+                                <select asp-for="CommonAvailability.CommonDays.MorningEndHour" class="form-control end-hour" size="1" id="commonMorningEndHour">
                                     <option value="00">00</option>
                                     <option>01</option>
                                     <option>02</option>
@@ -546,7 +664,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label asp-for="CommonAvailability.CommonDays.EveningStartHour" class="control-label">Evening Start Hour</label>
-                                <select asp-for="CommonAvailability.CommonDays.EveningStartHour" class="form-control" id="commonEveningStartHour" size="1">
+                                <select asp-for="CommonAvailability.CommonDays.EveningStartHour" class="form-control start-hour" id="commonEveningStartHour" size="1">
                                     <option>14</option>
                                     <option>15</option>
                                     <option>16</option>
@@ -562,7 +680,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label asp-for="CommonAvailability.CommonDays.EveningStartMinute" class="control-label">Evening Start Minute</label>
-                                <select asp-for="CommonAvailability.CommonDays.EveningStartMinute" class="form-control" size="1" id="commonEveningStartMinute">
+                                <select asp-for="CommonAvailability.CommonDays.EveningStartMinute" class="form-control start-minute" size="1" id="commonEveningStartMinute">
                                     <option>00</option>
                                     <option>15</option>
                                     <option>30</option>
@@ -577,7 +695,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label asp-for="CommonAvailability.CommonDays.EveningEndHour" class="control-label">Evening End Hour</label>
-                                <select asp-for="CommonAvailability.CommonDays.EveningEndHour" class="form-control" size="1" id="commonEveningEndHour">
+                                <select asp-for="CommonAvailability.CommonDays.EveningEndHour" class="form-control end-hour" size="1" id="commonEveningEndHour">
                                     <option>14</option>
                                     <option>15</option>
                                     <option>16</option>
@@ -624,7 +742,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label asp-for="CommonAvailability.Weekends.MorningStartHour" class="control-label">Morning Start Hour</label>
-                                <select asp-for="CommonAvailability.Weekends.MorningStartHour" class="form-control" size="1" id="weekendMorningStartHour">
+                                <select asp-for="CommonAvailability.Weekends.MorningStartHour" class="form-control start-hour" size="1" id="weekendMorningStartHour">
                                     <option value="00">00</option>
                                     <option>01</option>
                                     <option>02</option>
@@ -644,7 +762,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label asp-for="CommonAvailability.Weekends.MorningStartMinute" class="control-label">Morning Start Minute</label>
-                                <select asp-for="CommonAvailability.Weekends.MorningStartMinute" class="form-control" size="1" id="weekendMorningStartMinute">
+                                <select asp-for="CommonAvailability.Weekends.MorningStartMinute" class="form-control start-minute" size="1" id="weekendMorningStartMinute">
                                     <option>00</option>
                                     <option>15</option>
                                     <option>30</option>
@@ -655,7 +773,7 @@
 
                             <div class="form-group col-md-3">
                                 <label asp-for="CommonAvailability.Weekends.MorningEndHour" class="control-label">Morning End Hour</label>
-                                <select asp-for="CommonAvailability.Weekends.MorningEndHour" class="form-control" size="1" id="weekendMorningEndHour">
+                                <select asp-for="CommonAvailability.Weekends.MorningEndHour" class="form-control end-hour" size="1" id="weekendMorningEndHour">
                                     <option value="00">00</option>
                                     <option>01</option>
                                     <option>02</option>
@@ -697,7 +815,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label asp-for="CommonAvailability.Weekends.EveningStartHour" class="control-label">Evening Start Hour</label>
-                                <select asp-for="CommonAvailability.Weekends.EveningStartHour" class="form-control" id="weekendEveningStartHour" size="1">
+                                <select asp-for="CommonAvailability.Weekends.EveningStartHour" class="form-control start-hour" id="weekendEveningStartHour" size="1">
                                     <option>14</option>
                                     <option value="15">15</option>
                                     <option>16</option>
@@ -713,7 +831,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label asp-for="CommonAvailability.Weekends.EveningStartMinute" class="control-label">Evening Start Minute</label>
-                                <select asp-for="CommonAvailability.Weekends.EveningStartMinute" class="form-control" size="1" id="weekendEveningStartMinute">
+                                <select asp-for="CommonAvailability.Weekends.EveningStartMinute" class="form-control start-minute" size="1" id="weekendEveningStartMinute">
                                     <option>00</option>
                                     <option>15</option>
                                     <option>30</option>
@@ -724,7 +842,7 @@
 
                             <div class="form-group col-md-3">
                                 <label asp-for="CommonAvailability.Weekends.EveningEndHour" class="control-label">Evening End Hour</label>
-                                <select asp-for="CommonAvailability.Weekends.EveningEndHour" class="form-control" size="1" id="weekendEveningEndHour">
+                                <select asp-for="CommonAvailability.Weekends.EveningEndHour" class="form-control end-hour" size="1" id="weekendEveningEndHour">
                                     <option>14</option>
                                     <option>15</option>
                                     <option>16</option>
@@ -827,5 +945,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="~/js/custom-methods.js"></script>
+    <script src="~/js/custom-methods.js" asp-append-version="true"></script>
 }
