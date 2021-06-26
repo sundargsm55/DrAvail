@@ -8,19 +8,10 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" type="image/ico" href="/Images/logo.ico" />
-    <style>
-        body {
-            /*background-image: url(/Images/medical-doctor-science-background.jpg);*/
-            /*background-image: url(/Images/pngtree-2-5d-see-a-doctor-medical-hospital-image_18143.jpg);*/
-            /*background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;*/
-        }
-    </style>
 </head>
 <body class="bg-light">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" style="background-image:url(/Images/medical-doctor-science-background.jpg)">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" style="background-image: url(/Images/doctor-reading-report.jpg)">
             <div class="container">
                 <a class="navbar-brand span3" asp-area="" asp-controller="Doctors" asp-action="Index">DrAvail</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -73,7 +64,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     @*<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>*@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

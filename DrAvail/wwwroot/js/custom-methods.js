@@ -76,7 +76,7 @@
 
                             $("#divExperienceModal").modal('hide');
                             GetExperience();
-                            $("#divExperienceCard").show();
+                            //$("#divExperienceCard").show();
 
                             //clear field values
                             $("#txtTitle").val("");
@@ -199,7 +199,7 @@
             { doctorID: $("#txtID").val() },
             function (response) {
                 if (response.length == 0) return false;
-                $("#divExperienceCardDeck").html("");
+                $("#divExperienceCardDeck").empty();
                 $("#divExperienceCardDeck").show();
                 $.each(response, function (i, v) {
                     let endDate;
@@ -357,7 +357,7 @@
 
     function StartHour(event) {
         let Hours = getHours(event.currentTarget.id);
-
+        debugger;
         let prefix = "#" + event.currentTarget.id.replace("StartHour", "");
 
         let startHour = $(event.currentTarget).find(":selected").val();
@@ -490,18 +490,20 @@
     }
 
     //StartHour
-    $("select .start-hour").on("change", function (event) {
-        //debugger;
+    $("select.start-hour").on("change", function (event) {
+        debugger;
         StartHour(event);
     });
 
     //StartMinute
-    $("select .start-minute").on("change", function (event) {
+    $("select.start-minute").on("change", function (event) {
+        debugger;
         StartMinute(event);
     });
 
     //EndHour
-    $("select .end-hour").on("change focus", function (event) {
+    $("select.end-hour").on("change focus", function (event) {
+        debugger;
         EndHour(event);
     });
 

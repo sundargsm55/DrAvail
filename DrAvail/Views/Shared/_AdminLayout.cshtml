@@ -30,9 +30,6 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item ">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Role" asp-action="Index">Roles</a>
-                        </li>
-                        <li class="nav-item ">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Doctors" asp-action="Index">Doctors</a>
                         </li>
                         <li class="nav-item ">
@@ -87,8 +84,8 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            var url = '@Url.Content("~/")' + "Admin/GetMessageCount";
-            $.getJSON(url, {}, function (data) {
+            $.getJSON(window.location.origin + "Admin/GetMessageCount", {}, function (data) {
+
                 if (data == 0) {
                     console.log("No new Messages!!!");
                     $("#bdgMsgCount").removeClass("badge-danger").addClass("badge-light");
@@ -97,13 +94,13 @@
                 else {
                     $("#bdgMsgCount").removeClass("badge-light").addClass("badge-danger");
                 }
+                debugger;
                 $("#bdgMsgCount").text(data);
                 $("#bdgMsgCount").show();
                 console.log("New Messages: " + data);
             });
 
-            var pendingcountURL = '@Url.Content("~/")' + "Admin/GetPendingApprovalCount";
-            $.getJSON(pendingcountURL, {}, function (data) {
+            $.getJSON(window.location.origin + "Admin/GetPendingApprovalCount", {}, function (data) {
                 if (data == 0) {
                     console.log("No pending verification!!!");
                     $("#bdgPendingCount").removeClass("badge-danger").addClass("badge-light");
@@ -115,7 +112,7 @@
                 $("#bdgPendingCount").text(data);
                 $("#bdgPendingCount").show();
                 console.log("Pending Verification: " + data);
-                });
+            });
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)

@@ -7,19 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DrAvail.Data;
 using DrAvail.Models;
+using DrAvail.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace DrAvail.Controllers
 {
     public class ExperiencesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IAuthorizationService AuthorizationService;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public ExperiencesController(ApplicationDbContext context)
+        public ExperiencesController(ApplicationDbContext context, IAuthorizationService authorizationService, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            AuthorizationService = authorizationService;
+            this.userManager = userManager;
         }
 
         // GET: Experiences
+        [Authorize(Roles = "Administrators")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Experiences.Include(e => e.Doctor);
@@ -27,6 +35,7 @@ namespace DrAvail.Controllers
         }
 
         // GET: Experiences/Details/5
+        [Authorize(Roles = "Administrators")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,6 +54,7 @@ namespace DrAvail.Controllers
         }
 
         // GET: Experiences/Create
+        [Authorize(Roles = "Administrators")]
         public IActionResult Create()
         {
             ViewData["DoctorID"] = new SelectList(_context.Doctors, "ID", "Name");
@@ -56,6 +66,7 @@ namespace DrAvail.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrators")]
         public async Task<IActionResult> Create([Bind("Title,EmployementType,HospitalClinicName,Location,StartDate,EndDate,DoctorID")] Experience experience)
         {
             if (ModelState.IsValid)
@@ -70,6 +81,7 @@ namespace DrAvail.Controllers
         }
 
         // GET: Experiences/Edit/5
+        [Authorize(Roles = "Administrators")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -91,6 +103,7 @@ namespace DrAvail.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrators")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Title,EmployementType,HospitalClinicName,Location,StartDate,EndDate,DoctorID,IsEndDatePresent")] Experience experience)
         {
             if (id != experience.ID)
@@ -123,6 +136,7 @@ namespace DrAvail.Controllers
         }
 
         // GET: Experiences/Delete/5
+        [Authorize(Roles = "Administrators")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -144,6 +158,7 @@ namespace DrAvail.Controllers
         // POST: Experiences/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrators")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var experience = await _context.Experiences.FindAsync(id);
@@ -158,8 +173,11 @@ namespace DrAvail.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrators, Doctors")]
         public async Task<JsonResult> AddExperience(string Title, string EmployementType, string HospitalClinicName, string Location, DateTime StartDate, DateTime EndDate, int DoctorID, bool IsEndDatePresent)
         {
+            
+
             try
             {
                 Experience experience = new()
@@ -171,8 +189,17 @@ namespace DrAvail.Controllers
                     StartDate = StartDate,
                     EndDate = EndDate,
                     DoctorID = DoctorID,
-                    IsEndDatePresent = IsEndDatePresent
+                    IsEndDatePresent = IsEndDatePresent,
+                    OwnerID = userManager.GetUserId(User)
                 };
+
+                var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                  User, experience,
+                                                  Operations.Create);
+                if (!isAuthorized.Succeeded)
+                {
+                    return Json(false);
+                }
                 _context.Add(experience);
                 await _context.SaveChangesAsync();
                 return Json(true);
@@ -185,6 +212,7 @@ namespace DrAvail.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrators, Doctors")]
         public async Task<JsonResult> EditExperience(int Id, string Title, string EmployementType, string HospitalClinicName, string Location, DateTime StartDate, DateTime EndDate, int DoctorID, bool IsEndDatePresent)
         {
             var experience = await _context.Experiences.FindAsync(Id);
@@ -202,7 +230,13 @@ namespace DrAvail.Controllers
             {
                 return Json(false);
             }
-
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                  User, experience,
+                                                  Operations.Update);
+            if (!isAuthorized.Succeeded)
+            {
+                return Json(false);
+            }
             try
                 {
                     _context.Update(experience);
@@ -224,25 +258,49 @@ namespace DrAvail.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrators, Doctors")]
         public async Task<JsonResult> DeleteExperience(int id)
         {
             var experience = await _context.Experiences.FindAsync(id);
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                  User, experience,
+                                                  Operations.Delete);
+            if (!isAuthorized.Succeeded)
+            {
+                return Json(false);
+            }
             _context.Experiences.Remove(experience);
             await _context.SaveChangesAsync();
             return Json(true);
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrators, Doctors")]
         public async Task<JsonResult> GetExperiences(int doctorID)
         {
             var experiences = await _context.Experiences.Where(e => e.DoctorID == doctorID).OrderBy(e => e.StartDate).ToListAsync();
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                  User, experiences.First(),
+                                                  Operations.Read);
+            if (!isAuthorized.Succeeded)
+            {
+                return Json(false);
+            }
             return Json(experiences);
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrators, Doctors")]
         public async Task<JsonResult> GetExperienceById(int ID)
         {
             var experience = await _context.Experiences.FindAsync(ID);
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                  User, experience,
+                                                  Operations.Read);
+            if (!isAuthorized.Succeeded)
+            {
+                return Json(false);
+            }
             return Json(experience);
         }
     }

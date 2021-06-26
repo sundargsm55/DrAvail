@@ -11,6 +11,7 @@ namespace DrAvail.Models
     {
         public int ID { get; set; }
 
+        public string OwnerID { get; set; }
         public string Title { get; set; }
         [Display(Name ="Employement Type")]
         public string EmployementType { get; set; }
@@ -30,6 +31,7 @@ namespace DrAvail.Models
         
         public bool IsEndDatePresent { get; set; }
 
+        [ForeignKey(nameof(Doctor))]
         public int DoctorID { get; set; }
 
         public Doctor Doctor { get; set; }
